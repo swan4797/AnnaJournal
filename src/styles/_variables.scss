@@ -1,0 +1,128 @@
+// =============================================
+// Design System Variables
+// Based on CalendarUI.jpg design
+// =============================================
+
+// Colors - Primary
+$primary-blue: #4F7DF3;
+$primary-blue-light: #E8EEFF;
+$primary-blue-dark: #3D66D9;
+
+// Colors - Category (from design)
+$category-math: #4F7DF3;        // Blue
+$category-art: #E8D5F2;         // Light purple/lavender
+$category-art-text: #8B5FB3;
+$category-physics: #FFF3E0;     // Light orange
+$category-physics-text: #E67E22;
+$category-sport: #F3E5F5;       // Light violet
+$category-sport-text: #9C27B0;
+$category-computer: #E0F7FA;    // Light cyan
+$category-computer-text: #00ACC1;
+
+// Category map for events
+$categories: (
+  'clinical': (#E8F5E9, #4CAF50, #2E7D32),
+  'lecture': (#E3F2FD, #2196F3, #1565C0),
+  'study': (#F3E5F5, #9C27B0, #7B1FA2),
+  'task': (#F5F5F5, #9E9E9E, #616161),
+  'homework': (#FFF8E1, #FF9800, #E65100),
+  'exam': (#FFEBEE, #F44336, #C62828),
+  'meeting': (#E0F7FA, #00BCD4, #00838F),
+  'personal': (#FCE4EC, #E91E63, #AD1457),
+  'deadline': (#FFCDD2, #E53935, #B71C1C)
+);
+
+// Colors - Neutral
+$white: #FFFFFF;
+$gray-50: #FAFAFA;
+$gray-100: #F5F5F5;
+$gray-200: #EEEEEE;
+$gray-300: #E0E0E0;
+$gray-400: #BDBDBD;
+$gray-500: #9E9E9E;
+$gray-600: #757575;
+$gray-700: #616161;
+$gray-800: #424242;
+$gray-900: #212121;
+$black: #000000;
+
+// Colors - Status
+$success: #4CAF50;
+$success-light: #E8F5E9;
+$warning: #FF9800;
+$warning-light: #FFF3E0;
+$error: #F44336;
+$error-light: #FFEBEE;
+$info: #2196F3;
+$info-light: #E3F2FD;
+
+// Typography
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-size-xs: 0.75rem;      // 12px
+$font-size-sm: 0.875rem;     // 14px
+$font-size-base: 1rem;       // 16px
+$font-size-lg: 1.125rem;     // 18px
+$font-size-xl: 1.25rem;      // 20px
+$font-size-2xl: 1.5rem;      // 24px
+$font-size-3xl: 1.875rem;    // 30px
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// Spacing
+$spacing-0: 0;
+$spacing-1: 0.25rem;   // 4px
+$spacing-2: 0.5rem;    // 8px
+$spacing-3: 0.75rem;   // 12px
+$spacing-4: 1rem;      // 16px
+$spacing-5: 1.25rem;   // 20px
+$spacing-6: 1.5rem;    // 24px
+$spacing-8: 2rem;      // 32px
+$spacing-10: 2.5rem;   // 40px
+$spacing-12: 3rem;     // 48px
+
+// Layout
+$sidebar-width: 240px;
+$header-height: 64px;
+$content-max-width: 1400px;
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 9999px;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+// Transitions
+$transition-fast: 150ms ease;
+$transition-normal: 200ms ease;
+$transition-slow: 300ms ease;
+
+// Z-index layers
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-sidebar-overlay: 250;
+$z-modal: 300;
+$z-toast: 400;
+
+// Mobile-specific layout
+$header-height-mobile: 56px;
+$mobile-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
