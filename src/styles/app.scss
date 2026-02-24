@@ -4133,3 +4133,783 @@ $ps-event-purple: #9B8FB9;
     }
   }
 }
+
+// =============================================
+// Dashboard Styles
+// =============================================
+
+.dashboard {
+  padding: $spacing-6;
+  max-width: 1600px;
+  margin: 0 auto;
+
+  @include mobile {
+    padding: $spacing-4;
+  }
+
+  // Dashboard Header
+  &__header {
+    @include flex(row, space-between, flex-start);
+    margin-bottom: $spacing-6;
+
+    @include mobile {
+      flex-direction: column;
+      gap: $spacing-3;
+    }
+  }
+
+  &__greeting {
+    @include flex(column, flex-start, flex-start, $spacing-1);
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    @include mobile {
+      font-size: $font-size-xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__date {
+    @include flex(column, flex-end, flex-end);
+    text-align: right;
+
+    @include mobile {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+
+  &__date-day {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__date-full {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  // Quick Stats
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-4;
+    margin-bottom: $spacing-6;
+
+    @include mobile {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-3;
+    }
+  }
+
+  &__stat {
+    @include flex(column, center, center, $spacing-1);
+    background-color: $white;
+    padding: $spacing-4;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    border: 1px solid $gray-200;
+  }
+
+  &__stat-value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $primary-blue;
+  }
+
+  &__stat-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // Dashboard Grid
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: $spacing-5;
+
+    @media (max-width: $breakpoint-xl) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-4;
+    }
+  }
+
+  &__column {
+    @include flex(column, flex-start, stretch, $spacing-5);
+
+    @include mobile {
+      gap: $spacing-4;
+    }
+  }
+}
+
+// Dashboard Card Base
+.dashboard-card {
+  background-color: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $gray-200;
+  overflow: hidden;
+
+  &__header {
+    @include flex(row, space-between, center);
+    padding: $spacing-4;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__title {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    svg {
+      color: $primary-blue;
+    }
+  }
+
+  &__count {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    background-color: $gray-100;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+  }
+
+  &__content {
+    padding: $spacing-4;
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-2);
+    padding: $spacing-6;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    span {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Tasks List
+.tasks-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-2);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-2 0;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    @include flex-center;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary-blue;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+      color: $white;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    color: $gray-900;
+    @include text-truncate;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__time {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__category {
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+
+    &--task {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+
+    &--homework {
+      background-color: $warning-light;
+      color: $warning;
+    }
+
+    &--exam {
+      background-color: $error-light;
+      color: $error;
+    }
+  }
+}
+
+// Exams List
+.exams-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-3);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--urgent {
+      background-color: $error-light;
+
+      .exams-list__indicator {
+        background-color: $error;
+      }
+
+      .exams-list__countdown {
+        color: $error;
+        font-weight: $font-weight-semibold;
+      }
+    }
+
+    &--soon {
+      background-color: $warning-light;
+
+      .exams-list__indicator {
+        background-color: $warning;
+      }
+
+      .exams-list__countdown {
+        color: $warning;
+      }
+    }
+  }
+
+  &__indicator {
+    width: 4px;
+    height: 40px;
+    background-color: $primary-blue;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__subject {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__date {
+    color: $gray-600;
+  }
+
+  &__time {
+    &::before {
+      content: '•';
+      margin-right: $spacing-2;
+    }
+  }
+
+  &__countdown {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+}
+
+// Homework List
+.homework-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-2);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &--completed {
+      opacity: 0.6;
+
+      .homework-list__title {
+        text-decoration: line-through;
+        color: $gray-400;
+      }
+    }
+
+    &--urgent {
+      background-color: $error-light;
+    }
+
+    &--soon {
+      background-color: $warning-light;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    width: 18px;
+    height: 18px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary-blue;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+
+      &::after {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background-color: $white;
+        border-radius: $radius-full;
+        display: block;
+        margin: auto;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+  }
+
+  &__subject {
+    color: $gray-500;
+  }
+
+  &__due {
+    color: $gray-400;
+
+    &::before {
+      content: '•';
+      margin-right: $spacing-2;
+    }
+  }
+}
+
+// Classes Timeline
+.classes-timeline {
+  @include flex(column, flex-start, stretch);
+
+  &__item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-2 0;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      .classes-timeline__content {
+        background-color: $gray-100;
+      }
+    }
+
+    &--ongoing {
+      .classes-timeline__dot {
+        background-color: $success;
+        box-shadow: 0 0 0 3px rgba($success, 0.2);
+      }
+
+      .classes-timeline__subject {
+        color: $success;
+      }
+    }
+
+    &--next {
+      .classes-timeline__dot {
+        background-color: $primary-blue;
+      }
+    }
+  }
+
+  &__time-block {
+    @include flex(column, flex-start, flex-end);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  &__start {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__end {
+    font-size: 10px;
+    color: $gray-400;
+  }
+
+  &__line {
+    @include flex(column, flex-start, center);
+    width: 20px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    background-color: $gray-300;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  &__connector {
+    width: 2px;
+    flex: 1;
+    background-color: $gray-200;
+    min-height: 40px;
+  }
+
+  &__content {
+    flex: 1;
+    padding: $spacing-2 $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    transition: background-color $transition-fast;
+  }
+
+  &__subject {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__location {
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-xs;
+    color: $gray-500;
+    margin-bottom: $spacing-1;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__instructor {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    padding: 2px $spacing-2;
+    border-radius: $radius-sm;
+    margin-top: $spacing-1;
+
+    &--ongoing {
+      background-color: $success;
+      color: $white;
+    }
+
+    &--next {
+      background-color: $primary-blue;
+      color: $white;
+    }
+  }
+}
+
+// AI Study Card
+.ai-study {
+  &__tabs {
+    @include flex(row, flex-end, center, $spacing-1);
+  }
+
+  &__tab {
+    @include button-reset;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-400;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gray-600;
+    }
+
+    &--active {
+      background-color: $gray-100;
+      color: $gray-900;
+    }
+  }
+
+  &__intro {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid $gray-100;
+
+    p {
+      font-size: $font-size-xs;
+      color: $gray-500;
+      flex: 1;
+    }
+  }
+
+  &__refresh {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-1);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $primary-blue;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $primary-blue-light;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__question-list {
+    list-style: none;
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__question-item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    svg {
+      color: $gray-400;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+  }
+
+  &__question-number {
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    background-color: $primary-blue-light;
+    color: $primary-blue;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+  }
+
+  &__question-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__question-text {
+    font-size: $font-size-sm;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+    line-height: $line-height-normal;
+  }
+
+  &__question-meta {
+    @include flex(row, flex-start, center, $spacing-2);
+  }
+
+  &__question-topic {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__question-difficulty {
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    padding: 2px $spacing-2;
+    border-radius: $radius-sm;
+
+    &--easy {
+      background-color: $success-light;
+      color: $success;
+    }
+
+    &--medium {
+      background-color: $warning-light;
+      color: $warning;
+    }
+
+    &--hard {
+      background-color: $error-light;
+      color: $error;
+    }
+  }
+
+  &__notes-list {
+    list-style: none;
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__note-item {
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &__note-header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-1;
+  }
+
+  &__note-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__note-date {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__note-subject {
+    display: block;
+    font-size: $font-size-xs;
+    color: $primary-blue;
+    margin-bottom: $spacing-2;
+  }
+
+  &__note-excerpt {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    line-height: $line-height-normal;
+    @include text-clamp(2);
+  }
+
+  &__footer {
+    padding: $spacing-3 $spacing-4;
+    border-top: 1px solid $gray-100;
+    background-color: $gray-50;
+  }
+
+  &__powered {
+    @include flex(row, center, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $gray-400;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $warning;
+    }
+  }
+}
+
+// Mini Calendar Card adjustments for Dashboard
+.dashboard-card--mini-calendar {
+  .mini-cal {
+    padding: 0;
+  }
+}

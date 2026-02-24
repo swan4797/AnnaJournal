@@ -14,7 +14,7 @@ const mainMenuItems: NavItem[] = [
   {
     icon: <OverviewIcon />,
     label: 'Dashboard',
-    href: '/calendar',
+    href: '/dashboard',
   },
   {
     icon: <ScheduleIcon />,
@@ -65,8 +65,12 @@ export function Sidebar({ user }: SidebarProps) {
   const toggleSidebar = () => setIsOpen(!isOpen)
 
   const isActive = (href: string, label: string) => {
-    // Schedule is active when on calendar
-    if (label === 'Schedule' && currentPath.includes('/calendar')) return true
+    // Check if current path matches the href
+    if (currentPath === href) return true
+    // Calendar is active when on calendar
+    if (label === 'Calendar' && currentPath.includes('/calendar')) return true
+    // Dashboard is active when on dashboard
+    if (label === 'Dashboard' && currentPath.includes('/dashboard')) return true
     return false
   }
 
