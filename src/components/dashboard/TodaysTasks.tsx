@@ -71,13 +71,18 @@ export function TodaysTasks({ tasks, onToggleComplete }: TodaysTasksProps) {
                   <MoreIcon />
                 </button>
                 <button
-                  className={`today-tasks__action ${task.completed ? 'today-tasks__action--done' : 'today-tasks__action--add'}`}
+                  className={`today-tasks__action ${task.completed ? 'today-tasks__action--done' : 'today-tasks__action--pending'}`}
                   onClick={() => onToggleComplete?.(task.id)}
                 >
-                  {task.completed ? 'Mark as Done' : (
+                  {task.completed ? (
                     <>
-                      <PlusIcon />
-                      Add or Create
+                      <CheckIcon />
+                      Completed
+                    </>
+                  ) : (
+                    <>
+                      <CircleIcon />
+                      Mark Complete
                     </>
                   )}
                 </button>

@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { RichTextEditor } from '~/components/ui/RichTextEditor'
 import type { Note, NewNote, UpdateNote } from '~/utils/notes'
 import type { Event } from '~/utils/events'
+import type { Class } from '~/utils/classes'
 
 interface NoteEditorProps {
   note?: Note
   onSave: (data: Omit<NewNote, 'user_id'> | { id: string; updates: UpdateNote }) => void
   onCancel: () => void
   exams?: Event[]
+  classes?: Class[]
 }
 
 const COLORS = [
@@ -21,10 +23,11 @@ const COLORS = [
   { name: 'Pink', value: '#ec4899' },
 ]
 
-export function NoteEditor({ note, onSave, onCancel, exams = [] }: NoteEditorProps) {
+export function NoteEditor({ note, onSave, onCancel, exams = [], classes = [] }: NoteEditorProps) {
   const [title, setTitle] = useState(note?.title || '')
   const [content, setContent] = useState(note?.content || '')
   const [subject, setSubject] = useState(note?.subject || '')
+  const [linkedClassId, setLinkedClassId] = useState(note?.linked_class_id || '')
   const [tags, setTags] = useState<string[]>(note?.tags || [])
   const [tagInput, setTagInput] = useState('')
   const [color, setColor] = useState(note?.color || '')
@@ -32,6 +35,20 @@ export function NoteEditor({ note, onSave, onCancel, exams = [] }: NoteEditorPro
   const [isSaving, setIsSaving] = useState(false)
 
   const isEditing = !!note
+
+  // Handle class selection - sets both subject and linked_class_id
+  const handleClassChange = (classId: string) => {
+    if (!classId) {
+      setLinkedClassId('')
+      setSubject('')
+      return
+    }
+    const selectedClass = classes.find(c => c.id === classId)
+    if (selectedClass) {
+      setLinkedClassId(classId)
+      setSubject(selectedClass.module_name || selectedClass.title)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,6 +68,7 @@ export function NoteEditor({ note, onSave, onCancel, exams = [] }: NoteEditorPro
             tags: tags.length > 0 ? tags : null,
             color: color || null,
             linked_exam_id: linkedExamId || null,
+            linked_class_id: linkedClassId || null,
           },
         })
       } else {
@@ -61,6 +79,7 @@ export function NoteEditor({ note, onSave, onCancel, exams = [] }: NoteEditorPro
           tags: tags.length > 0 ? tags : null,
           color: color || null,
           linked_exam_id: linkedExamId || null,
+          linked_class_id: linkedClassId || null,
         })
       }
     } finally {
@@ -133,14 +152,29 @@ export function NoteEditor({ note, onSave, onCancel, exams = [] }: NoteEditorPro
 
         <div className="note-editor__sidebar">
           <div className="note-editor__field">
-            <label className="note-editor__label">Subject</label>
-            <input
-              type="text"
-              className="note-editor__input"
-              placeholder="e.g., Anatomy"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-            />
+            <label className="note-editor__label">Subject / Class</label>
+            {classes.length > 0 ? (
+              <select
+                className="note-editor__select"
+                value={linkedClassId}
+                onChange={(e) => handleClassChange(e.target.value)}
+              >
+                <option value="">Select a class...</option>
+                {classes.map((cls) => (
+                  <option key={cls.id} value={cls.id}>
+                    {cls.module_name || cls.title}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                className="note-editor__input"
+                placeholder="e.g., Anatomy"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+            )}
           </div>
 
           <div className="note-editor__field">

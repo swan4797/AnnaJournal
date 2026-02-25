@@ -230,12 +230,20 @@ function DashboardPage() {
   const { examEvents, classes, todayEvents } = Route.useLoaderData()
   const navigate = useNavigate()
 
-  // Transform today's events to tasks
-  const initialTasks = useMemo(() => {
-    return todayEvents.map(transformEventToTask)
-  }, [todayEvents])
+  // Track local completion overrides for optimistic updates
+  const [completionOverrides, setCompletionOverrides] = useState<Record<string, boolean>>({})
 
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  // Transform today's events to tasks, applying any local overrides
+  const tasks = useMemo(() => {
+    return todayEvents.map(event => {
+      const task = transformEventToTask(event)
+      // Apply local override if exists
+      if (completionOverrides[task.id] !== undefined) {
+        return { ...task, completed: completionOverrides[task.id] }
+      }
+      return task
+    })
+  }, [todayEvents, completionOverrides])
   const [homework, setHomework] = useState<Homework[]>(MOCK_HOMEWORK)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(MOCK_QUESTIONS)
@@ -261,21 +269,13 @@ function DashboardPage() {
     const newCompleted = !task.completed
 
     // Optimistic update
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId ? { ...t, completed: newCompleted } : t
-      )
-    )
+    setCompletionOverrides(prev => ({ ...prev, [taskId]: newCompleted }))
 
     // Update in database
     const result = await toggleEventComplete({ data: { id: taskId, completed: newCompleted } })
     if (!result.success) {
       // Revert on error
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === taskId ? { ...t, completed: !newCompleted } : t
-        )
-      )
+      setCompletionOverrides(prev => ({ ...prev, [taskId]: !newCompleted }))
     }
   }, [tasks])
 

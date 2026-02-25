@@ -195,6 +195,7 @@ export type Database = {
           color: string | null
           pinned: boolean
           linked_exam_id: string | null
+          linked_class_id: string | null
           created_at: string | null
           updated_at: string | null
         }
@@ -208,6 +209,7 @@ export type Database = {
           color?: string | null
           pinned?: boolean
           linked_exam_id?: string | null
+          linked_class_id?: string | null
           created_at?: string | null
           updated_at?: string | null
         }
@@ -221,6 +223,7 @@ export type Database = {
           color?: string | null
           pinned?: boolean
           linked_exam_id?: string | null
+          linked_class_id?: string | null
           created_at?: string | null
           updated_at?: string | null
         }
@@ -230,6 +233,13 @@ export type Database = {
             columns: ["linked_exam_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notes_linked_class_id_fkey"
+            columns: ["linked_class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
             referencedColumns: ["id"]
           },
         ]
@@ -285,7 +295,7 @@ export type Database = {
           semester_start: string
           semester_end: string
           color: string | null
-          notes: string | null
+          description: string | null
           linked_exam_id: string | null
           created_at: string | null
           updated_at: string | null
@@ -304,7 +314,7 @@ export type Database = {
           semester_start: string
           semester_end: string
           color?: string | null
-          notes?: string | null
+          description?: string | null
           linked_exam_id?: string | null
           created_at?: string | null
           updated_at?: string | null
@@ -323,7 +333,7 @@ export type Database = {
           semester_start?: string
           semester_end?: string
           color?: string | null
-          notes?: string | null
+          description?: string | null
           linked_exam_id?: string | null
           created_at?: string | null
           updated_at?: string | null

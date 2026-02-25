@@ -12,6 +12,7 @@ import {
   type UpdateNote,
 } from '~/utils/notes'
 import { searchEvents, type Event } from '~/utils/events'
+import { fetchClasses, type Class } from '~/utils/classes'
 import {
   NoteCard,
   NoteSearch,
@@ -21,7 +22,7 @@ import {
 
 export const Route = createFileRoute('/_authed/notes')({
   loader: async () => {
-    const [notesResult, subjectsResult, examsResult] = await Promise.all([
+    const [notesResult, subjectsResult, examsResult, classesResult] = await Promise.all([
       fetchNotes({ data: { limit: 50 } }),
       fetchNoteSubjects({}),
       searchEvents({
@@ -31,19 +32,21 @@ export const Route = createFileRoute('/_authed/notes')({
           limit: 20,
         },
       }),
+      fetchClasses({}),
     ])
 
     return {
       notes: notesResult.notes || [],
       subjects: subjectsResult.subjects || [],
       exams: examsResult.events || [],
+      classes: classesResult.classes || [],
     }
   },
   component: NotesPage,
 })
 
 function NotesPage() {
-  const { notes: initialNotes, subjects: initialSubjects, exams } = Route.useLoaderData()
+  const { notes: initialNotes, subjects: initialSubjects, exams, classes } = Route.useLoaderData()
 
   const [notes, setNotes] = useState<Note[]>(initialNotes)
   const [subjects, setSubjects] = useState<string[]>(initialSubjects)
@@ -246,6 +249,7 @@ function NotesPage() {
             onSave={handleSave}
             onCancel={handleCancel}
             exams={exams}
+            classes={classes}
           />
         ) : isEditing && selectedNote ? (
           <NoteEditor
@@ -253,6 +257,7 @@ function NotesPage() {
             onSave={handleSave}
             onCancel={handleCancel}
             exams={exams}
+            classes={classes}
           />
         ) : selectedNote ? (
           <NoteDetail

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useCallback, useEffect } from 'react'
 import {
   fetchClasses,
@@ -12,6 +12,7 @@ import {
   type UpdateClass,
 } from '~/utils/classes'
 import { searchEvents, type Event } from '~/utils/events'
+import { fetchNotesByClass, type Note } from '~/utils/notes'
 import {
   TimetableGrid,
   ClassForm,
@@ -44,23 +45,31 @@ export const Route = createFileRoute('/_authed/timetable')({
 
 function TimetablePage() {
   const { classes: initialClasses, exams } = Route.useLoaderData()
+  const navigate = useNavigate()
 
   const [classes, setClasses] = useState<Class[]>(initialClasses)
   const [selectedClass, setSelectedClass] = useState<Class | null>(null)
   const [exceptions, setExceptions] = useState<ClassException[]>([])
+  const [linkedNotes, setLinkedNotes] = useState<Note[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [initialFormData, setInitialFormData] = useState<{ dayOfWeek?: number; hour?: number }>({})
   const [isLoading, setIsLoading] = useState(false)
 
-  // Fetch exceptions when a class is selected
+  // Fetch exceptions and linked notes when a class is selected
   useEffect(() => {
     if (selectedClass) {
+      // Fetch exceptions
       fetchClassExceptions({ data: { classId: selectedClass.id } }).then((result) => {
         setExceptions(result.exceptions || [])
       })
+      // Fetch linked notes
+      fetchNotesByClass({ data: { classId: selectedClass.id } }).then((result) => {
+        setLinkedNotes(result.notes || [])
+      })
     } else {
       setExceptions([])
+      setLinkedNotes([])
     }
   }, [selectedClass?.id])
 
@@ -98,6 +107,10 @@ function TimetablePage() {
     setSelectedClass(null)
   }, [])
 
+  const handleNoteClick = useCallback((noteId: string) => {
+    navigate({ to: '/notes', search: { id: noteId } })
+  }, [navigate])
+
   const handleSubmit = useCallback(async (data: ClassFormData) => {
     setIsLoading(true)
     try {
@@ -115,7 +128,7 @@ function TimetablePage() {
           semester_start: data.semester_start,
           semester_end: data.semester_end,
           color: data.color,
-          notes: data.notes || null,
+          description: data.description || null,
           linked_exam_id: data.linked_exam_id,
         }
 
@@ -140,7 +153,7 @@ function TimetablePage() {
           semester_start: data.semester_start,
           semester_end: data.semester_end,
           color: data.color,
-          notes: data.notes || null,
+          description: data.description || null,
           linked_exam_id: data.linked_exam_id,
         }
 
@@ -195,7 +208,7 @@ function TimetablePage() {
         semester_start: selectedClass.semester_start,
         semester_end: selectedClass.semester_end,
         color: selectedClass.color || 'blue',
-        notes: selectedClass.notes || '',
+        description: selectedClass.description || '',
         linked_exam_id: selectedClass.linked_exam_id,
       }
     }
@@ -251,9 +264,11 @@ function TimetablePage() {
               classItem={selectedClass}
               exceptions={exceptions}
               linkedExam={linkedExam}
+              linkedNotes={linkedNotes}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onClose={handleCloseDetail}
+              onNoteClick={handleNoteClick}
             />
           </div>
         )}

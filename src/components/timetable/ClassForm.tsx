@@ -16,7 +16,7 @@ export interface ClassFormData {
   semester_start: string
   semester_end: string
   color: string
-  notes: string
+  description: string
   linked_exam_id: string | null
 }
 
@@ -71,7 +71,7 @@ export function ClassForm({
     semester_start: initialData?.semester_start || formatDateLocal(today),
     semester_end: initialData?.semester_end || formatDateLocal(semesterEnd),
     color: initialData?.color || 'blue',
-    notes: initialData?.notes || '',
+    description: initialData?.description || '',
     linked_exam_id: initialData?.linked_exam_id || null,
   })
 
@@ -260,12 +260,12 @@ export function ClassForm({
         />
       )}
 
-      {/* Notes */}
+      {/* Description */}
       <RichTextEditor
-        label="Notes"
-        placeholder="Additional notes (optional)"
-        value={formData.notes}
-        onChange={(html) => updateField('notes', html)}
+        label="Description"
+        placeholder="Additional description (optional)"
+        value={formData.description}
+        onChange={(html) => updateField('description', html)}
       />
 
       {/* Actions */}

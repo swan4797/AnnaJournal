@@ -220,3 +220,32 @@ export const fetchNoteSubjects = createServerFn({ method: 'GET' })
 
     return { subjects, error: null }
   })
+
+/**
+ * Fetch notes linked to a specific class
+ */
+export const fetchNotesByClass = createServerFn({ method: 'GET' })
+  .inputValidator((data: { classId: string; limit?: number }) => data)
+  .handler(async ({ data }) => {
+    const supabase = getSupabaseServerClient()
+
+    const { data: user } = await supabase.auth.getUser()
+    if (!user.user) {
+      return { notes: [], error: 'Not authenticated' }
+    }
+
+    const { data: notes, error } = await supabase
+      .from('notes')
+      .select('*')
+      .eq('linked_class_id', data.classId)
+      .order('pinned', { ascending: false })
+      .order('updated_at', { ascending: false })
+      .limit(data.limit || 20)
+
+    if (error) {
+      console.error('Error fetching notes by class:', error)
+      return { notes: [], error: error.message }
+    }
+
+    return { notes: notes || [], error: null }
+  })

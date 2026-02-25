@@ -5257,7 +5257,7 @@ $ps-event-purple: #9B8FB9;
 $dash-primary: #D4E157;
 $dash-primary-dark: #C0CA33;
 $dash-primary-light: #F0F4C3;
-$dash-orange: #ff7043;
+$dash-orange: #D4E157;
 $dash-orange-light: #ffccbc;
 $dash-blue: #42a5f5;
 $dash-blue-light: #bbdefb;
@@ -8901,7 +8901,7 @@ $dash-red-light: #ffcdd2;
     color: $gray-700;
   }
 
-  &__notes {
+  &__description {
     font-size: $font-size-sm;
     color: $gray-700;
     line-height: 1.6;
@@ -8959,6 +8959,54 @@ $dash-red-light: #ffcdd2;
 
   &__exception-reason {
     color: $gray-500;
+  }
+
+  &__linked-notes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__linked-note {
+    border-radius: $radius-md;
+
+    &:hover {
+      background: $gray-100;
+    }
+  }
+
+  &__linked-note-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    border-radius: $radius-md;
+    color: $gray-700;
+
+    &:hover {
+      color: $gray-900;
+    }
+
+    svg {
+      flex-shrink: 0;
+      color: $gray-400;
+    }
+  }
+
+  &__linked-note-title {
+    flex: 1;
+    font-size: $font-size-sm;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__actions {
