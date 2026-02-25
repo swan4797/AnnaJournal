@@ -16,6 +16,8 @@ import {
 } from '~/components/dashboard'
 import { searchEvents, toggleEventComplete, type Event } from '~/utils/events'
 import { fetchClasses, formatClassTime, type Class } from '~/utils/classes'
+import { fetchAssignments, updateAssignmentStatus, type Assignment } from '~/utils/assignments'
+import { fetchNotes, type Note } from '~/utils/notes'
 
 export const Route = createFileRoute('/_authed/dashboard')({
   loader: async () => {
@@ -29,7 +31,11 @@ export const Route = createFileRoute('/_authed/dashboard')({
     const examEndDate = new Date(today)
     examEndDate.setDate(examEndDate.getDate() + 30)
 
-    const [examsResult, classesResult, todayTasksResult] = await Promise.all([
+    // Calculate date range for calendar events (current month)
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0) // 2 months ahead
+
+    const [examsResult, classesResult, todayTasksResult, assignmentsResult, notesResult, calendarEventsResult] = await Promise.all([
       searchEvents({
         data: {
           categories: ['exam'],
@@ -48,12 +54,41 @@ export const Route = createFileRoute('/_authed/dashboard')({
           limit: 20,
         },
       }),
+      // Fetch upcoming assignments (not completed)
+      fetchAssignments({
+        data: {
+          upcoming: true,
+          limit: 10,
+        },
+      }),
+      // Fetch recent notes for AI Study Card
+      fetchNotes({
+        data: {
+          limit: 5,
+        },
+      }),
+      // Fetch all events for calendar dots
+      searchEvents({
+        data: {
+          startDate: monthStart.toISOString(),
+          endDate: monthEnd.toISOString(),
+          limit: 100,
+        },
+      }),
     ])
+
+    // Extract unique event dates for mini calendar
+    const eventDates = [...new Set(
+      (calendarEventsResult.events || []).map(e => e.start_time.split('T')[0])
+    )]
 
     return {
       examEvents: examsResult.events || [],
       classes: classesResult.classes || [],
       todayEvents: todayTasksResult.events || [],
+      assignments: assignmentsResult.assignments || [],
+      notes: notesResult.notes || [],
+      eventDates,
     }
   },
   component: DashboardPage,
@@ -99,6 +134,32 @@ function transformEventToExam(event: Event): Exam {
     time: event.all_day ? undefined : examDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
     location: event.description || undefined,
     daysUntil,
+  }
+}
+
+// Transform database Assignment to dashboard Homework interface
+function transformAssignmentToHomework(assignment: Assignment, classes: Class[]): Homework {
+  const dueDate = new Date(assignment.due_date)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const daysUntil = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  // Get class name if linked
+  let subject = 'General'
+  if (assignment.linked_class_id) {
+    const linkedClass = classes.find(c => c.id === assignment.linked_class_id)
+    if (linkedClass) {
+      subject = linkedClass.module_name || linkedClass.title
+    }
+  }
+
+  return {
+    id: assignment.id,
+    title: assignment.title,
+    subject,
+    dueDate: dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    daysUntil,
+    completed: assignment.completed || false,
   }
 }
 
@@ -159,67 +220,50 @@ function getClassesForToday(classes: Class[]): ClassSchedule[] {
 }
 
 
-const MOCK_HOMEWORK: Homework[] = [
-  { id: '1', title: 'Chapter 7 Questions', subject: 'Anatomy', dueDate: 'Feb 26', daysUntil: 1, completed: false },
-  { id: '2', title: 'Lab Report: Muscle Analysis', subject: 'Physiology', dueDate: 'Feb 27', daysUntil: 2, completed: false },
-  { id: '3', title: 'Case Study Review', subject: 'Clinical Practice', dueDate: 'Feb 28', daysUntil: 3, completed: true },
-  { id: '4', title: 'Research Paper Outline', subject: 'Biochemistry', dueDate: 'Mar 2', daysUntil: 5, completed: false },
-]
 
-const MOCK_NOTES: StudyNote[] = [
+// Transform database Note to dashboard StudyNote interface
+function transformNoteToStudyNote(note: Note): StudyNote {
+  const noteDate = new Date(note.created_at || Date.now())
+
+  // Extract plain text excerpt from HTML content
+  let excerpt = ''
+  if (note.content) {
+    excerpt = note.content
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/&nbsp;/g, ' ')
+      .substring(0, 120)
+    if (note.content.length > 120) excerpt += '...'
+  }
+
+  return {
+    id: note.id,
+    title: note.title,
+    subject: note.subject || 'General',
+    date: noteDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    excerpt,
+  }
+}
+
+// Placeholder questions - TODO: Replace with AI-generated questions based on notes
+const PLACEHOLDER_QUESTIONS: StudyQuestion[] = [
   {
     id: '1',
-    title: 'Muscle Contraction Mechanisms',
-    subject: 'Physiology',
-    date: 'Feb 24',
-    excerpt: 'The sliding filament theory explains how actin and myosin interact during muscle contraction...',
-  },
-  {
-    id: '2',
-    title: 'Skeletal System Overview',
-    subject: 'Anatomy',
-    date: 'Feb 23',
-    excerpt: 'The human skeleton consists of 206 bones divided into axial and appendicular regions...',
-  },
-  {
-    id: '3',
-    title: 'Patient Assessment Basics',
-    subject: 'Clinical Practice',
-    date: 'Feb 22',
-    excerpt: 'Initial patient assessment includes vital signs, medical history, and chief complaint...',
-  },
-]
-
-const MOCK_QUESTIONS: StudyQuestion[] = [
-  {
-    id: '1',
-    question: 'What is the role of calcium ions in muscle contraction?',
-    topic: 'Muscle Physiology',
+    question: 'Review your recent notes and identify key concepts.',
+    topic: 'Study Review',
     difficulty: 'medium',
   },
   {
     id: '2',
-    question: 'Name the four main components of the sliding filament theory.',
-    topic: 'Physiology',
+    question: 'What are the main topics from your upcoming exams?',
+    topic: 'Exam Prep',
     difficulty: 'easy',
   },
   {
     id: '3',
-    question: 'How does the axial skeleton differ from the appendicular skeleton in function?',
-    topic: 'Anatomy',
+    question: 'Create flashcards for the most important terms.',
+    topic: 'Active Learning',
     difficulty: 'medium',
   },
-  {
-    id: '4',
-    question: 'Explain the steps of initial patient assessment in emergency situations.',
-    topic: 'Clinical Practice',
-    difficulty: 'hard',
-  },
-]
-
-const MOCK_EVENT_DATES = [
-  '2026-02-25', '2026-02-26', '2026-02-27', '2026-02-28',
-  '2026-03-03', '2026-03-05', '2026-03-08', '2026-03-10',
 ]
 
 // =============================================
@@ -227,11 +271,12 @@ const MOCK_EVENT_DATES = [
 // =============================================
 
 function DashboardPage() {
-  const { examEvents, classes, todayEvents } = Route.useLoaderData()
+  const { examEvents, classes, todayEvents, assignments, notes, eventDates } = Route.useLoaderData()
   const navigate = useNavigate()
 
   // Track local completion overrides for optimistic updates
   const [completionOverrides, setCompletionOverrides] = useState<Record<string, boolean>>({})
+  const [assignmentOverrides, setAssignmentOverrides] = useState<Record<string, boolean>>({})
 
   // Transform today's events to tasks, applying any local overrides
   const tasks = useMemo(() => {
@@ -244,9 +289,26 @@ function DashboardPage() {
       return task
     })
   }, [todayEvents, completionOverrides])
-  const [homework, setHomework] = useState<Homework[]>(MOCK_HOMEWORK)
+
+  // Transform assignments to homework format, applying any local overrides
+  const homework = useMemo(() => {
+    return assignments.map(assignment => {
+      const hw = transformAssignmentToHomework(assignment, classes)
+      // Apply local override if exists
+      if (assignmentOverrides[hw.id] !== undefined) {
+        return { ...hw, completed: assignmentOverrides[hw.id] }
+      }
+      return hw
+    })
+  }, [assignments, classes, assignmentOverrides])
+
+  // Transform notes to study notes format
+  const studyNotes = useMemo(() => {
+    return notes.map(transformNoteToStudyNote)
+  }, [notes])
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
-  const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(MOCK_QUESTIONS)
+  const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(PLACEHOLDER_QUESTIONS)
 
   // Transform exam events to dashboard format
   const exams = useMemo(() => {
@@ -279,13 +341,30 @@ function DashboardPage() {
     }
   }, [tasks])
 
-  const handleToggleHomework = useCallback((homeworkId: string) => {
-    setHomework((prev) =>
-      prev.map((hw) =>
-        hw.id === homeworkId ? { ...hw, completed: !hw.completed } : hw
-      )
-    )
-  }, [])
+  const handleToggleHomework = useCallback(async (homeworkId: string) => {
+    const hw = homework.find(h => h.id === homeworkId)
+    if (!hw) return
+
+    const newCompleted = !hw.completed
+    const newStatus = newCompleted ? 'submitted' : 'not_started'
+
+    // Optimistic update
+    setAssignmentOverrides(prev => ({ ...prev, [homeworkId]: newCompleted }))
+
+    // Update in database
+    const result = await updateAssignmentStatus({
+      data: { id: homeworkId, status: newStatus }
+    })
+
+    if (!result.success) {
+      // Revert on error
+      setAssignmentOverrides(prev => ({ ...prev, [homeworkId]: !newCompleted }))
+    }
+  }, [homework])
+
+  const handleHomeworkClick = useCallback((homeworkId: string) => {
+    navigate({ to: '/assignments/$assignmentId', params: { assignmentId: homeworkId } })
+  }, [navigate])
 
   const handleRefreshQuestions = useCallback(() => {
     // Simulate AI generating new questions (shuffle existing ones)
@@ -328,7 +407,7 @@ function DashboardPage() {
 
         {/* AI Study Card */}
         <AIStudyCard
-          recentNotes={MOCK_NOTES}
+          recentNotes={studyNotes}
           suggestedQuestions={studyQuestions}
           onRefreshQuestions={handleRefreshQuestions}
         />
@@ -351,7 +430,7 @@ function DashboardPage() {
         <MiniCalendar
           selectedDate={selectedDate}
           onDateSelect={handleDateSelect}
-          eventDates={MOCK_EVENT_DATES}
+          eventDates={eventDates}
         />
 
         {/* Upcoming Section - Exams */}
@@ -363,6 +442,7 @@ function DashboardPage() {
         {/* Homework Coming Up */}
         <HomeworkComingUp
           homework={homework}
+          onHomeworkClick={handleHomeworkClick}
           onToggleComplete={handleToggleHomework}
         />
       </div>

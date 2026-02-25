@@ -9117,7 +9117,7 @@ $dash-red-light: #ffcdd2;
     transition: background-color 0.2s;
 
     &:hover {
-      background: darken($primary-blue, 5%);
+      background: #4670DC;
     }
   }
 
@@ -9166,7 +9166,7 @@ $dash-red-light: #ffcdd2;
       cursor: pointer;
 
       &:hover {
-        background: darken($primary-blue, 5%);
+        background: #4670DC;
       }
     }
   }
@@ -9702,6 +9702,734 @@ $dash-red-light: #ffcdd2;
 
     &__info-grid {
       grid-template-columns: 1fr;
+    }
+  }
+}
+
+// =============================================
+// Assignments Page Styles
+// =============================================
+
+.assignments-page {
+  padding: $spacing-6;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: $spacing-6;
+  }
+
+  &__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__add-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-4;
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: #2563eb;
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-4;
+    gap: $spacing-4;
+    flex-wrap: wrap;
+  }
+
+  &__filter-tabs {
+    display: flex;
+    gap: $spacing-1;
+    background: $gray-100;
+    padding: $spacing-1;
+    border-radius: $radius-lg;
+  }
+
+  &__filter-tab {
+    padding: $spacing-2 $spacing-4;
+    background: transparent;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gray-900;
+    }
+
+    &--active {
+      background: $white;
+      color: $gray-900;
+      font-weight: $font-weight-medium;
+      box-shadow: $shadow-sm;
+    }
+  }
+
+  &__class-filter {
+    padding: $spacing-2 $spacing-3;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    background: $white;
+    cursor: pointer;
+    min-width: 150px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+    }
+  }
+
+  &__content {
+    min-height: 400px;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-12;
+    text-align: center;
+    color: $gray-400;
+
+    svg {
+      margin-bottom: $spacing-4;
+    }
+
+    h3 {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-medium;
+      color: $gray-600;
+      margin-bottom: $spacing-2;
+    }
+
+    p {
+      font-size: $font-size-sm;
+      color: $gray-500;
+      margin-bottom: $spacing-4;
+    }
+
+    button {
+      padding: $spacing-2 $spacing-4;
+      background: $primary-blue;
+      color: $white;
+      border: none;
+      border-radius: $radius-md;
+      font-size: $font-size-sm;
+      cursor: pointer;
+
+      &:hover {
+        background: #2563eb;
+      }
+    }
+  }
+
+  &__lists {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-6;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-700;
+
+    &--overdue {
+      color: #EF4444;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+}
+
+// Assignment Card
+.assignment-card {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $gray-300;
+    box-shadow: $shadow-sm;
+  }
+
+  &--completed {
+    opacity: 0.7;
+
+    .assignment-card__title {
+      text-decoration: line-through;
+      color: $gray-500;
+    }
+  }
+
+  &--overdue {
+    border-left: 3px solid #EF4444;
+  }
+
+  &__checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary-blue;
+    }
+
+    &--checked {
+      background: #22C55E;
+      border-color: #22C55E;
+      color: $white;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin-bottom: $spacing-1;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin: 0;
+  }
+
+  &__priority {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $white;
+    border-radius: $radius-sm;
+    text-transform: capitalize;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__class {
+    color: $gray-600;
+  }
+
+  &__due {
+    &--overdue {
+      color: #EF4444;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  &__grade {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    margin-top: $spacing-2;
+  }
+
+  &__status {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $white;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+  }
+}
+
+// Assignment Form
+.assignment-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    padding-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+}
+
+// Assignment Detail Page
+.assignment-detail-page {
+  padding: $spacing-6;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &__back {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    color: $gray-600;
+    background: transparent;
+    border: none;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    margin-bottom: $spacing-4;
+
+    &:hover {
+      color: $gray-900;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: $spacing-6;
+    gap: $spacing-4;
+  }
+
+  &__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    flex: 1;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin: 0;
+  }
+
+  &__priority {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $white;
+    border-radius: $radius-sm;
+    text-transform: capitalize;
+  }
+
+  &__class-link {
+    font-size: $font-size-sm;
+    color: $primary-blue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-2;
+  }
+
+  &__action-btn {
+    padding: $spacing-2;
+    background: transparent;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    color: $gray-600;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $gray-50;
+      border-color: $gray-300;
+    }
+
+    &--danger:hover {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      color: #EF4444;
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: $spacing-6;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-6;
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  &__section {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-4;
+  }
+
+  &__section-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-3;
+  }
+
+  &__section-content {
+    font-size: $font-size-base;
+    color: $gray-700;
+    line-height: 1.6;
+
+    p {
+      margin: 0 0 $spacing-2;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__status-section {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-4;
+  }
+
+  &__status-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-500;
+    margin-bottom: $spacing-3;
+  }
+
+  &__status-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__status-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-3;
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $gray-50;
+    }
+
+    &--active {
+      border-color: $primary-blue;
+      background: rgba($primary-blue, 0.05);
+      color: $primary-blue;
+    }
+
+    &--submitted {
+      &.assignment-detail-page__status-btn--active {
+        border-color: #F59E0B;
+        background: rgba(#F59E0B, 0.05);
+        color: #D97706;
+      }
+    }
+
+    &--graded {
+      &.assignment-detail-page__status-btn--active {
+        border-color: #22C55E;
+        background: rgba(#22C55E, 0.05);
+        color: #16A34A;
+      }
+    }
+  }
+
+  &__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  &__info-section {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-4;
+  }
+
+  &__info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: $spacing-2;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  &__info-label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__info-value {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+
+    &--overdue {
+      color: #EF4444;
+    }
+  }
+
+  &__grade-section {
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-4;
+  }
+
+  &__grade-display {
+    text-align: center;
+    padding: $spacing-4;
+    background: $gray-50;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-3;
+  }
+
+  &__grade-value {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__grade-max {
+    font-size: $font-size-lg;
+    color: $gray-500;
+  }
+
+  &__grade-percent {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    margin-top: $spacing-1;
+  }
+
+  &__grade-btn {
+    width: 100%;
+    padding: $spacing-2;
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+}
+
+// Grade Modal
+.grade-modal {
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-4;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    padding-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+}
+
+// Responsive Assignments
+@media (max-width: 1024px) {
+  .assignment-detail-page {
+    &__content {
+      grid-template-columns: 1fr;
+    }
+
+    &__sidebar {
+      order: -1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .assignments-page {
+    padding: $spacing-4;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-3;
+    }
+
+    &__add-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    &__filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__filter-tabs {
+      width: 100%;
+    }
+
+    &__filter-tab {
+      flex: 1;
+      text-align: center;
+    }
+
+    &__class-filter {
+      width: 100%;
+    }
+  }
+
+  .assignment-card {
+    flex-wrap: wrap;
+
+    &__content {
+      width: 100%;
+    }
+
+    &__meta {
+      flex-wrap: wrap;
+    }
+  }
+
+  .assignment-form {
+    &__row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .assignment-detail-page {
+    padding: $spacing-4;
+
+    &__header {
+      flex-direction: column;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-end;
     }
   }
 }

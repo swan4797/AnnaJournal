@@ -27,6 +27,7 @@ export type Database = {
           notes: string | null
           parent_event_id: string | null
           parent_class_id: string | null
+          parent_assignment_id: string | null
           priority: string | null
           recurring_pattern: Json | null
           start_time: string
@@ -46,6 +47,7 @@ export type Database = {
           notes?: string | null
           parent_event_id?: string | null
           parent_class_id?: string | null
+          parent_assignment_id?: string | null
           priority?: string | null
           recurring_pattern?: Json | null
           start_time: string
@@ -65,6 +67,7 @@ export type Database = {
           notes?: string | null
           parent_event_id?: string | null
           parent_class_id?: string | null
+          parent_assignment_id?: string | null
           priority?: string | null
           recurring_pattern?: Json | null
           start_time?: string
@@ -92,6 +95,13 @@ export type Database = {
             columns: ["parent_class_id"]
             isOneToOne: false
             referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_parent_assignment_id_fkey"
+            columns: ["parent_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
             referencedColumns: ["id"]
           },
         ]
@@ -386,6 +396,77 @@ export type Database = {
           {
             foreignKeyName: "class_exceptions_class_id_fkey"
             columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignments: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string | null
+          instructions: string | null
+          due_date: string
+          linked_class_id: string | null
+          status: 'not_started' | 'in_progress' | 'submitted' | 'graded'
+          priority: 'low' | 'medium' | 'high' | null
+          completed: boolean
+          grade: number | null
+          max_grade: number | null
+          weight: number | null
+          feedback: string | null
+          submitted_at: string | null
+          graded_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description?: string | null
+          instructions?: string | null
+          due_date: string
+          linked_class_id?: string | null
+          status?: 'not_started' | 'in_progress' | 'submitted' | 'graded'
+          priority?: 'low' | 'medium' | 'high' | null
+          completed?: boolean
+          grade?: number | null
+          max_grade?: number | null
+          weight?: number | null
+          feedback?: string | null
+          submitted_at?: string | null
+          graded_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string | null
+          instructions?: string | null
+          due_date?: string
+          linked_class_id?: string | null
+          status?: 'not_started' | 'in_progress' | 'submitted' | 'graded'
+          priority?: 'low' | 'medium' | 'high' | null
+          completed?: boolean
+          grade?: number | null
+          max_grade?: number | null
+          weight?: number | null
+          feedback?: string | null
+          submitted_at?: string | null
+          graded_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_linked_class_id_fkey"
+            columns: ["linked_class_id"]
             isOneToOne: false
             referencedRelation: "classes"
             referencedColumns: ["id"]

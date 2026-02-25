@@ -32,6 +32,11 @@ const mainMenuItems: NavItem[] = [
     href: '/classes',
   },
   {
+    icon: <AssignmentIcon />,
+    label: 'Assignments',
+    href: '/assignments',
+  },
+  {
     icon: <ExamsIcon />,
     label: 'Exams',
     href: '/exams',
@@ -103,6 +108,8 @@ export function Sidebar({ user }: SidebarProps) {
     if (label === 'Timetable' && currentPath.includes('/timetable')) return true
     // Classes is active when on classes
     if (label === 'Classes' && currentPath.includes('/classes')) return true
+    // Assignments is active when on assignments
+    if (label === 'Assignments' && currentPath.includes('/assignments')) return true
     return false
   }
 

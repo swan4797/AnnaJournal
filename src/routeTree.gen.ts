@@ -22,7 +22,9 @@ import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedCalendarRouteImport } from './routes/_authed/calendar'
 import { Route as AuthedAnalyticsRouteImport } from './routes/_authed/analytics'
 import { Route as AuthedClassesIndexRouteImport } from './routes/_authed/classes/index'
+import { Route as AuthedAssignmentsIndexRouteImport } from './routes/_authed/assignments/index'
 import { Route as AuthedClassesClassIdRouteImport } from './routes/_authed/classes/$classId'
+import { Route as AuthedAssignmentsAssignmentIdRouteImport } from './routes/_authed/assignments/$assignmentId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -88,11 +90,22 @@ const AuthedClassesIndexRoute = AuthedClassesIndexRouteImport.update({
   path: '/classes/',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedAssignmentsIndexRoute = AuthedAssignmentsIndexRouteImport.update({
+  id: '/assignments/',
+  path: '/assignments/',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedClassesClassIdRoute = AuthedClassesClassIdRouteImport.update({
   id: '/classes/$classId',
   path: '/classes/$classId',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedAssignmentsAssignmentIdRoute =
+  AuthedAssignmentsAssignmentIdRouteImport.update({
+    id: '/assignments/$assignmentId',
+    path: '/assignments/$assignmentId',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -106,7 +119,9 @@ export interface FileRoutesByFullPath {
   '/notes': typeof AuthedNotesRoute
   '/timer': typeof AuthedTimerRoute
   '/timetable': typeof AuthedTimetableRoute
+  '/assignments/$assignmentId': typeof AuthedAssignmentsAssignmentIdRoute
   '/classes/$classId': typeof AuthedClassesClassIdRoute
+  '/assignments/': typeof AuthedAssignmentsIndexRoute
   '/classes/': typeof AuthedClassesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -121,7 +136,9 @@ export interface FileRoutesByTo {
   '/notes': typeof AuthedNotesRoute
   '/timer': typeof AuthedTimerRoute
   '/timetable': typeof AuthedTimetableRoute
+  '/assignments/$assignmentId': typeof AuthedAssignmentsAssignmentIdRoute
   '/classes/$classId': typeof AuthedClassesClassIdRoute
+  '/assignments': typeof AuthedAssignmentsIndexRoute
   '/classes': typeof AuthedClassesIndexRoute
 }
 export interface FileRoutesById {
@@ -138,7 +155,9 @@ export interface FileRoutesById {
   '/_authed/notes': typeof AuthedNotesRoute
   '/_authed/timer': typeof AuthedTimerRoute
   '/_authed/timetable': typeof AuthedTimetableRoute
+  '/_authed/assignments/$assignmentId': typeof AuthedAssignmentsAssignmentIdRoute
   '/_authed/classes/$classId': typeof AuthedClassesClassIdRoute
+  '/_authed/assignments/': typeof AuthedAssignmentsIndexRoute
   '/_authed/classes/': typeof AuthedClassesIndexRoute
 }
 export interface FileRouteTypes {
@@ -155,7 +174,9 @@ export interface FileRouteTypes {
     | '/notes'
     | '/timer'
     | '/timetable'
+    | '/assignments/$assignmentId'
     | '/classes/$classId'
+    | '/assignments/'
     | '/classes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -170,7 +191,9 @@ export interface FileRouteTypes {
     | '/notes'
     | '/timer'
     | '/timetable'
+    | '/assignments/$assignmentId'
     | '/classes/$classId'
+    | '/assignments'
     | '/classes'
   id:
     | '__root__'
@@ -186,7 +209,9 @@ export interface FileRouteTypes {
     | '/_authed/notes'
     | '/_authed/timer'
     | '/_authed/timetable'
+    | '/_authed/assignments/$assignmentId'
     | '/_authed/classes/$classId'
+    | '/_authed/assignments/'
     | '/_authed/classes/'
   fileRoutesById: FileRoutesById
 }
@@ -291,11 +316,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedClassesIndexRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/assignments/': {
+      id: '/_authed/assignments/'
+      path: '/assignments'
+      fullPath: '/assignments/'
+      preLoaderRoute: typeof AuthedAssignmentsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/classes/$classId': {
       id: '/_authed/classes/$classId'
       path: '/classes/$classId'
       fullPath: '/classes/$classId'
       preLoaderRoute: typeof AuthedClassesClassIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/assignments/$assignmentId': {
+      id: '/_authed/assignments/$assignmentId'
+      path: '/assignments/$assignmentId'
+      fullPath: '/assignments/$assignmentId'
+      preLoaderRoute: typeof AuthedAssignmentsAssignmentIdRouteImport
       parentRoute: typeof AuthedRoute
     }
   }
@@ -309,7 +348,9 @@ interface AuthedRouteChildren {
   AuthedNotesRoute: typeof AuthedNotesRoute
   AuthedTimerRoute: typeof AuthedTimerRoute
   AuthedTimetableRoute: typeof AuthedTimetableRoute
+  AuthedAssignmentsAssignmentIdRoute: typeof AuthedAssignmentsAssignmentIdRoute
   AuthedClassesClassIdRoute: typeof AuthedClassesClassIdRoute
+  AuthedAssignmentsIndexRoute: typeof AuthedAssignmentsIndexRoute
   AuthedClassesIndexRoute: typeof AuthedClassesIndexRoute
 }
 
@@ -321,7 +362,9 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedNotesRoute: AuthedNotesRoute,
   AuthedTimerRoute: AuthedTimerRoute,
   AuthedTimetableRoute: AuthedTimetableRoute,
+  AuthedAssignmentsAssignmentIdRoute: AuthedAssignmentsAssignmentIdRoute,
   AuthedClassesClassIdRoute: AuthedClassesClassIdRoute,
+  AuthedAssignmentsIndexRoute: AuthedAssignmentsIndexRoute,
   AuthedClassesIndexRoute: AuthedClassesIndexRoute,
 }
 
