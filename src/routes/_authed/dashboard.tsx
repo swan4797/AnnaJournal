@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState, useCallback } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useState, useCallback, useMemo } from 'react'
 import {
   TodaysTasks,
   MiniCalendar,
@@ -14,8 +14,30 @@ import {
   type StudyNote,
   type StudyQuestion,
 } from '~/components/dashboard'
+import { searchEvents, type Event } from '~/utils/events'
 
 export const Route = createFileRoute('/_authed/dashboard')({
+  loader: async () => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    // Fetch exams from today onwards (next 30 days for dashboard)
+    const endDate = new Date(today)
+    endDate.setDate(endDate.getDate() + 30)
+
+    const result = await searchEvents({
+      data: {
+        categories: ['exam'],
+        startDate: today.toISOString(),
+        endDate: endDate.toISOString(),
+        limit: 5,
+      },
+    })
+
+    return {
+      examEvents: result.events || [],
+    }
+  },
   component: DashboardPage,
 })
 
@@ -31,11 +53,22 @@ const MOCK_TASKS: Task[] = [
   { id: '5', title: 'Watch lecture recording', completed: false, category: 'task' },
 ]
 
-const MOCK_EXAMS: Exam[] = [
-  { id: '1', subject: 'Anatomy & Physiology', date: 'Mar 3, 2026', time: '9:00 AM', location: 'Room 201', daysUntil: 6 },
-  { id: '2', subject: 'Biochemistry', date: 'Mar 8, 2026', time: '2:00 PM', location: 'Hall B', daysUntil: 11 },
-  { id: '3', subject: 'Clinical Practice', date: 'Mar 15, 2026', time: '10:00 AM', daysUntil: 18 },
-]
+// Transform database Event to dashboard Exam interface
+function transformEventToExam(event: Event): Exam {
+  const examDate = new Date(event.start_time)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const daysUntil = Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  return {
+    id: event.id,
+    subject: event.title,
+    date: examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    time: event.all_day ? undefined : examDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+    location: event.description || undefined,
+    daysUntil,
+  }
+}
 
 const MOCK_CLASSES: ClassSchedule[] = [
   { id: '1', subject: 'Anatomy Lab', startTime: '8:00 AM', endTime: '10:00 AM', location: 'Lab 102', instructor: 'Dr. Smith' },
@@ -112,10 +145,22 @@ const MOCK_EVENT_DATES = [
 // =============================================
 
 function DashboardPage() {
+  const { examEvents } = Route.useLoaderData()
+  const navigate = useNavigate()
+
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS)
   const [homework, setHomework] = useState<Homework[]>(MOCK_HOMEWORK)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(MOCK_QUESTIONS)
+
+  // Transform exam events to dashboard format
+  const exams = useMemo(() => {
+    return examEvents.map(transformEventToExam)
+  }, [examEvents])
+
+  const handleExamClick = useCallback((examId: string) => {
+    navigate({ to: '/exams', search: { id: examId } })
+  }, [navigate])
 
   const handleToggleTask = useCallback((taskId: string) => {
     setTasks((prev) =>
@@ -153,7 +198,7 @@ function DashboardPage() {
   // Calculate stats
   const completedTasksToday = tasks.filter((t) => t.completed).length
   const totalTasksToday = tasks.length
-  const upcomingExamsCount = MOCK_EXAMS.length
+  const upcomingExamsCount = exams.length
   const pendingHomeworkCount = homework.filter((h) => !h.completed).length
 
   return (
@@ -224,7 +269,8 @@ function DashboardPage() {
         {/* Right Column */}
         <div className="dashboard__column dashboard__column--right">
           <ExamsComingUp
-            exams={MOCK_EXAMS}
+            exams={exams}
+            onExamClick={handleExamClick}
           />
           <HomeworkComingUp
             homework={homework}

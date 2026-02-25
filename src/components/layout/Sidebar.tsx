@@ -24,7 +24,7 @@ const mainMenuItems: NavItem[] = [
   {
     icon: <ExamsIcon />,
     label: 'Exams',
-    href: '/calendar',
+    href: '/exams',
   },
   {
     icon: <AssignmentIcon />,
@@ -71,6 +71,8 @@ export function Sidebar({ user }: SidebarProps) {
     if (label === 'Calendar' && currentPath.includes('/calendar')) return true
     // Dashboard is active when on dashboard
     if (label === 'Dashboard' && currentPath.includes('/dashboard')) return true
+    // Exams is active when on exams
+    if (label === 'Exams' && currentPath.includes('/exams')) return true
     return false
   }
 

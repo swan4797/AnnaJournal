@@ -23,6 +23,7 @@ export type Database = {
           description: string | null
           end_time: string | null
           id: string
+          linked_exam_id: string | null
           notes: string | null
           parent_event_id: string | null
           priority: string | null
@@ -40,6 +41,7 @@ export type Database = {
           description?: string | null
           end_time?: string | null
           id?: string
+          linked_exam_id?: string | null
           notes?: string | null
           parent_event_id?: string | null
           priority?: string | null
@@ -57,6 +59,7 @@ export type Database = {
           description?: string | null
           end_time?: string | null
           id?: string
+          linked_exam_id?: string | null
           notes?: string | null
           parent_event_id?: string | null
           priority?: string | null
@@ -67,6 +70,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "events_linked_exam_id_fkey"
+            columns: ["linked_exam_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "events_parent_event_id_fkey"
             columns: ["parent_event_id"]
@@ -110,6 +120,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "files_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_topics: {
+        Row: {
+          id: string
+          event_id: string
+          user_id: string
+          topic_name: string
+          description: string | null
+          completed: boolean
+          confidence: number
+          sort_order: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          user_id: string
+          topic_name: string
+          description?: string | null
+          completed?: boolean
+          confidence?: number
+          sort_order?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          user_id?: string
+          topic_name?: string
+          description?: string | null
+          completed?: boolean
+          confidence?: number
+          sort_order?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_topics_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
