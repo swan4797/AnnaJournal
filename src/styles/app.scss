@@ -9103,21 +9103,41 @@ $dash-red-light: #ffcdd2;
     color: $gray-500;
   }
 
+  &__count {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    margin: 0;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $gray-400;
+      margin-right: $spacing-2;
+      vertical-align: middle;
+    }
+  }
+
   &__add-btn {
     display: flex;
     align-items: center;
     gap: $spacing-2;
-    padding: $spacing-2 $spacing-4;
-    background: $primary-blue;
+    padding: $spacing-3 $spacing-5;
+    background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);
     color: $white;
     border: none;
-    border-radius: $radius-md;
-    font-weight: $font-weight-medium;
+    border-radius: 12px;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-sm;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
 
     &:hover {
-      background: #4670DC;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 107, 0, 0.4);
     }
   }
 
@@ -9127,8 +9147,16 @@ $dash-red-light: #ffcdd2;
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: $spacing-4;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-5;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__empty {
@@ -9173,6 +9201,7 @@ $dash-red-light: #ffcdd2;
 }
 
 // Class Card
+// Legacy Class Card (kept for compatibility)
 .class-card {
   display: flex;
   background: $white;
@@ -9254,6 +9283,180 @@ $dash-red-light: #ffcdd2;
 
     svg {
       color: $gray-400;
+    }
+  }
+}
+
+// New Class Card V2 - Course card style
+.class-card-v2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  padding: $spacing-5;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: $white;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: $spacing-3;
+  }
+
+  &__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+
+    svg {
+      opacity: 0.8;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: $font-weight-bold;
+    line-height: 1.2;
+    color: $white;
+    margin: 0;
+    max-width: 70%;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 75%;
+    margin: 0;
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: $spacing-1;
+  }
+
+  &__stats-divider {
+    opacity: 0.5;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+
+    svg {
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: $spacing-4;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__timing {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  &__bookmark {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $font-size-xs;
+    color: rgba(255, 255, 255, 0.7);
+
+    svg {
+      opacity: 0.8;
+    }
+  }
+
+  &__decoration {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 100px;
+    height: 100px;
+    opacity: 0.6;
+    pointer-events: none;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Color variants for different text contrast
+  &--amber,
+  &--rose {
+    color: #333;
+
+    .class-card-v2__category {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .class-card-v2__title {
+      color: #222;
+    }
+
+    .class-card-v2__description {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .class-card-v2__stats {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .class-card-v2__meta {
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .class-card-v2__timing {
+      color: rgba(0, 0, 0, 0.8);
+    }
+
+    .class-card-v2__bookmark {
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 }
