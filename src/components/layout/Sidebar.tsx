@@ -27,6 +27,11 @@ const mainMenuItems: NavItem[] = [
     href: '/timetable',
   },
   {
+    icon: <ClassesIcon />,
+    label: 'Classes',
+    href: '/classes',
+  },
+  {
     icon: <ExamsIcon />,
     label: 'Exams',
     href: '/exams',
@@ -96,6 +101,8 @@ export function Sidebar({ user }: SidebarProps) {
     if (label === 'Focus Timer' && currentPath.includes('/timer')) return true
     // Timetable is active when on timetable
     if (label === 'Timetable' && currentPath.includes('/timetable')) return true
+    // Classes is active when on classes
+    if (label === 'Classes' && currentPath.includes('/classes')) return true
     return false
   }
 
@@ -323,6 +330,18 @@ function TimetableIcon() {
       <line x1="9" y1="4" x2="9" y2="22" />
       <line x1="15" y1="4" x2="15" y2="22" />
       <line x1="3" y1="15" x2="21" y2="15" />
+    </svg>
+  )
+}
+
+function ClassesIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+      <line x1="8" y1="6" x2="16" y2="6" />
+      <line x1="8" y1="10" x2="16" y2="10" />
+      <line x1="8" y1="14" x2="12" y2="14" />
     </svg>
   )
 }
