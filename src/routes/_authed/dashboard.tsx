@@ -202,82 +202,70 @@ function DashboardPage() {
   const pendingHomeworkCount = homework.filter((h) => !h.completed).length
 
   return (
-    <div className="dashboard">
-      {/* Dashboard Header */}
-      <div className="dashboard__header">
-        <div className="dashboard__greeting">
-          <h1 className="dashboard__title">{getGreeting()}, Anna!</h1>
-          <p className="dashboard__subtitle">Here's your study overview for today</p>
-        </div>
-        <div className="dashboard__date">
-          <span className="dashboard__date-day">
-            {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
-          </span>
-          <span className="dashboard__date-full">
-            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </span>
-        </div>
+    <div className="dashboard-v2">
+      {/* Left Panel */}
+      <div className="dashboard-v2__left">
+        {/* My Classes Section - UNCHANGED per requirements */}
+        <ClassesToday
+          classes={MOCK_CLASSES}
+        />
+
+        {/* Today Tasks Section */}
+        <TodaysTasks
+          tasks={tasks}
+          onToggleComplete={handleToggleTask}
+        />
+
+        {/* AI Study Card */}
+        <AIStudyCard
+          recentNotes={MOCK_NOTES}
+          suggestedQuestions={studyQuestions}
+          onRefreshQuestions={handleRefreshQuestions}
+        />
       </div>
 
-      {/* Quick Stats */}
-      <div className="dashboard__stats">
-        <div className="dashboard__stat">
-          <span className="dashboard__stat-value">{completedTasksToday}/{totalTasksToday}</span>
-          <span className="dashboard__stat-label">Tasks Today</span>
-        </div>
-        <div className="dashboard__stat">
-          <span className="dashboard__stat-value">{upcomingExamsCount}</span>
-          <span className="dashboard__stat-label">Upcoming Exams</span>
-        </div>
-        <div className="dashboard__stat">
-          <span className="dashboard__stat-value">{pendingHomeworkCount}</span>
-          <span className="dashboard__stat-label">Pending Homework</span>
-        </div>
-        <div className="dashboard__stat">
-          <span className="dashboard__stat-value">{MOCK_CLASSES.length}</span>
-          <span className="dashboard__stat-label">Classes Today</span>
-        </div>
-      </div>
-
-      {/* Dashboard Grid */}
-      <div className="dashboard__grid">
-        {/* Left Column */}
-        <div className="dashboard__column dashboard__column--left">
-          <TodaysTasks
-            tasks={tasks}
-            onToggleComplete={handleToggleTask}
-          />
-          <ClassesToday
-            classes={MOCK_CLASSES}
-          />
+      {/* Right Panel */}
+      <div className="dashboard-v2__right">
+        {/* Search Header */}
+        <div className="dashboard-v2__header">
+          <div className="dashboard-v2__search">
+            <SearchIcon />
+            <input type="text" placeholder="Search for anythings .." className="dashboard-v2__search-input" />
+          </div>
+          <div className="dashboard-v2__avatar">
+            <img src="https://i.pravatar.cc/40?img=5" alt="Profile" />
+          </div>
         </div>
 
-        {/* Center Column */}
-        <div className="dashboard__column dashboard__column--center">
-          <MiniCalendar
-            selectedDate={selectedDate}
-            onDateSelect={handleDateSelect}
-            eventDates={MOCK_EVENT_DATES}
-          />
-          <AIStudyCard
-            recentNotes={MOCK_NOTES}
-            suggestedQuestions={studyQuestions}
-            onRefreshQuestions={handleRefreshQuestions}
-          />
-        </div>
+        {/* Calendar Widget */}
+        <MiniCalendar
+          selectedDate={selectedDate}
+          onDateSelect={handleDateSelect}
+          eventDates={MOCK_EVENT_DATES}
+        />
 
-        {/* Right Column */}
-        <div className="dashboard__column dashboard__column--right">
-          <ExamsComingUp
-            exams={exams}
-            onExamClick={handleExamClick}
-          />
-          <HomeworkComingUp
-            homework={homework}
-            onToggleComplete={handleToggleHomework}
-          />
-        </div>
+        {/* Upcoming Section - Exams */}
+        <ExamsComingUp
+          exams={exams}
+          onExamClick={handleExamClick}
+        />
+
+        {/* Homework Coming Up */}
+        <HomeworkComingUp
+          homework={homework}
+          onToggleComplete={handleToggleHomework}
+        />
       </div>
     </div>
+  )
+}
+
+// Search Icon Component
+function SearchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
   )
 }

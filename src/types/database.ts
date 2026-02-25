@@ -26,6 +26,7 @@ export type Database = {
           linked_exam_id: string | null
           notes: string | null
           parent_event_id: string | null
+          parent_class_id: string | null
           priority: string | null
           recurring_pattern: Json | null
           start_time: string
@@ -44,6 +45,7 @@ export type Database = {
           linked_exam_id?: string | null
           notes?: string | null
           parent_event_id?: string | null
+          parent_class_id?: string | null
           priority?: string | null
           recurring_pattern?: Json | null
           start_time: string
@@ -62,6 +64,7 @@ export type Database = {
           linked_exam_id?: string | null
           notes?: string | null
           parent_event_id?: string | null
+          parent_class_id?: string | null
           priority?: string | null
           recurring_pattern?: Json | null
           start_time?: string
@@ -82,6 +85,13 @@ export type Database = {
             columns: ["parent_event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_parent_class_id_fkey"
+            columns: ["parent_class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
             referencedColumns: ["id"]
           },
         ]
@@ -170,6 +180,204 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notes: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          content: string | null
+          subject: string | null
+          tags: string[] | null
+          color: string | null
+          pinned: boolean
+          linked_exam_id: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          title: string
+          content?: string | null
+          subject?: string | null
+          tags?: string[] | null
+          color?: string | null
+          pinned?: boolean
+          linked_exam_id?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          content?: string | null
+          subject?: string | null
+          tags?: string[] | null
+          color?: string | null
+          pinned?: boolean
+          linked_exam_id?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_linked_exam_id_fkey"
+            columns: ["linked_exam_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_files: {
+        Row: {
+          id: string
+          note_id: string
+          file_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          note_id: string
+          file_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          note_id?: string
+          file_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_files_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_files_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          module_code: string | null
+          module_name: string | null
+          instructor: string | null
+          location: string | null
+          days_of_week: number[]
+          start_time: string
+          end_time: string
+          semester_start: string
+          semester_end: string
+          color: string | null
+          notes: string | null
+          linked_exam_id: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          module_code?: string | null
+          module_name?: string | null
+          instructor?: string | null
+          location?: string | null
+          days_of_week: number[]
+          start_time: string
+          end_time: string
+          semester_start: string
+          semester_end: string
+          color?: string | null
+          notes?: string | null
+          linked_exam_id?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          module_code?: string | null
+          module_name?: string | null
+          instructor?: string | null
+          location?: string | null
+          days_of_week?: number[]
+          start_time?: string
+          end_time?: string
+          semester_start?: string
+          semester_end?: string
+          color?: string | null
+          notes?: string | null
+          linked_exam_id?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_linked_exam_id_fkey"
+            columns: ["linked_exam_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_exceptions: {
+        Row: {
+          id: string
+          class_id: string
+          exception_date: string
+          exception_type: 'cancelled' | 'rescheduled' | 'moved'
+          new_start_time: string | null
+          new_end_time: string | null
+          new_location: string | null
+          reason: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          class_id: string
+          exception_date: string
+          exception_type: 'cancelled' | 'rescheduled' | 'moved'
+          new_start_time?: string | null
+          new_end_time?: string | null
+          new_location?: string | null
+          reason?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          class_id?: string
+          exception_date?: string
+          exception_type?: 'cancelled' | 'rescheduled' | 'moved'
+          new_start_time?: string | null
+          new_end_time?: string | null
+          new_location?: string | null
+          reason?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_exceptions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
             referencedColumns: ["id"]
           },
         ]

@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { Modal } from '~/components/ui'
 import { createLinkedStudySession } from '~/utils/studySessions'
 import type { Event } from '~/utils/events'
 
@@ -20,6 +21,14 @@ export function StudySessionModal({
   const [title, setTitle] = useState(`Study: ${examTitle}`)
   const [duration, setDuration] = useState('60')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Reset form when modal opens with new exam
+  useEffect(() => {
+    if (isOpen) {
+      setTitle(`Study: ${examTitle}`)
+      setDuration('60')
+    }
+  }, [isOpen, examTitle])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -46,97 +55,72 @@ export function StudySessionModal({
       if (result.session) {
         onSessionCreated(result.session)
         onClose()
-        // Reset form
-        setTitle(`Study: ${examTitle}`)
-        setDuration('60')
       }
     },
-    [examId, examTitle, title, duration, isSubmitting, onClose, onSessionCreated]
+    [examId, title, duration, isSubmitting, onClose, onSessionCreated]
   )
 
-  if (!isOpen) return null
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal study-session-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal__header">
-          <h3 className="modal__title">Start Study Session</h3>
-          <button className="modal__close" onClick={onClose}>
-            <CloseIcon />
-          </button>
+    <Modal isOpen={isOpen} onClose={onClose} title="Start Study Session" size="sm">
+      <form onSubmit={handleSubmit} className="study-session-form">
+        <div className="study-session-form__group">
+          <label htmlFor="session-title" className="study-session-form__label">
+            Session Title
+          </label>
+          <input
+            id="session-title"
+            type="text"
+            className="study-session-form__input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="What are you studying?"
+            required
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="modal__content">
-          <div className="form-group">
-            <label htmlFor="session-title" className="form-label">
-              Session Title
-            </label>
-            <input
-              id="session-title"
-              type="text"
-              className="form-input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="What are you studying?"
-              required
-            />
+        <div className="study-session-form__group">
+          <label className="study-session-form__label">Planned Duration</label>
+          <div className="study-session-form__duration-options">
+            {['30', '45', '60', '90', '120'].map((mins) => (
+              <button
+                key={mins}
+                type="button"
+                className={`study-session-form__duration-btn ${
+                  duration === mins ? 'study-session-form__duration-btn--active' : ''
+                }`}
+                onClick={() => setDuration(mins)}
+              >
+                {parseInt(mins, 10) >= 60
+                  ? `${Math.floor(parseInt(mins, 10) / 60)}h${
+                      parseInt(mins, 10) % 60 > 0 ? ` ${parseInt(mins, 10) % 60}m` : ''
+                    }`
+                  : `${mins}m`}
+              </button>
+            ))}
           </div>
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="session-duration" className="form-label">
-              Planned Duration
-            </label>
-            <div className="study-session-modal__duration-options">
-              {['30', '45', '60', '90', '120'].map((mins) => (
-                <button
-                  key={mins}
-                  type="button"
-                  className={`study-session-modal__duration-btn ${
-                    duration === mins ? 'study-session-modal__duration-btn--active' : ''
-                  }`}
-                  onClick={() => setDuration(mins)}
-                >
-                  {parseInt(mins, 10) >= 60
-                    ? `${Math.floor(parseInt(mins, 10) / 60)}h${
-                        parseInt(mins, 10) % 60 > 0 ? ` ${parseInt(mins, 10) % 60}m` : ''
-                      }`
-                    : `${mins}m`}
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="study-session-form__info">
+          <InfoIcon />
+          <span>
+            This will create a study session starting now, linked to "{examTitle}".
+          </span>
+        </div>
 
-          <div className="study-session-modal__info">
-            <InfoIcon />
-            <span>
-              This will create a study session starting now, linked to "{examTitle}".
-            </span>
-          </div>
-
-          <div className="modal__actions">
-            <button type="button" className="btn btn--secondary" onClick={onClose}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn--primary"
-              disabled={!title.trim() || isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Start Session'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
-
-function CloseIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
+        <div className="study-session-form__actions">
+          <button type="button" className="study-session-form__btn study-session-form__btn--secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="study-session-form__btn study-session-form__btn--primary"
+            disabled={!title.trim() || isSubmitting}
+          >
+            {isSubmitting ? 'Creating...' : 'Start Session'}
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }
 

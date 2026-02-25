@@ -22,14 +22,29 @@ const mainMenuItems: NavItem[] = [
     href: '/calendar',
   },
   {
+    icon: <TimetableIcon />,
+    label: 'Timetable',
+    href: '/timetable',
+  },
+  {
     icon: <ExamsIcon />,
     label: 'Exams',
     href: '/exams',
   },
   {
-    icon: <AssignmentIcon />,
-    label: 'Assignment Management',
-    href: '/calendar',
+    icon: <NotesIcon />,
+    label: 'Notes',
+    href: '/notes',
+  },
+  {
+    icon: <TimerIcon />,
+    label: 'Focus Timer',
+    href: '/timer',
+  },
+  {
+    icon: <AnalyticsIcon />,
+    label: 'Analytics',
+    href: '/analytics',
   },
 ]
 
@@ -73,6 +88,14 @@ export function Sidebar({ user }: SidebarProps) {
     if (label === 'Dashboard' && currentPath.includes('/dashboard')) return true
     // Exams is active when on exams
     if (label === 'Exams' && currentPath.includes('/exams')) return true
+    // Notes is active when on notes
+    if (label === 'Notes' && currentPath.includes('/notes')) return true
+    // Analytics is active when on analytics
+    if (label === 'Analytics' && currentPath.includes('/analytics')) return true
+    // Timer is active when on timer
+    if (label === 'Focus Timer' && currentPath.includes('/timer')) return true
+    // Timetable is active when on timetable
+    if (label === 'Timetable' && currentPath.includes('/timetable')) return true
     return false
   }
 
@@ -219,6 +242,18 @@ function ExamsIcon() {
   )
 }
 
+function NotesIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <polyline points="14,2 14,8 20,8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <line x1="10" y1="9" x2="8" y2="9" />
+    </svg>
+  )
+}
+
 function AssignmentIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -264,6 +299,30 @@ function AnalyticsIcon() {
       <line x1="18" y1="20" x2="18" y2="10" />
       <line x1="12" y1="20" x2="12" y2="4" />
       <line x1="6" y1="20" x2="6" y2="14" />
+    </svg>
+  )
+}
+
+function TimerIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2 2" />
+      <path d="M5 3L2 6" />
+      <path d="M22 6l-3-3" />
+      <path d="M12 2v2" />
+    </svg>
+  )
+}
+
+function TimetableIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+      <line x1="9" y1="4" x2="9" y2="22" />
+      <line x1="15" y1="4" x2="15" y2="22" />
+      <line x1="3" y1="15" x2="21" y2="15" />
     </svg>
   )
 }

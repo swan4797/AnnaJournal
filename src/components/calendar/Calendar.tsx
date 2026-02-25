@@ -16,6 +16,7 @@ import type { Event } from '~/utils/events'
 
 interface CalendarProps {
   events: Event[]
+  exams?: Event[]
   selectedDate: Date | null
   currentView: CalendarView
   onViewChange: (view: CalendarView) => void
@@ -27,6 +28,7 @@ interface CalendarProps {
 
 export function Calendar({
   events,
+  exams = [],
   selectedDate,
   currentView,
   onViewChange,
@@ -188,6 +190,7 @@ export function Calendar({
         {currentView === 'month' && (
           <MonthView
             events={events}
+            exams={exams}
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
             onEventClick={onEventClick}
@@ -200,6 +203,7 @@ export function Calendar({
         {currentView === 'week' && (
           <WeekView
             events={events}
+            exams={exams}
             currentDate={currentDate}
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
@@ -211,6 +215,7 @@ export function Calendar({
         {currentView === 'day' && (
           <DayView
             events={events}
+            exams={exams}
             currentDate={currentDate}
             onEventClick={onEventClick}
             onTimeSlotClick={handleTimeSlotClick}

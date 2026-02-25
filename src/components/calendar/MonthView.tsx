@@ -7,6 +7,7 @@ const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 interface MonthViewProps {
   events: Event[]
+  exams?: Event[]
   selectedDate: Date | null
   onDateSelect: (date: Date) => void
   onEventClick: (event: Event) => void
@@ -17,6 +18,7 @@ interface MonthViewProps {
 
 export function MonthView({
   events,
+  exams = [],
   selectedDate,
   onDateSelect,
   onEventClick,
@@ -27,6 +29,27 @@ export function MonthView({
     () => getMonthDays(currentYear, currentMonth),
     [currentYear, currentMonth]
   )
+
+  // Get exams by date for showing badges
+  const examsByDate = useMemo(() => {
+    const map = new Map<string, Event[]>()
+    exams.forEach((exam) => {
+      const dateKey = formatDateKey(new Date(exam.start_time))
+      const existing = map.get(dateKey) || []
+      map.set(dateKey, [...existing, exam])
+    })
+    return map
+  }, [exams])
+
+  // Calculate days until exam
+  const getDaysUntilExam = (examDate: Date) => {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const examStart = new Date(examDate)
+    examStart.setHours(0, 0, 0, 0)
+    const diffTime = examStart.getTime() - todayStart.getTime()
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  }
 
   // Group events by date for quick lookup
   const eventsByDate = useMemo(() => {
@@ -55,13 +78,16 @@ export function MonthView({
         {days.map((day, index) => {
           const dateKey = formatDateKey(day.date)
           const dayEvents = eventsByDate.get(dateKey) || []
+          const dayExams = examsByDate.get(dateKey) || []
           const isSelected =
             selectedDate && formatDateKey(selectedDate) === dateKey
+          const hasExam = dayExams.length > 0
 
           const cellClasses = [
             'month-view__cell',
             !day.isCurrentMonth && 'month-view__cell--other-month',
             isSelected && 'month-view__cell--selected',
+            hasExam && 'month-view__cell--has-exam',
           ].filter(Boolean).join(' ')
 
           return (
@@ -75,6 +101,12 @@ export function MonthView({
                 <span className={`month-view__date-number ${day.isToday ? 'month-view__date-number--today' : ''}`}>
                   {day.date.getDate()}
                 </span>
+                {/* Exam badge */}
+                {hasExam && (
+                  <span className="month-view__exam-badge" title={dayExams[0].title}>
+                    {getDaysUntilExam(new Date(dayExams[0].start_time)) === 0 ? '!' : getDaysUntilExam(new Date(dayExams[0].start_time)) + 'd'}
+                  </span>
+                )}
               </div>
 
               {/* Events */}

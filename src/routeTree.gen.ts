@@ -14,9 +14,13 @@ import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthedTimetableRouteImport } from './routes/_authed/timetable'
+import { Route as AuthedTimerRouteImport } from './routes/_authed/timer'
+import { Route as AuthedNotesRouteImport } from './routes/_authed/notes'
 import { Route as AuthedExamsRouteImport } from './routes/_authed/exams'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedCalendarRouteImport } from './routes/_authed/calendar'
+import { Route as AuthedAnalyticsRouteImport } from './routes/_authed/analytics'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -42,6 +46,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedTimetableRoute = AuthedTimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedTimerRoute = AuthedTimerRouteImport.update({
+  id: '/timer',
+  path: '/timer',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedNotesRoute = AuthedNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedExamsRoute = AuthedExamsRouteImport.update({
   id: '/exams',
   path: '/exams',
@@ -57,24 +76,37 @@ const AuthedCalendarRoute = AuthedCalendarRouteImport.update({
   path: '/calendar',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedAnalyticsRoute = AuthedAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
+  '/analytics': typeof AuthedAnalyticsRoute
   '/calendar': typeof AuthedCalendarRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/exams': typeof AuthedExamsRoute
+  '/notes': typeof AuthedNotesRoute
+  '/timer': typeof AuthedTimerRoute
+  '/timetable': typeof AuthedTimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
+  '/analytics': typeof AuthedAnalyticsRoute
   '/calendar': typeof AuthedCalendarRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/exams': typeof AuthedExamsRoute
+  '/notes': typeof AuthedNotesRoute
+  '/timer': typeof AuthedTimerRoute
+  '/timetable': typeof AuthedTimetableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -83,9 +115,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/signup': typeof SignupRoute
+  '/_authed/analytics': typeof AuthedAnalyticsRoute
   '/_authed/calendar': typeof AuthedCalendarRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/exams': typeof AuthedExamsRoute
+  '/_authed/notes': typeof AuthedNotesRoute
+  '/_authed/timer': typeof AuthedTimerRoute
+  '/_authed/timetable': typeof AuthedTimetableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -94,18 +130,26 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
+    | '/analytics'
     | '/calendar'
     | '/dashboard'
     | '/exams'
+    | '/notes'
+    | '/timer'
+    | '/timetable'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/logout'
     | '/signup'
+    | '/analytics'
     | '/calendar'
     | '/dashboard'
     | '/exams'
+    | '/notes'
+    | '/timer'
+    | '/timetable'
   id:
     | '__root__'
     | '/'
@@ -113,9 +157,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/signup'
+    | '/_authed/analytics'
     | '/_authed/calendar'
     | '/_authed/dashboard'
     | '/_authed/exams'
+    | '/_authed/notes'
+    | '/_authed/timer'
+    | '/_authed/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,6 +211,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/timetable': {
+      id: '/_authed/timetable'
+      path: '/timetable'
+      fullPath: '/timetable'
+      preLoaderRoute: typeof AuthedTimetableRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/timer': {
+      id: '/_authed/timer'
+      path: '/timer'
+      fullPath: '/timer'
+      preLoaderRoute: typeof AuthedTimerRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/notes': {
+      id: '/_authed/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof AuthedNotesRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/exams': {
       id: '/_authed/exams'
       path: '/exams'
@@ -184,19 +253,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedCalendarRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/analytics': {
+      id: '/_authed/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AuthedAnalyticsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
 interface AuthedRouteChildren {
+  AuthedAnalyticsRoute: typeof AuthedAnalyticsRoute
   AuthedCalendarRoute: typeof AuthedCalendarRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedExamsRoute: typeof AuthedExamsRoute
+  AuthedNotesRoute: typeof AuthedNotesRoute
+  AuthedTimerRoute: typeof AuthedTimerRoute
+  AuthedTimetableRoute: typeof AuthedTimetableRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedAnalyticsRoute: AuthedAnalyticsRoute,
   AuthedCalendarRoute: AuthedCalendarRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedExamsRoute: AuthedExamsRoute,
+  AuthedNotesRoute: AuthedNotesRoute,
+  AuthedTimerRoute: AuthedTimerRoute,
+  AuthedTimetableRoute: AuthedTimetableRoute,
 }
 
 const AuthedRouteWithChildren =

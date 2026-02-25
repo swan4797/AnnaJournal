@@ -11,6 +11,7 @@ import type { Event } from '~/utils/events'
 
 interface DayViewProps {
   events: Event[]
+  exams?: Event[]
   currentDate: Date
   onEventClick: (event: Event) => void
   onTimeSlotClick: (date: Date, hour: number) => void
@@ -20,6 +21,7 @@ const HOUR_HEIGHT = 64 // pixels per hour
 
 export function DayView({
   events,
+  exams = [],
   currentDate,
   onEventClick,
   onTimeSlotClick,
@@ -30,6 +32,34 @@ export function DayView({
   const isToday = isSameDay(currentDate, today)
 
   const dateKey = formatDateKey(currentDate)
+
+  // Create exam lookup map by ID for color coding linked sessions
+  const examById = useMemo(() => {
+    const map = new Map<string, Event>()
+    exams.forEach(exam => map.set(exam.id, exam))
+    return map
+  }, [exams])
+
+  // Get exam color index for consistent coloring
+  const getExamColorIndex = (examId: string) => {
+    const index = exams.findIndex(e => e.id === examId)
+    return index >= 0 ? index % 5 : 0
+  }
+
+  // Get exams for current day
+  const dayExams = useMemo(() => {
+    return exams.filter(exam => formatDateKey(new Date(exam.start_time)) === dateKey)
+  }, [exams, dateKey])
+
+  // Calculate days until exam
+  const getDaysUntilExam = (examDate: Date) => {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const examStart = new Date(examDate)
+    examStart.setHours(0, 0, 0, 0)
+    const diffTime = examStart.getTime() - todayStart.getTime()
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  }
 
   // Filter events for current day
   const dayEvents = useMemo(() => {
@@ -67,6 +97,24 @@ export function DayView({
       <div className="day-view__header">
         <h2 className="day-view__title">{formattedDate}</h2>
         {isToday && <span className="day-view__today-badge">Today</span>}
+        {/* Exam badges for this day */}
+        {dayExams.length > 0 && (
+          <div className="day-view__exam-badges">
+            {dayExams.map((exam, i) => {
+              const daysUntil = getDaysUntilExam(new Date(exam.start_time))
+              return (
+                <button
+                  key={exam.id}
+                  className={`day-view__exam-badge day-view__exam-badge--${i % 5}`}
+                  onClick={() => onEventClick(exam)}
+                  title={exam.title}
+                >
+                  {daysUntil === 0 ? 'Exam Today!' : `${daysUntil}d to exam`}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* All-day events */}
@@ -137,6 +185,8 @@ export function DayView({
             {timedEvents.map((event) => {
               const category = getCategoryConfig(event.category)
               const { top, height } = getEventPosition(event.start_time, event.end_time)
+              const linkedExam = event.linked_exam_id ? examById.get(event.linked_exam_id) : null
+              const examColorClass = linkedExam ? `day-view__event--exam-linked day-view__event--exam-${getExamColorIndex(event.linked_exam_id!)}` : ''
 
               return (
                 <button
@@ -145,7 +195,7 @@ export function DayView({
                     e.stopPropagation()
                     onEventClick(event)
                   }}
-                  className={`day-view__event event-card--${event.category} ${event.completed ? 'event-card--completed' : ''}`}
+                  className={`day-view__event event-card--${event.category} ${event.completed ? 'event-card--completed' : ''} ${examColorClass}`}
                   style={{
                     top: `${top}%`,
                     height: `${height}%`,
@@ -154,7 +204,13 @@ export function DayView({
                 >
                   <span className="day-view__event-icon">{category.icon}</span>
                   <div className="day-view__event-content">
-                    <div className="day-view__event-title">{event.title}</div>
+                    <div className="day-view__event-title">
+                      {linkedExam && <span className="day-view__event-exam-dot" />}
+                      {event.title}
+                    </div>
+                    {linkedExam && (
+                      <div className="day-view__event-exam-link">For: {linkedExam.title}</div>
+                    )}
                     {event.description && (
                       <div className="day-view__event-desc">{event.description}</div>
                     )}

@@ -5,8 +5,9 @@ import { Calendar, type CalendarView } from '~/components/calendar'
 import { CreateEventModal, EditEventModal, QuickCapture, EventBlock, SearchBar } from '~/components/events'
 import { FileListCompact } from '~/components/events/FileList'
 import { RichTextViewer } from '~/components/ui'
-import { fetchEvents, deleteEvent, toggleEventComplete, type Event } from '~/utils/events'
+import { fetchEvents, deleteEvent, toggleEventComplete, searchEvents, type Event } from '~/utils/events'
 import { fetchEventFiles, type FileRecord } from '~/utils/files'
+import { linkStudySession, unlinkStudySession } from '~/utils/studySessions'
 import { getMonthRange, formatDateKey, formatTime } from '~/utils/calendar'
 import { getCategoryConfig, CATEGORY_LIST, type EventCategory } from '~/utils/categories'
 
@@ -15,8 +16,21 @@ export const Route = createFileRoute('/_authed/calendar')({
     const today = new Date()
     const { start, end } = getMonthRange(today.getFullYear(), today.getMonth())
     const result = await fetchEvents({ data: { start, end } })
+
+    // Fetch upcoming exams for the next 90 days
+    const examEndDate = new Date(today)
+    examEndDate.setDate(examEndDate.getDate() + 90)
+    const examsResult = await searchEvents({
+      data: {
+        categories: ['exam'],
+        startDate: today.toISOString(),
+        endDate: examEndDate.toISOString(),
+      },
+    })
+
     return {
       events: result.events,
+      upcomingExams: examsResult.events || [],
       initialYear: today.getFullYear(),
       initialMonth: today.getMonth(),
     }
@@ -25,8 +39,9 @@ export const Route = createFileRoute('/_authed/calendar')({
 })
 
 function CalendarPage() {
-  const { events: initialEvents } = Route.useLoaderData()
+  const { events: initialEvents, upcomingExams } = Route.useLoaderData()
   const [events, setEvents] = useState<Event[]>(initialEvents)
+  const [exams, setExams] = useState<Event[]>(upcomingExams)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [currentView, setCurrentView] = useState<CalendarView>('week')
@@ -231,6 +246,7 @@ function CalendarPage() {
               selectedDate={selectedDate}
               onDateSelect={handleDateSelect}
               events={filteredEvents}
+              exams={exams}
             />
           </div>
 
@@ -280,6 +296,7 @@ function CalendarPage() {
           <div className="physio-schedule__calendar-container">
             <Calendar
               events={filteredEvents}
+              exams={exams}
               selectedDate={selectedDate}
               currentView={currentView}
               onViewChange={setCurrentView}
@@ -482,9 +499,10 @@ interface MiniCalendarProps {
   selectedDate: Date | null
   onDateSelect: (date: Date) => void
   events: Event[]
+  exams?: Event[]
 }
 
-function MiniCalendar({ selectedDate, onDateSelect, events }: MiniCalendarProps) {
+function MiniCalendar({ selectedDate, onDateSelect, events, exams = [] }: MiniCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(() => {
     const d = selectedDate || new Date()
     return new Date(d.getFullYear(), d.getMonth(), 1)
@@ -527,6 +545,11 @@ function MiniCalendar({ selectedDate, onDateSelect, events }: MiniCalendarProps)
     return events.some(e => formatDateKey(new Date(e.start_time)) === dateKey)
   }
 
+  const hasExam = (day: number) => {
+    const dateKey = formatDateKey(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))
+    return exams.some(e => formatDateKey(new Date(e.start_time)) === dateKey)
+  }
+
   const handleDayClick = (day: number) => {
     onDateSelect(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))
   }
@@ -536,16 +559,19 @@ function MiniCalendar({ selectedDate, onDateSelect, events }: MiniCalendarProps)
     days.push(<div key={`empty-${i}`} className="mini-cal__day mini-cal__day--empty" />)
   }
   for (let day = 1; day <= daysInMonth; day++) {
+    const dayHasExam = hasExam(day)
     const classes = [
       'mini-cal__day',
       isToday(day) && 'mini-cal__day--today',
       isSelected(day) && 'mini-cal__day--selected',
       hasEvents(day) && 'mini-cal__day--has-events',
+      dayHasExam && 'mini-cal__day--has-exam',
     ].filter(Boolean).join(' ')
 
     days.push(
       <button key={day} className={classes} onClick={() => handleDayClick(day)}>
         {day}
+        {dayHasExam && <span className="mini-cal__exam-dot" />}
       </button>
     )
   }

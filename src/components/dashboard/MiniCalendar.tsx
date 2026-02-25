@@ -60,14 +60,14 @@ export function MiniCalendar({ selectedDate, onDateSelect, eventDates = [] }: Mi
 
   const days = []
   for (let i = 0; i < startDay; i++) {
-    days.push(<div key={`empty-${i}`} className="mini-cal__day mini-cal__day--empty" />)
+    days.push(<div key={`empty-${i}`} className="dash-calendar__day dash-calendar__day--empty" />)
   }
   for (let day = 1; day <= daysInMonth; day++) {
     const classes = [
-      'mini-cal__day',
-      isToday(day) && 'mini-cal__day--today',
-      isSelected(day) && 'mini-cal__day--selected',
-      hasEvents(day) && 'mini-cal__day--has-events',
+      'dash-calendar__day',
+      isToday(day) && 'dash-calendar__day--today',
+      isSelected(day) && 'dash-calendar__day--selected',
+      hasEvents(day) && 'dash-calendar__day--has-events',
     ].filter(Boolean).join(' ')
 
     days.push(
@@ -78,27 +78,25 @@ export function MiniCalendar({ selectedDate, onDateSelect, eventDates = [] }: Mi
   }
 
   return (
-    <div className="dashboard-card dashboard-card--mini-calendar">
-      <div className="mini-cal">
-        <div className="mini-cal__header">
-          <h3 className="mini-cal__month">{monthName}</h3>
-          <div className="mini-cal__nav">
-            <button onClick={prevMonth} className="mini-cal__nav-btn">
-              <ChevronLeftIcon />
-            </button>
-            <button onClick={nextMonth} className="mini-cal__nav-btn">
-              <ChevronRightIcon />
-            </button>
-          </div>
+    <div className="dash-calendar">
+      <div className="dash-calendar__header">
+        <h3 className="dash-calendar__month">{monthName}</h3>
+        <div className="dash-calendar__nav">
+          <button onClick={prevMonth} className="dash-calendar__nav-btn">
+            <ChevronLeftIcon />
+          </button>
+          <button onClick={nextMonth} className="dash-calendar__nav-btn">
+            <ChevronRightIcon />
+          </button>
         </div>
-        <div className="mini-cal__weekdays">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-            <div key={day} className="mini-cal__weekday">{day}</div>
-          ))}
-        </div>
-        <div className="mini-cal__grid">
-          {days}
-        </div>
+      </div>
+      <div className="dash-calendar__weekdays">
+        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+          <div key={day} className="dash-calendar__weekday">{day}</div>
+        ))}
+      </div>
+      <div className="dash-calendar__grid">
+        {days}
       </div>
     </div>
   )

@@ -781,6 +781,41 @@ img {
       display: none;
     }
   }
+
+  // Exam badge in date header
+  &__exam-badge {
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    padding: 1px 4px;
+    margin-left: $spacing-1;
+    border-radius: $radius-sm;
+    background-color: $error;
+    color: $white;
+
+    @include mobile {
+      font-size: 8px;
+      padding: 1px 2px;
+    }
+  }
+
+  // Cell with exam indicator
+  &__cell--has-exam {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-full;
+      background-color: $error;
+
+      @include mobile {
+        width: 6px;
+        height: 6px;
+      }
+    }
+  }
 }
 
 // Week View
@@ -989,11 +1024,59 @@ img {
   &__event-title {
     font-weight: $font-weight-medium;
     @include text-truncate;
+    @include flex(row, flex-start, center, $spacing-1);
 
     @include mobile {
       font-size: 10px;
     }
   }
+
+  // Exam badges in day header
+  &__exam-badges {
+    @include flex(row, center, center, $spacing-1);
+    margin-top: $spacing-1;
+  }
+
+  &__exam-badge {
+    @include button-reset;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    padding: 2px $spacing-1;
+    border-radius: $radius-sm;
+    color: $white;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--0 { background-color: $error; }
+    &--1 { background-color: $primary-blue; }
+    &--2 { background-color: $success; }
+    &--3 { background-color: #8B5CF6; } // purple
+    &--4 { background-color: #F59E0B; } // amber
+  }
+
+  // Linked exam indicator dot
+  &__event-exam-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+    flex-shrink: 0;
+  }
+
+  // Exam-linked event color overrides
+  &__event--exam-linked {
+    border-left: 3px solid;
+  }
+
+  &__event--exam-0 { border-color: $error; }
+  &__event--exam-1 { border-color: $primary-blue; }
+  &__event--exam-2 { border-color: $success; }
+  &__event--exam-3 { border-color: #8B5CF6; }
+  &__event--exam-4 { border-color: #F59E0B; }
 }
 
 // Day View
@@ -1196,6 +1279,60 @@ img {
       display: none;
     }
   }
+
+  // Exam badges in header
+  &__exam-badges {
+    @include flex(row, flex-start, center, $spacing-2);
+    margin-top: $spacing-2;
+  }
+
+  &__exam-badge {
+    @include button-reset;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+    color: $white;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--0 { background-color: $error; }
+    &--1 { background-color: $primary-blue; }
+    &--2 { background-color: $success; }
+    &--3 { background-color: #8B5CF6; }
+    &--4 { background-color: #F59E0B; }
+  }
+
+  // Linked exam indicator
+  &__event-exam-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+    flex-shrink: 0;
+    margin-right: $spacing-1;
+  }
+
+  &__event-exam-link {
+    font-size: $font-size-xs;
+    opacity: 0.75;
+    @include text-truncate;
+  }
+
+  // Exam-linked event color overrides
+  &__event--exam-linked {
+    border-left-width: 5px;
+  }
+
+  &__event--exam-0 { border-color: $error !important; }
+  &__event--exam-1 { border-color: $primary-blue !important; }
+  &__event--exam-2 { border-color: $success !important; }
+  &__event--exam-3 { border-color: #8B5CF6 !important; }
+  &__event--exam-4 { border-color: #F59E0B !important; }
 }
 
 // Week Calendar Grid (Legacy - can be removed if not used)
@@ -4062,6 +4199,7 @@ $ps-event-purple: #9B8FB9;
     color: $gray-600;
     border-radius: $radius-md;
     transition: all $transition-fast;
+    position: relative;
 
     &:hover {
       background-color: $ps-bg;
@@ -4092,6 +4230,22 @@ $ps-event-purple: #9B8FB9;
       border-radius: $radius-full;
       background-color: $ps-primary;
     }
+
+    &--has-exam {
+      border: 2px solid $error;
+      position: relative;
+    }
+  }
+
+  // Exam indicator dot
+  &__exam-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: $error;
   }
 }
 
@@ -5096,6 +5250,514 @@ $ps-event-purple: #9B8FB9;
 }
 
 // =============================================
+// Dashboard V2 - New Design Layout
+// =============================================
+
+// Dashboard V2 Primary Color
+$dash-primary: #D4E157;
+$dash-primary-dark: #C0CA33;
+$dash-primary-light: #F0F4C3;
+$dash-orange: #ff7043;
+$dash-orange-light: #ffccbc;
+$dash-blue: #42a5f5;
+$dash-blue-light: #bbdefb;
+$dash-red: #ef5350;
+$dash-red-light: #ffcdd2;
+
+.dashboard-v2 {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: $spacing-8;
+  padding: $spacing-6;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+
+  @media (max-width: $breakpoint-xl) {
+    grid-template-columns: 1fr 360px;
+    gap: $spacing-6;
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    padding: $spacing-4;
+    gap: $spacing-5;
+  }
+
+  &__left {
+    @include flex(column, flex-start, stretch, $spacing-8);
+
+    @include mobile {
+      gap: $spacing-6;
+    }
+  }
+
+  &__right {
+    @include flex(column, flex-start, stretch, $spacing-6);
+
+    @include mobile {
+      gap: $spacing-5;
+    }
+  }
+
+  &__header {
+    @include flex(row, space-between, center, $spacing-4);
+  }
+
+  &__search {
+    @include flex(row, flex-start, center, $spacing-3);
+    flex: 1;
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-full;
+    padding: $spacing-3 $spacing-4;
+    max-width: 280px;
+
+    svg {
+      color: $gray-400;
+      flex-shrink: 0;
+    }
+  }
+
+  &__search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    width: 100%;
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    border: 2px solid $dash-primary;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// Today Tasks Component - New Design
+.today-tasks {
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+
+  &__dot {
+    color: $dash-primary;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    margin-bottom: $spacing-5;
+    padding-left: $spacing-2;
+  }
+
+  &__content {
+    // Content wrapper
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-8;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-4);
+    padding: $spacing-4 0;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--completed {
+      opacity: 0.6;
+    }
+  }
+
+  &__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    &--task {
+      background-color: $dash-blue;
+    }
+
+    &--homework {
+      background-color: $dash-orange;
+    }
+
+    &--exam {
+      background-color: $dash-red;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: 2px;
+    @include text-truncate;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__meta {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__category {
+    font-size: 11px;
+    font-weight: $font-weight-medium;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+    margin-right: $spacing-2;
+
+    &--task {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+
+    &--homework {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+
+    &--exam {
+      background-color: $dash-red-light;
+      color: $dash-red;
+    }
+  }
+
+  &__more {
+    @include button-reset;
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    color: $gray-400;
+    flex-shrink: 0;
+
+    &:hover {
+      color: $gray-600;
+    }
+  }
+
+  &__action {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-1);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-md;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &--add {
+      background-color: $dash-orange;
+      color: $white;
+
+      &:hover {
+        background-color: color.adjust($dash-orange, $lightness: -8%);
+      }
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    &--done {
+      background-color: transparent;
+      color: $dash-orange;
+      border: 1px solid $dash-orange;
+
+      &:hover {
+        background-color: $dash-orange-light;
+      }
+    }
+  }
+}
+
+// Dashboard Calendar - New Design
+.dash-calendar {
+  background-color: $white;
+  border-radius: $radius-lg;
+  padding: $spacing-5;
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-5;
+  }
+
+  &__month {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__nav {
+    @include flex(row, flex-end, center, $spacing-1);
+  }
+
+  &__nav-btn {
+    @include button-reset;
+    @include flex-center;
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-md;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: $spacing-3;
+  }
+
+  &__weekday {
+    text-align: center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    padding: $spacing-2;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  &__day {
+    @include button-reset;
+    aspect-ratio: 1;
+    @include flex-center;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+    position: relative;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--empty {
+      visibility: hidden;
+    }
+
+    &--today {
+      background-color: $dash-primary;
+      color: $gray-900;
+      font-weight: $font-weight-semibold;
+    }
+
+    &--selected {
+      background-color: $dash-primary-light;
+      color: $gray-900;
+      font-weight: $font-weight-medium;
+    }
+
+    &--has-events {
+      background-color: $dash-orange;
+      color: $white;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        background-color: color.adjust($dash-orange, $lightness: -5%);
+      }
+    }
+  }
+}
+
+// Upcoming Section - New Design
+.upcoming {
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+  }
+
+  &__dot {
+    color: $dash-primary;
+  }
+
+  &__content {
+    margin-bottom: $spacing-4;
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-6;
+    color: $gray-400;
+    text-align: center;
+  }
+
+  &__view-all {
+    @include button-reset;
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $dash-primary-dark;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: color.adjust($dash-primary-dark, $lightness: -10%);
+    }
+
+    svg {
+      transition: transform $transition-fast;
+    }
+
+    &:hover svg {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.upcoming-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-4);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      .upcoming-list__content {
+        color: $gray-900;
+      }
+    }
+  }
+
+  &__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    &--orange {
+      background-color: $dash-orange;
+    }
+
+    &--blue {
+      background-color: $dash-blue;
+    }
+
+    &--red {
+      background-color: $dash-red;
+    }
+
+    &--green {
+      background-color: $dash-primary;
+    }
+
+    &--purple {
+      background-color: #9c27b0;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: 2px;
+  }
+
+  &__desc {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__icon {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    color: $gray-400;
+    flex-shrink: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__time {
+    @include flex(column, flex-start, flex-end);
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &__date {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__duration {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+}
+
+// =============================================
 // Exams Page
 // =============================================
 
@@ -6082,28 +6744,63 @@ $ps-event-purple: #9B8FB9;
 }
 
 // =============================================
-// Study Session Modal
+// Study Session Form (inside modal)
 // =============================================
 
-.study-session-modal {
+.study-session-form {
+  &__group {
+    margin-bottom: $spacing-4;
+  }
+
+  &__label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    margin-bottom: $spacing-2;
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    color: $gray-900;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: $radius-md;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+      box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
   &__duration-options {
     display: flex;
-    gap: $spacing-1;
+    gap: $spacing-2;
     flex-wrap: wrap;
   }
 
   &__duration-btn {
-    padding: $spacing-1 $spacing-2;
+    padding: $spacing-2 $spacing-3;
     font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
     color: $gray-600;
     background-color: $gray-100;
     border: 1px solid $gray-200;
-    border-radius: $radius-sm;
+    border-radius: $radius-md;
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
       background-color: $gray-200;
+      border-color: $gray-300;
     }
 
     &--active {
@@ -6117,9 +6814,9 @@ $ps-event-purple: #9B8FB9;
     display: flex;
     align-items: flex-start;
     gap: $spacing-2;
-    padding: $spacing-2;
-    background-color: $gray-50;
-    border-radius: $radius-sm;
+    padding: $spacing-3;
+    background-color: $info-light;
+    border-radius: $radius-md;
     font-size: $font-size-sm;
     color: $gray-600;
     margin-bottom: $spacing-4;
@@ -6127,7 +6824,50 @@ $ps-event-purple: #9B8FB9;
     svg {
       flex-shrink: 0;
       margin-top: 2px;
-      color: $gray-400;
+      color: $info;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    padding-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+
+  &__btn {
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &--secondary {
+      color: $gray-700;
+      background-color: $white;
+      border: 1px solid $gray-300;
+
+      &:hover {
+        background-color: $gray-50;
+        border-color: $gray-400;
+      }
+    }
+
+    &--primary {
+      color: $white;
+      background-color: $primary-blue;
+      border: 1px solid $primary-blue;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($primary-blue, $lightness: -8%);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     }
   }
 }
@@ -6137,4 +6877,2147 @@ $ps-event-purple: #9B8FB9;
   margin-top: $spacing-6;
   padding-top: $spacing-6;
   border-top: 1px solid $gray-200;
+}
+
+// =============================================
+// Analytics Page
+// =============================================
+
+.analytics-page {
+  padding: $spacing-6;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: $spacing-6;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-3;
+    padding: $spacing-12;
+    color: $gray-500;
+  }
+
+  &__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-4;
+    margin-bottom: $spacing-6;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: $spacing-6;
+    margin-bottom: $spacing-6;
+
+    @media (max-width: $breakpoint-md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__streak-section {
+    display: flex;
+    align-items: stretch;
+  }
+
+  &__activity-section {
+    min-width: 0;
+  }
+
+  &__exam-section {
+    background-color: $white;
+    border-radius: $radius-lg;
+    padding: $spacing-5;
+    box-shadow: $shadow-sm;
+  }
+}
+
+// =============================================
+// Stats Card
+// =============================================
+
+.stats-card {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
+  padding: $spacing-5;
+  background-color: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-md;
+    background-color: $gray-100;
+    color: $gray-600;
+    flex-shrink: 0;
+  }
+
+  &--primary &__icon {
+    background-color: rgba($primary-blue, 0.1);
+    color: $primary-blue;
+  }
+
+  &--success &__icon {
+    background-color: $success-light;
+    color: $success;
+  }
+
+  &--warning &__icon {
+    background-color: $warning-light;
+    color: $warning;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__value {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    line-height: 1.2;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    margin-top: $spacing-1;
+  }
+
+  &__subtext {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    margin-top: $spacing-1;
+  }
+}
+
+// =============================================
+// Activity Chart
+// =============================================
+
+.activity-chart {
+  background-color: $white;
+  border-radius: $radius-lg;
+  padding: $spacing-5;
+  box-shadow: $shadow-sm;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__subtitle {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: $spacing-1;
+    height: 120px;
+    padding-bottom: $spacing-6;
+  }
+
+  &__bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__bar-wrapper {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__bar {
+    width: 100%;
+    background-color: $gray-200;
+    border-radius: $radius-sm $radius-sm 0 0;
+    transition: height 0.3s ease, background-color 0.2s;
+    min-height: 4px;
+
+    &--filled {
+      background-color: $primary-blue;
+    }
+
+    &--today {
+      background-color: color.adjust($primary-blue, $lightness: -10%);
+    }
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    margin-top: $spacing-2;
+
+    &--today {
+      color: $primary-blue;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__legend {
+    display: flex;
+    gap: $spacing-4;
+    margin-top: $spacing-3;
+    padding-top: $spacing-3;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: $primary-blue;
+  }
+}
+
+// =============================================
+// Streak Display
+// =============================================
+
+.streak-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-6;
+  background-color: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  text-align: center;
+  width: 100%;
+
+  &__flame {
+    margin-bottom: $spacing-3;
+    color: $gray-300;
+  }
+
+  &--active &__flame {
+    color: #FF6B35;
+  }
+
+  &__flame-icon--active {
+    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__current {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-2;
+  }
+
+  &__number {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__best {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    margin-top: $spacing-2;
+  }
+
+  &__motivate {
+    font-size: $font-size-xs;
+    color: $warning;
+    margin-top: $spacing-3;
+    padding: $spacing-2 $spacing-3;
+    background-color: $warning-light;
+    border-radius: $radius-sm;
+  }
+}
+
+// =============================================
+// Exam Progress
+// =============================================
+
+.exam-progress {
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: $spacing-6;
+    color: $gray-500;
+    font-size: $font-size-sm;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  &__item {
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    border: 1px solid $gray-200;
+  }
+
+  &__item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-3;
+  }
+
+  &__item-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__item-countdown {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    padding: $spacing-1 $spacing-2;
+    background-color: $gray-200;
+    border-radius: $radius-sm;
+
+    &--soon {
+      color: $warning;
+      background-color: $warning-light;
+    }
+
+    &--urgent {
+      color: $error;
+      background-color: $error-light;
+    }
+  }
+
+  &__item-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-4;
+    margin-bottom: $spacing-3;
+  }
+
+  &__item-stat {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    font-size: $font-size-xs;
+    color: $gray-600;
+
+    svg {
+      color: $gray-400;
+    }
+  }
+
+  &__item-bars {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+  }
+
+  &__bar-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  &__bar-track {
+    flex: 1;
+    height: 6px;
+    background-color: $gray-200;
+    border-radius: $radius-full;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: $radius-full;
+    transition: width 0.3s ease;
+
+    &--study {
+      background-color: $primary-blue;
+    }
+
+    &--topics {
+      background-color: $success;
+    }
+  }
+
+  &__bar-percent {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    width: 36px;
+    text-align: right;
+  }
+}
+
+// =============================================
+// Timer Page
+// =============================================
+
+.timer-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: $spacing-6;
+  min-height: calc(100vh - $header-height);
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-6;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  &__tips {
+    background-color: $white;
+    border-radius: $radius-lg;
+    padding: $spacing-5;
+    box-shadow: $shadow-sm;
+  }
+
+  &__tips-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-700;
+    margin-bottom: $spacing-3;
+  }
+
+  &__tips-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+
+    li {
+      font-size: $font-size-sm;
+      color: $gray-600;
+      padding-left: $spacing-4;
+      position: relative;
+
+      &::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: $primary-blue;
+      }
+    }
+  }
+}
+
+// =============================================
+// Study Timer Component
+// =============================================
+
+.study-timer {
+  background-color: $white;
+  border-radius: $radius-lg;
+  padding: $spacing-6;
+  box-shadow: $shadow-sm;
+  text-align: center;
+
+  &--break {
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+
+    .study-timer__progress-bar {
+      stroke: $success;
+    }
+
+    .study-timer__btn--primary {
+      background-color: $success;
+      border-color: $success;
+
+      &:hover {
+        background-color: color.adjust($success, $lightness: -8%);
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__settings-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    color: $gray-500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: $gray-50;
+      color: $gray-700;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__settings {
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    padding: $spacing-4;
+    margin-bottom: $spacing-4;
+  }
+
+  &__setting-group {
+    margin-bottom: $spacing-3;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__setting-label {
+    display: block;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    margin-bottom: $spacing-2;
+    text-align: left;
+  }
+
+  &__presets {
+    display: flex;
+    gap: $spacing-2;
+  }
+
+  &__preset {
+    flex: 1;
+    padding: $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $gray-300;
+    }
+
+    &--active {
+      color: $primary-blue;
+      background-color: rgba($primary-blue, 0.1);
+      border-color: $primary-blue;
+    }
+  }
+
+  &__exam-select {
+    margin-bottom: $spacing-4;
+    text-align: left;
+  }
+
+  &__exam-label {
+    display: block;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    margin-bottom: $spacing-2;
+  }
+
+  &__exam-dropdown {
+    width: 100%;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    color: $gray-900;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: $radius-md;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+      box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+  }
+
+  &__display {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto $spacing-4;
+  }
+
+  &__progress-ring {
+    width: 100%;
+    height: 100%;
+    transform: scaleX(-1);
+  }
+
+  &__progress-bg {
+    stroke: $gray-200;
+  }
+
+  &__progress-bar {
+    stroke: $primary-blue;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+
+  &__time {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 3rem;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 80%);
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__sessions {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: $spacing-2;
+    margin-bottom: $spacing-5;
+  }
+
+  &__sessions-count {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $primary-blue;
+  }
+
+  &__sessions-label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__controls {
+    display: flex;
+    gap: $spacing-3;
+    justify-content: center;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-2;
+    padding: $spacing-3 $spacing-5;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &--primary {
+      color: $white;
+      background-color: $primary-blue;
+      border: 1px solid $primary-blue;
+
+      &:hover {
+        background-color: color.adjust($primary-blue, $lightness: -8%);
+      }
+    }
+
+    &--secondary {
+      color: $gray-700;
+      background-color: $white;
+      border: 1px solid $gray-300;
+
+      &:hover {
+        background-color: $gray-50;
+      }
+    }
+
+    &--danger {
+      color: $error;
+      background-color: $white;
+      border: 1px solid $error;
+
+      &:hover {
+        background-color: $error-light;
+      }
+    }
+
+    &--break {
+      color: $white;
+      background-color: $success;
+      border: 1px solid $success;
+
+      &:hover {
+        background-color: color.adjust($success, $lightness: -8%);
+      }
+    }
+  }
+
+  &__linked-exam {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-2;
+    margin-top: $spacing-4;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    color: $gray-600;
+    background-color: $gray-50;
+    border-radius: $radius-sm;
+
+    svg {
+      color: $gray-400;
+    }
+  }
+}
+
+// ============================================
+// NOTES PAGE
+// ============================================
+
+.notes-page {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100%;
+  background-color: $gray-50;
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: $white;
+    border-right: 1px solid $gray-200;
+    overflow: hidden;
+  }
+
+  &__sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4 $spacing-4 $spacing-3;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__add-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: $primary-blue;
+    color: $white;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: color.adjust($primary-blue, $lightness: -8%);
+    }
+  }
+
+  &__list {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-2;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: $spacing-6;
+    text-align: center;
+    color: $gray-500;
+
+    svg {
+      margin-bottom: $spacing-3;
+      color: $gray-300;
+    }
+
+    p {
+      margin-bottom: $spacing-3;
+      font-size: $font-size-sm;
+    }
+
+    button {
+      @include button-reset;
+      padding: $spacing-2 $spacing-4;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $primary-blue;
+      background-color: rgba($primary-blue, 0.1);
+      border-radius: $radius-md;
+
+      &:hover {
+        background-color: rgba($primary-blue, 0.15);
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    padding: $spacing-4;
+  }
+
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: $gray-400;
+
+    svg {
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Note Search Component
+.note-search {
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid $gray-100;
+
+  &__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    svg {
+      position: absolute;
+      left: $spacing-3;
+      color: $gray-400;
+    }
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-2 $spacing-3 $spacing-2 $spacing-8;
+    font-size: $font-size-sm;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background-color: $gray-50;
+    transition: all $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+      background-color: $white;
+    }
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  &__clear {
+    @include button-reset;
+    position: absolute;
+    right: $spacing-2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: $gray-400;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-600;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    margin-top: $spacing-3;
+  }
+
+  &__filter {
+    @include button-reset;
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    background-color: $gray-100;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+
+    &--active {
+      color: $white;
+      background-color: $primary-blue;
+    }
+  }
+}
+
+// Note Card Component
+.note-card {
+  position: relative;
+  padding: $spacing-3;
+  margin-bottom: $spacing-2;
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $gray-300;
+    box-shadow: $shadow-sm;
+  }
+
+  &--selected {
+    border-color: $primary-blue;
+    background-color: rgba($primary-blue, 0.02);
+  }
+
+  &--pinned {
+    border-left: 3px solid $warning;
+  }
+
+  &__pin {
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    color: $warning;
+  }
+
+  &__color-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    line-height: 1.4;
+  }
+
+  &__preview {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-500;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-2;
+  }
+
+  &__date {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__pin-btn {
+    @include button-reset;
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: $gray-400;
+    border-radius: $radius-sm;
+    opacity: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $warning;
+    }
+  }
+
+  &:hover &__pin-btn {
+    opacity: 1;
+  }
+
+  &--pinned &__pin-btn {
+    opacity: 1;
+    color: $warning;
+  }
+}
+
+// Subject Badge Component
+.subject-badge {
+  display: inline-flex;
+  padding: $spacing-1 $spacing-2;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-full;
+  cursor: default;
+
+  &--anatomy { background-color: #fef2f2; color: #dc2626; }
+  &--physiology { background-color: #fef3c7; color: #d97706; }
+  &--biology { background-color: #d1fae5; color: #059669; }
+  &--chemistry { background-color: #dbeafe; color: #2563eb; }
+  &--psychology { background-color: #ede9fe; color: #7c3aed; }
+  &--math { background-color: #fce7f3; color: #db2777; }
+  &--english { background-color: #e0f2fe; color: #0284c7; }
+  &--history { background-color: #fef9c3; color: #ca8a04; }
+}
+
+// Note Editor Component
+.note-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  &__heading {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-2;
+  }
+
+  &__btn {
+    @include button-reset;
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &--cancel {
+      color: $gray-600;
+      background-color: $gray-100;
+
+      &:hover {
+        background-color: $gray-200;
+      }
+    }
+
+    &--save {
+      color: $white;
+      background-color: $primary-blue;
+
+      &:hover:not(:disabled) {
+        background-color: color.adjust($primary-blue, $lightness: -8%);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-4;
+    overflow-y: auto;
+  }
+
+  &__title-input {
+    width: 100%;
+    padding: $spacing-3 0;
+    margin-bottom: $spacing-4;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    border: none;
+    border-bottom: 2px solid $gray-200;
+    outline: none;
+    transition: border-color $transition-fast;
+
+    &:focus {
+      border-color: $primary-blue;
+    }
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-left: 1px solid $gray-200;
+    overflow-y: auto;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__input {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background-color: $white;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+    }
+  }
+
+  &__select {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background-color: $white;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-blue;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-1;
+    padding: $spacing-2;
+    min-height: 40px;
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    color: $primary-blue;
+    background-color: rgba($primary-blue, 0.1);
+    border-radius: $radius-full;
+  }
+
+  &__tag-remove {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-sm;
+    color: $gray-500;
+    line-height: 1;
+
+    &:hover {
+      color: $error;
+    }
+  }
+
+  &__tag-input {
+    flex: 1;
+    min-width: 80px;
+    padding: $spacing-1;
+    font-size: $font-size-xs;
+    border: none;
+    outline: none;
+    background: transparent;
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  &__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+  }
+
+  &__color {
+    @include button-reset;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &--selected {
+      border-color: $gray-800;
+      box-shadow: 0 0 0 2px $white, 0 0 0 4px $gray-400;
+    }
+  }
+}
+
+// Note Detail Component
+.note-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-3 $spacing-4;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  &__back {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-2;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    border-radius: $radius-md;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-1;
+  }
+
+  &__action {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: $gray-500;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-700;
+    }
+
+    &--active {
+      color: $warning;
+    }
+
+    &--danger:hover {
+      background-color: $error-light;
+      color: $error;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    padding: $spacing-6;
+    overflow-y: auto;
+  }
+
+  &__color-bar {
+    width: 100%;
+    height: 4px;
+    margin-bottom: $spacing-4;
+    border-radius: $radius-full;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-4;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    line-height: 1.3;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-4;
+  }
+
+  &__date {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-2;
+    margin-bottom: $spacing-6;
+  }
+
+  &__tag {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-600;
+    background-color: $gray-100;
+    border-radius: $radius-full;
+  }
+
+  &__content {
+    font-size: $font-size-base;
+    line-height: 1.7;
+    color: $gray-700;
+
+    h2 {
+      margin: $spacing-6 0 $spacing-3;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $gray-900;
+    }
+
+    h3 {
+      margin: $spacing-4 0 $spacing-2;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $gray-900;
+    }
+
+    p {
+      margin-bottom: $spacing-4;
+    }
+
+    ul, ol {
+      margin: 0 0 $spacing-4;
+      padding-left: $spacing-6;
+    }
+
+    li {
+      margin-bottom: $spacing-1;
+    }
+
+    a {
+      color: $primary-blue;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    strong {
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .notes-page {
+    grid-template-columns: 1fr;
+
+    &__sidebar {
+      display: none;
+
+      &--open {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 50;
+      }
+    }
+
+    &__content {
+      padding: $spacing-3;
+    }
+  }
+
+  .note-editor__body {
+    grid-template-columns: 1fr;
+  }
+
+  .note-editor__sidebar {
+    display: none;
+  }
+}
+
+// =====================================================
+// TIMETABLE PAGE STYLES
+// =====================================================
+
+.timetable-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: $spacing-4;
+  gap: $spacing-4;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-4;
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background: $primary-blue-dark;
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: $spacing-4;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__grid-wrapper {
+    overflow: auto;
+    background: $white;
+    border-radius: $radius-lg;
+    border: 1px solid $gray-200;
+  }
+
+  &__detail {
+    flex-shrink: 0;
+    overflow: auto;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    padding: $spacing-8;
+    color: $gray-500;
+    text-align: center;
+
+    svg {
+      margin-bottom: $spacing-4;
+      opacity: 0.5;
+    }
+
+    p {
+      margin-bottom: $spacing-4;
+      font-size: $font-size-lg;
+    }
+
+    button {
+      padding: $spacing-2 $spacing-4;
+      background: $primary-blue;
+      color: $white;
+      border: none;
+      border-radius: $radius-md;
+      font-size: $font-size-sm;
+      cursor: pointer;
+
+      &:hover {
+        background: $primary-blue-dark;
+      }
+    }
+  }
+}
+
+// Module Legend
+.module-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  flex-shrink: 0;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-1 $spacing-3;
+    background: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $gray-100;
+    }
+
+    &--selected {
+      background: $gray-100;
+      border-color: $primary-blue;
+    }
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: $radius-full;
+  }
+
+  &__label {
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Timetable Grid
+.timetable-grid {
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 64px repeat(7, 1fr);
+    border-bottom: 1px solid $gray-200;
+    flex-shrink: 0;
+  }
+
+  &__time-header {
+    padding: $spacing-3;
+    background: $gray-100;
+  }
+
+  &__day-header {
+    padding: $spacing-3;
+    text-align: center;
+    font-weight: $font-weight-semibold;
+    color: $gray-700;
+    background: $gray-100;
+    border-left: 1px solid $gray-200;
+  }
+
+  &__day-label {
+    font-size: $font-size-sm;
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 64px repeat(7, 1fr);
+    flex: 1;
+  }
+
+  &__time-column {
+    display: flex;
+    flex-direction: column;
+    background: $gray-100;
+    border-right: 1px solid $gray-200;
+  }
+
+  &__time-slot {
+    height: 60px;
+    padding: $spacing-1 $spacing-2;
+    border-bottom: 1px solid $gray-200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  &__time-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__day-column {
+    position: relative;
+    border-left: 1px solid $gray-200;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__hour-slot {
+    height: 60px;
+    border: none;
+    border-bottom: 1px solid $gray-200;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background: rgba($primary-blue, 0.05);
+    }
+  }
+}
+
+// Class Block
+.class-block {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  padding: $spacing-2;
+  border-radius: $radius-md;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all $transition-fast;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  background-color: var(--class-color, #3B82F6);
+
+  &:hover {
+    filter: brightness(1.1);
+    z-index: 5;
+  }
+
+  &--selected {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $primary-blue;
+    z-index: 10;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    height: 100%;
+  }
+
+  &__title {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__time {
+    font-size: 10px;
+    opacity: 0.9;
+  }
+
+  &__location {
+    font-size: 10px;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Class Form
+.class-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-3;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__colors {
+    display: flex;
+    gap: $spacing-2;
+    flex-wrap: wrap;
+  }
+
+  &__color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &--active {
+      border-color: $gray-900;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px $gray-900;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    padding-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+}
+
+// Day Picker
+.day-picker {
+  display: flex;
+  gap: $spacing-2;
+
+  &__btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $gray-200;
+    border-radius: $radius-md;
+    background: $white;
+    color: $gray-700;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(:disabled) {
+      background: $gray-100;
+      border-color: $primary-blue;
+    }
+
+    &--selected {
+      background: $primary-blue;
+      border-color: $primary-blue;
+      color: $white;
+
+      &:hover:not(:disabled) {
+        background: $primary-blue-dark;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Class Detail
+.class-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $white;
+  border-radius: $radius-lg;
+  border: 1px solid $gray-200;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: flex-end;
+    padding: $spacing-3;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: $gray-500;
+    border-radius: $radius-md;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-100;
+      color: $gray-900;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    overflow: auto;
+    padding: $spacing-4;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-3;
+  }
+
+  &__color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__module {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin-bottom: $spacing-4;
+    color: $gray-700;
+  }
+
+  &__module-code {
+    font-weight: $font-weight-semibold;
+  }
+
+  &__module-name {
+    &::before {
+      content: '·';
+      margin-right: $spacing-2;
+    }
+  }
+
+  &__section {
+    margin-bottom: $spacing-4;
+  }
+
+  &__section-title {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-2;
+  }
+
+  &__schedule {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__schedule-days {
+    display: flex;
+    gap: $spacing-1;
+  }
+
+  &__day-circle {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-full;
+    background: $gray-100;
+    color: $gray-500;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+
+    &--active {
+      background: $primary-blue;
+      color: $white;
+    }
+  }
+
+  &__schedule-time {
+    font-size: $font-size-sm;
+    color: $gray-700;
+  }
+
+  &__semester {
+    font-size: $font-size-sm;
+    color: $gray-700;
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: $gray-700;
+  }
+
+  &__notes {
+    font-size: $font-size-sm;
+    color: $gray-700;
+    line-height: 1.6;
+
+    p {
+      margin-bottom: $spacing-2;
+    }
+  }
+
+  &__exception-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__exception {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2;
+    background: $gray-100;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+  }
+
+  &__exception-date {
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__exception-type {
+    padding: 2px $spacing-2;
+    border-radius: $radius-sm;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+
+    &--cancelled {
+      background: $error-light;
+      color: $error;
+    }
+
+    &--rescheduled {
+      background: $warning-light;
+      color: $warning;
+    }
+
+    &--moved {
+      background: $info-light;
+      color: $info;
+    }
+  }
+
+  &__exception-reason {
+    color: $gray-500;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-3;
+    padding: $spacing-4;
+    border-top: 1px solid $gray-200;
+  }
+
+  &__delete-btn {
+    color: $error;
+
+    &:hover {
+      background: rgba($error, 0.1);
+    }
+  }
+}
+
+// Mobile responsive for timetable
+@media (max-width: 1024px) {
+  .timetable-page {
+    &__content {
+      grid-template-columns: 1fr;
+    }
+
+    &__detail {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 400px;
+      z-index: 50;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .timetable-page {
+    padding: $spacing-3;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-3;
+    }
+
+    &__add-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .class-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .day-picker {
+    flex-wrap: wrap;
+  }
 }

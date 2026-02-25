@@ -1,0 +1,47 @@
+import type { StudyStreak } from '~/utils/analytics'
+
+interface StreakDisplayProps {
+  streak: StudyStreak
+}
+
+export function StreakDisplay({ streak }: StreakDisplayProps) {
+  const hasStreak = streak.current > 0
+
+  return (
+    <div className={`streak-display ${hasStreak ? 'streak-display--active' : ''}`}>
+      <div className="streak-display__flame">
+        <FlameIcon active={hasStreak} />
+      </div>
+      <div className="streak-display__content">
+        <div className="streak-display__current">
+          <span className="streak-display__number">{streak.current}</span>
+          <span className="streak-display__label">day streak</span>
+        </div>
+        <div className="streak-display__best">
+          Best: {streak.longest} days
+        </div>
+      </div>
+      {!hasStreak && streak.lastStudyDate && (
+        <div className="streak-display__motivate">
+          Study today to start a new streak!
+        </div>
+      )}
+    </div>
+  )
+}
+
+function FlameIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill={active ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="2"
+      className={active ? 'streak-display__flame-icon--active' : ''}
+    >
+      <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z" />
+    </svg>
+  )
+}

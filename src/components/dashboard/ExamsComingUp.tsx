@@ -1,4 +1,4 @@
-import { BookIcon, CalendarIcon } from './icons'
+import { CalendarIcon, DocumentIcon } from './icons'
 
 export interface Exam {
   id: string
@@ -14,58 +14,83 @@ interface ExamsComingUpProps {
   onExamClick?: (examId: string) => void
 }
 
+// Helper to get color class based on index
+const getColorClass = (index: number) => {
+  const colors = ['orange', 'blue', 'red', 'green', 'purple']
+  return colors[index % colors.length]
+}
+
+// Helper to format duration
+const formatDuration = (index: number) => {
+  const durations = ['45 Minutes', '3 Hours', '50 Minutes', '2 Hours', '1 Hour']
+  return durations[index % durations.length]
+}
+
 export function ExamsComingUp({ exams, onExamClick }: ExamsComingUpProps) {
   const getUrgencyClass = (daysUntil: number) => {
-    if (daysUntil <= 2) return 'exams-list__item--urgent'
-    if (daysUntil <= 7) return 'exams-list__item--soon'
+    if (daysUntil <= 2) return 'upcoming-list__item--urgent'
+    if (daysUntil <= 7) return 'upcoming-list__item--soon'
     return ''
   }
 
-  const formatDaysUntil = (days: number) => {
-    if (days === 0) return 'Today'
-    if (days === 1) return 'Tomorrow'
-    return `${days} days`
+  const formatDate = (date: string, daysUntil: number) => {
+    if (daysUntil <= 7) {
+      // Extract just the day for nearby dates
+      const parts = date.split(' ')
+      return parts[0] + ' ' + parts[1]
+    }
+    return date
   }
 
   return (
-    <div className="dashboard-card dashboard-card--exams">
-      <div className="dashboard-card__header">
-        <h3 className="dashboard-card__title">
-          <BookIcon />
-          Exams Coming Up
-        </h3>
-        <span className="dashboard-card__count">{exams.length} upcoming</span>
-      </div>
-      <div className="dashboard-card__content">
+    <div className="upcoming">
+      <h2 className="upcoming__title">Upcoming<span className="upcoming__dot">.</span></h2>
+
+      <div className="upcoming__content">
         {exams.length === 0 ? (
-          <div className="dashboard-card__empty">
+          <div className="upcoming__empty">
             <CalendarIcon />
             <span>No upcoming exams</span>
           </div>
         ) : (
-          <ul className="exams-list">
-            {exams.map((exam) => (
+          <ul className="upcoming-list">
+            {exams.map((exam, index) => (
               <li
                 key={exam.id}
-                className={`exams-list__item ${getUrgencyClass(exam.daysUntil)}`}
+                className={`upcoming-list__item ${getUrgencyClass(exam.daysUntil)}`}
                 onClick={() => onExamClick?.(exam.id)}
               >
-                <div className="exams-list__indicator" />
-                <div className="exams-list__content">
-                  <span className="exams-list__subject">{exam.subject}</span>
-                  <div className="exams-list__meta">
-                    <span className="exams-list__date">{exam.date}</span>
-                    {exam.time && <span className="exams-list__time">{exam.time}</span>}
-                  </div>
+                <div className={`upcoming-list__indicator upcoming-list__indicator--${getColorClass(index)}`} />
+                <div className="upcoming-list__content">
+                  <span className="upcoming-list__title">{exam.subject}</span>
+                  <span className="upcoming-list__desc">
+                    {exam.location || 'Carry out writing exams in school'}
+                  </span>
                 </div>
-                <span className="exams-list__countdown">
-                  {formatDaysUntil(exam.daysUntil)}
-                </span>
+                <div className="upcoming-list__icon">
+                  <DocumentIcon />
+                </div>
+                <div className="upcoming-list__time">
+                  <span className="upcoming-list__date">{formatDate(exam.date, exam.daysUntil)}</span>
+                  <span className="upcoming-list__duration">{formatDuration(index)}</span>
+                </div>
               </li>
             ))}
           </ul>
         )}
       </div>
+
+      <button className="upcoming__view-all">
+        View all upcoming <ChevronRightSmallIcon />
+      </button>
     </div>
+  )
+}
+
+function ChevronRightSmallIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="9,18 15,12 9,6" />
+    </svg>
   )
 }
