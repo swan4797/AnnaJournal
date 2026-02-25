@@ -14,7 +14,7 @@ import {
   type StudyNote,
   type StudyQuestion,
 } from '~/components/dashboard'
-import { searchEvents, type Event } from '~/utils/events'
+import { searchEvents, toggleEventComplete, type Event } from '~/utils/events'
 import { fetchClasses, formatClassTime, type Class } from '~/utils/classes'
 
 export const Route = createFileRoute('/_authed/dashboard')({
@@ -22,25 +22,38 @@ export const Route = createFileRoute('/_authed/dashboard')({
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    // Fetch exams from today onwards (next 30 days for dashboard)
-    const endDate = new Date(today)
-    endDate.setDate(endDate.getDate() + 30)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
 
-    const [examsResult, classesResult] = await Promise.all([
+    // Fetch exams from today onwards (next 30 days for dashboard)
+    const examEndDate = new Date(today)
+    examEndDate.setDate(examEndDate.getDate() + 30)
+
+    const [examsResult, classesResult, todayTasksResult] = await Promise.all([
       searchEvents({
         data: {
           categories: ['exam'],
           startDate: today.toISOString(),
-          endDate: endDate.toISOString(),
+          endDate: examEndDate.toISOString(),
           limit: 5,
         },
       }),
       fetchClasses({}),
+      // Fetch today's tasks (task, homework, deadline categories)
+      searchEvents({
+        data: {
+          categories: ['task', 'homework', 'deadline'],
+          startDate: today.toISOString(),
+          endDate: tomorrow.toISOString(),
+          limit: 20,
+        },
+      }),
     ])
 
     return {
       examEvents: examsResult.events || [],
       classes: classesResult.classes || [],
+      todayEvents: todayTasksResult.events || [],
     }
   },
   component: DashboardPage,
@@ -50,13 +63,27 @@ export const Route = createFileRoute('/_authed/dashboard')({
 // Static Mock Data (to be replaced with real data later)
 // =============================================
 
-const MOCK_TASKS: Task[] = [
-  { id: '1', title: 'Review Chapter 5 notes', completed: false, category: 'task', dueTime: '10:00 AM' },
-  { id: '2', title: 'Complete Physiology worksheet', completed: false, category: 'homework', dueTime: '2:00 PM' },
-  { id: '3', title: 'Prepare for Anatomy quiz', completed: true, category: 'exam', dueTime: '4:00 PM' },
-  { id: '4', title: 'Submit lab report draft', completed: false, category: 'task', dueTime: '6:00 PM' },
-  { id: '5', title: 'Watch lecture recording', completed: false, category: 'task' },
-]
+// Transform database Event to dashboard Task interface
+function transformEventToTask(event: Event): Task {
+  const eventDate = new Date(event.start_time)
+  const dueTime = event.all_day
+    ? undefined
+    : eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+
+  // Map event category to task category
+  let category: 'task' | 'homework' | 'exam' = 'task'
+  if (event.category === 'homework') category = 'homework'
+  else if (event.category === 'deadline') category = 'homework'
+  else if (event.category === 'exam') category = 'exam'
+
+  return {
+    id: event.id,
+    title: event.title,
+    completed: event.completed || false,
+    category,
+    dueTime,
+  }
+}
 
 // Transform database Event to dashboard Exam interface
 function transformEventToExam(event: Event): Exam {
@@ -200,10 +227,15 @@ const MOCK_EVENT_DATES = [
 // =============================================
 
 function DashboardPage() {
-  const { examEvents, classes } = Route.useLoaderData()
+  const { examEvents, classes, todayEvents } = Route.useLoaderData()
   const navigate = useNavigate()
 
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS)
+  // Transform today's events to tasks
+  const initialTasks = useMemo(() => {
+    return todayEvents.map(transformEventToTask)
+  }, [todayEvents])
+
+  const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [homework, setHomework] = useState<Homework[]>(MOCK_HOMEWORK)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(MOCK_QUESTIONS)
@@ -222,13 +254,30 @@ function DashboardPage() {
     navigate({ to: '/exams', search: { id: examId } })
   }, [navigate])
 
-  const handleToggleTask = useCallback((taskId: string) => {
+  const handleToggleTask = useCallback(async (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId)
+    if (!task) return
+
+    const newCompleted = !task.completed
+
+    // Optimistic update
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
+      prev.map((t) =>
+        t.id === taskId ? { ...t, completed: newCompleted } : t
       )
     )
-  }, [])
+
+    // Update in database
+    const result = await toggleEventComplete({ data: { id: taskId, completed: newCompleted } })
+    if (!result.success) {
+      // Revert on error
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId ? { ...t, completed: !newCompleted } : t
+        )
+      )
+    }
+  }, [tasks])
 
   const handleToggleHomework = useCallback((homeworkId: string) => {
     setHomework((prev) =>
