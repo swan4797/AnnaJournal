@@ -15,6 +15,7 @@ import {
   type StudyQuestion,
 } from '~/components/dashboard'
 import { searchEvents, type Event } from '~/utils/events'
+import { fetchClasses, formatClassTime, type Class } from '~/utils/classes'
 
 export const Route = createFileRoute('/_authed/dashboard')({
   loader: async () => {
@@ -25,17 +26,21 @@ export const Route = createFileRoute('/_authed/dashboard')({
     const endDate = new Date(today)
     endDate.setDate(endDate.getDate() + 30)
 
-    const result = await searchEvents({
-      data: {
-        categories: ['exam'],
-        startDate: today.toISOString(),
-        endDate: endDate.toISOString(),
-        limit: 5,
-      },
-    })
+    const [examsResult, classesResult] = await Promise.all([
+      searchEvents({
+        data: {
+          categories: ['exam'],
+          startDate: today.toISOString(),
+          endDate: endDate.toISOString(),
+          limit: 5,
+        },
+      }),
+      fetchClasses({}),
+    ])
 
     return {
-      examEvents: result.events || [],
+      examEvents: examsResult.events || [],
+      classes: classesResult.classes || [],
     }
   },
   component: DashboardPage,
@@ -70,12 +75,62 @@ function transformEventToExam(event: Event): Exam {
   }
 }
 
-const MOCK_CLASSES: ClassSchedule[] = [
-  { id: '1', subject: 'Anatomy Lab', startTime: '8:00 AM', endTime: '10:00 AM', location: 'Lab 102', instructor: 'Dr. Smith' },
-  { id: '2', subject: 'Physiology Lecture', startTime: '10:30 AM', endTime: '12:00 PM', location: 'Hall A', instructor: 'Prof. Johnson', isOngoing: true },
-  { id: '3', subject: 'Clinical Practice', startTime: '2:00 PM', endTime: '4:00 PM', location: 'Hospital Wing', instructor: 'Dr. Williams', isNext: true },
-  { id: '4', subject: 'Study Group', startTime: '5:00 PM', endTime: '6:30 PM', location: 'Library Room 3' },
-]
+// Get classes scheduled for today
+function getClassesForToday(classes: Class[]): ClassSchedule[] {
+  const now = new Date()
+  const todayDayOfWeek = now.getDay() // 0 = Sunday, 1 = Monday, etc.
+  const todayDate = now.toISOString().split('T')[0]
+
+  // Filter classes that occur on today's day of week and are within semester bounds
+  const todaysClasses = classes.filter((classItem) => {
+    // Check if today is one of the scheduled days
+    if (!classItem.days_of_week.includes(todayDayOfWeek)) return false
+
+    // Check if today is within semester bounds
+    const semesterStart = classItem.semester_start
+    const semesterEnd = classItem.semester_end
+    return todayDate >= semesterStart && todayDate <= semesterEnd
+  })
+
+  // Transform to ClassSchedule format and sort by start time
+  const transformed = todaysClasses.map((classItem) => {
+    // Parse times to check ongoing/next status
+    const [startHour, startMin] = classItem.start_time.split(':').map(Number)
+    const [endHour, endMin] = classItem.end_time.split(':').map(Number)
+
+    const classStart = new Date(now)
+    classStart.setHours(startHour, startMin, 0, 0)
+
+    const classEnd = new Date(now)
+    classEnd.setHours(endHour, endMin, 0, 0)
+
+    const isOngoing = now >= classStart && now < classEnd
+    const isUpcoming = now < classStart
+
+    return {
+      id: classItem.id,
+      subject: classItem.title,
+      startTime: formatClassTime(classItem.start_time),
+      endTime: formatClassTime(classItem.end_time),
+      location: classItem.location || undefined,
+      instructor: classItem.instructor || undefined,
+      isOngoing,
+      isUpcoming,
+      sortTime: startHour * 60 + startMin, // For sorting
+    }
+  })
+
+  // Sort by start time
+  transformed.sort((a, b) => a.sortTime - b.sortTime)
+
+  // Mark the first upcoming class as "next"
+  let foundNext = false
+  return transformed.map(({ sortTime, isUpcoming, ...rest }) => ({
+    ...rest,
+    isNext: !foundNext && isUpcoming && !rest.isOngoing ? (foundNext = true, true) : false,
+  }))
+}
+
 
 const MOCK_HOMEWORK: Homework[] = [
   { id: '1', title: 'Chapter 7 Questions', subject: 'Anatomy', dueDate: 'Feb 26', daysUntil: 1, completed: false },
@@ -145,7 +200,7 @@ const MOCK_EVENT_DATES = [
 // =============================================
 
 function DashboardPage() {
-  const { examEvents } = Route.useLoaderData()
+  const { examEvents, classes } = Route.useLoaderData()
   const navigate = useNavigate()
 
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS)
@@ -157,6 +212,11 @@ function DashboardPage() {
   const exams = useMemo(() => {
     return examEvents.map(transformEventToExam)
   }, [examEvents])
+
+  // Get today's classes from timetable
+  const todaysClasses = useMemo(() => {
+    return getClassesForToday(classes)
+  }, [classes])
 
   const handleExamClick = useCallback((examId: string) => {
     navigate({ to: '/exams', search: { id: examId } })
@@ -205,9 +265,10 @@ function DashboardPage() {
     <div className="dashboard-v2">
       {/* Left Panel */}
       <div className="dashboard-v2__left">
-        {/* My Classes Section - UNCHANGED per requirements */}
+        {/* My Classes Section */}
         <ClassesToday
-          classes={MOCK_CLASSES}
+          classes={todaysClasses}
+          onClassClick={(classId) => navigate({ to: '/timetable' })}
         />
 
         {/* Today Tasks Section */}
