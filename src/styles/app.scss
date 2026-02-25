@@ -8395,6 +8395,537 @@ $dash-red-light: #ffcdd2;
 }
 
 // =====================================================
+// NOTES PAGE V2 STYLES
+// =====================================================
+
+.notes-page-v2 {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  height: 100%;
+  gap: $spacing-4;
+  padding: $spacing-4;
+  background-color: $gray-50;
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__sidebar-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: $white;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4 $spacing-4 $spacing-2;
+  }
+
+  &__header-title {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+
+    svg {
+      color: $gray-500;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $gray-900;
+    }
+  }
+
+  &__add-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: $white;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+  }
+
+  &__count-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 $spacing-4 $spacing-3;
+  }
+
+  &__count {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__filter-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: $gray-400;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__list {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-2 $spacing-3 $spacing-3;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: $spacing-6;
+    text-align: center;
+    color: $gray-500;
+
+    svg {
+      margin-bottom: $spacing-3;
+      color: $gray-300;
+    }
+
+    p {
+      margin-bottom: $spacing-3;
+      font-size: $font-size-sm;
+    }
+
+    button {
+      @include button-reset;
+      padding: $spacing-2 $spacing-4;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: $radius-md;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: $white;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-sm;
+    color: $gray-400;
+
+    svg {
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Note Card V2 Component
+.note-card-v2 {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  position: relative;
+  padding: $spacing-3;
+  margin-bottom: $spacing-2;
+  background-color: $white;
+  border: 1px solid $gray-100;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $gray-200;
+    box-shadow: $shadow-sm;
+  }
+
+  &--selected {
+    border-color: #667eea;
+    background-color: rgba(102, 126, 234, 0.02);
+    box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.2);
+  }
+
+  &--pinned {
+    background-color: #FFFEF5;
+    border-color: #FEF3C7;
+  }
+
+  &__pin-badge {
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    color: $warning;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-1;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: $spacing-6;
+  }
+
+  &__preview {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-500;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+  }
+
+  &__reading-time {
+    font-size: 11px;
+    color: $gray-400;
+  }
+
+  &__date {
+    font-size: 11px;
+    color: $gray-400;
+  }
+
+  &__pin-btn {
+    @include button-reset;
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: $gray-400;
+    border-radius: $radius-md;
+    opacity: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $warning;
+    }
+  }
+
+  &:hover &__pin-btn {
+    opacity: 1;
+  }
+
+  &--pinned &__pin-btn {
+    opacity: 1;
+    color: $warning;
+  }
+}
+
+// Note Detail V2 Component
+.note-detail-v2 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__header-left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    flex-shrink: 0;
+  }
+
+  &__pin-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: $gray-400;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $warning;
+    }
+
+    &--active {
+      color: $warning;
+    }
+  }
+
+  &__edit-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: #667eea;
+    background-color: rgba(102, 126, 234, 0.1);
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba(102, 126, 234, 0.15);
+    }
+  }
+
+  &__delete-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: $gray-400;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $error-light;
+      color: $error;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    padding: $spacing-3 $spacing-4;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__reading-time {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-500;
+    background-color: $gray-50;
+    border-radius: $radius-full;
+
+    svg {
+      color: $gray-400;
+    }
+  }
+
+  &__subject {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: #667eea;
+    background-color: rgba(102, 126, 234, 0.1);
+    border-radius: $radius-full;
+  }
+
+  &__body {
+    flex: 1;
+    padding: $spacing-6;
+    overflow-y: auto;
+  }
+
+  &__content {
+    font-size: $font-size-base;
+    line-height: 1.8;
+    color: $gray-700;
+
+    h2 {
+      margin: $spacing-6 0 $spacing-3;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $gray-900;
+    }
+
+    h3 {
+      margin: $spacing-4 0 $spacing-2;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $gray-900;
+    }
+
+    p {
+      margin-bottom: $spacing-4;
+    }
+
+    ul, ol {
+      margin: 0 0 $spacing-4;
+      padding-left: $spacing-6;
+    }
+
+    li {
+      margin-bottom: $spacing-1;
+    }
+
+    a {
+      color: #667eea;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    strong {
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: $spacing-4;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__close-btn {
+    @include button-reset;
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    background-color: $gray-100;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+  }
+}
+
+// Mobile responsive for Notes V2
+@media (max-width: 768px) {
+  .notes-page-v2 {
+    grid-template-columns: 1fr;
+    padding: $spacing-3;
+
+    &__sidebar {
+      display: none;
+
+      &--open {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 50;
+      }
+    }
+
+    &__content {
+      height: 100%;
+    }
+  }
+}
+
+// =====================================================
 // TIMETABLE PAGE STYLES
 // =====================================================
 

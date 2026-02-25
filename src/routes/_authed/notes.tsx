@@ -200,50 +200,62 @@ function NotesPage() {
   }, [notes, selectedNote])
 
   return (
-    <div className="notes-page">
-      {/* Sidebar */}
-      <div className="notes-page__sidebar">
-        <div className="notes-page__sidebar-header">
-          <h1 className="notes-page__title">Notes</h1>
-          <button
-            className="notes-page__add-btn"
-            onClick={handleCreateNew}
-            title="New Note"
-          >
-            <PlusIcon />
-          </button>
-        </div>
-
-        <NoteSearch
-          onSearch={handleSearch}
-          onSubjectFilter={handleSubjectFilter}
-          subjects={subjects}
-          selectedSubject={selectedSubject}
-        />
-
-        <div className="notes-page__list">
-          {notes.length === 0 ? (
-            <div className="notes-page__empty">
-              <EmptyIcon />
-              <p>No notes yet</p>
-              <button onClick={handleCreateNew}>Create your first note</button>
+    <div className="notes-page-v2">
+      {/* Sidebar - Notes List */}
+      <div className="notes-page-v2__sidebar">
+        <div className="notes-page-v2__sidebar-card">
+          <div className="notes-page-v2__header">
+            <div className="notes-page-v2__header-title">
+              <FolderIcon />
+              <h1>All Notes</h1>
             </div>
-          ) : (
-            notes.map((note) => (
-              <NoteCard
-                key={note.id}
-                note={note}
-                isSelected={selectedNote?.id === note.id}
-                onClick={() => handleNoteClick(note)}
-                onPin={() => handlePinFromList(note.id)}
-              />
-            ))
-          )}
+            <button
+              className="notes-page-v2__add-btn"
+              onClick={handleCreateNew}
+              title="New Note"
+            >
+              <PlusIcon />
+            </button>
+          </div>
+
+          <div className="notes-page-v2__count-row">
+            <span className="notes-page-v2__count">{notes.length} Notes</span>
+            <button className="notes-page-v2__filter-btn" title="Filter">
+              <FilterIcon />
+            </button>
+          </div>
+
+          <NoteSearch
+            onSearch={handleSearch}
+            onSubjectFilter={handleSubjectFilter}
+            subjects={subjects}
+            selectedSubject={selectedSubject}
+          />
+
+          <div className="notes-page-v2__list">
+            {notes.length === 0 ? (
+              <div className="notes-page-v2__empty">
+                <EmptyIcon />
+                <p>No notes yet</p>
+                <button onClick={handleCreateNew}>Create your first note</button>
+              </div>
+            ) : (
+              notes.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  isSelected={selectedNote?.id === note.id}
+                  onClick={() => handleNoteClick(note)}
+                  onPin={() => handlePinFromList(note.id)}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="notes-page__content">
+      <div className="notes-page-v2__content">
         {isCreating ? (
           <NoteEditor
             onSave={handleSave}
@@ -268,7 +280,7 @@ function NotesPage() {
             onTogglePin={handleTogglePin}
           />
         ) : (
-          <div className="notes-page__placeholder">
+          <div className="notes-page-v2__placeholder">
             <NotesIcon />
             <p>Select a note or create a new one</p>
           </div>
@@ -279,11 +291,29 @@ function NotesPage() {
 }
 
 // Icon Components
+function FolderIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
+    </svg>
+  )
+}
+
 function PlusIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  )
+}
+
+function FilterIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+      <line x1="10" y1="18" x2="14" y2="18" />
     </svg>
   )
 }

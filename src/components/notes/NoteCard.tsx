@@ -11,67 +11,78 @@ interface NoteCardProps {
 // Strip HTML tags for preview
 const stripHtml = (html: string | null): string => {
   if (!html) return ''
-  return html.replace(/<[^>]*>/g, '').slice(0, 120)
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').slice(0, 100)
 }
 
 // Format date for display
 const formatDate = (dateStr: string | null): string => {
   if (!dateStr) return ''
   const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')
+}
 
-  if (diffDays === 0) {
-    return 'Today'
-  } else if (diffDays === 1) {
-    return 'Yesterday'
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`
-  } else {
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+// Calculate reading time
+const getReadingTime = (content: string | null): string => {
+  if (!content) return '1 min'
+  const text = content.replace(/<[^>]*>/g, '')
+  const words = text.split(/\s+/).filter(Boolean).length
+  const minutes = Math.max(1, Math.ceil(words / 200))
+  return `${minutes} min${minutes > 1 ? 's' : ''}`
+}
+
+// Get icon color based on note color or subject
+const getIconStyle = (note: Note): { background: string; color: string } => {
+  const colorMap: Record<string, { background: string; color: string }> = {
+    blue: { background: '#E8F0FE', color: '#4285F4' },
+    green: { background: '#E6F4EA', color: '#34A853' },
+    purple: { background: '#F3E8FD', color: '#9334E6' },
+    orange: { background: '#FEF3E8', color: '#FA7B17' },
+    pink: { background: '#FCE8F3', color: '#E91E63' },
+    cyan: { background: '#E8F7F9', color: '#00ACC1' },
+    amber: { background: '#FEF7E0', color: '#F9AB00' },
+    rose: { background: '#FBE9E7', color: '#FF5722' },
   }
+  return colorMap[note.color || 'blue'] || colorMap.blue
 }
 
 export function NoteCard({ note, isSelected, onClick, onPin }: NoteCardProps) {
   const preview = stripHtml(note.content)
+  const iconStyle = getIconStyle(note)
+  const readingTime = getReadingTime(note.content)
 
   return (
     <div
-      className={`note-card ${isSelected ? 'note-card--selected' : ''} ${note.pinned ? 'note-card--pinned' : ''}`}
+      className={`note-card-v2 ${isSelected ? 'note-card-v2--selected' : ''} ${note.pinned ? 'note-card-v2--pinned' : ''}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
     >
       {note.pinned && (
-        <div className="note-card__pin">
+        <div className="note-card-v2__pin-badge">
           <PinIcon />
         </div>
       )}
 
-      {note.color && (
-        <div
-          className="note-card__color-accent"
-          style={{ backgroundColor: note.color }}
-        />
-      )}
+      <div className="note-card-v2__icon" style={{ backgroundColor: iconStyle.background }}>
+        <NoteIcon color={iconStyle.color} />
+      </div>
 
-      <h3 className="note-card__title">{note.title}</h3>
+      <div className="note-card-v2__content">
+        <h3 className="note-card-v2__title">{note.title}</h3>
 
-      {preview && (
-        <p className="note-card__preview">{preview}...</p>
-      )}
-
-      <div className="note-card__meta">
-        {note.subject && (
-          <SubjectBadge subject={note.subject} />
+        {preview && (
+          <p className="note-card-v2__preview">{preview}{preview.length >= 100 ? '...' : ''}</p>
         )}
-        <span className="note-card__date">{formatDate(note.updated_at)}</span>
+
+        <div className="note-card-v2__meta">
+          <span className="note-card-v2__reading-time">{readingTime}</span>
+          <span className="note-card-v2__date">{formatDate(note.updated_at)}</span>
+        </div>
       </div>
 
       {onPin && (
         <button
-          className="note-card__pin-btn"
+          className="note-card-v2__pin-btn"
           onClick={(e) => {
             e.stopPropagation()
             onPin()
@@ -82,6 +93,17 @@ export function NoteCard({ note, isSelected, onClick, onPin }: NoteCardProps) {
         </button>
       )}
     </div>
+  )
+}
+
+function NoteIcon({ color }: { color: string }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <polyline points="14,2 14,8 20,8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
   )
 }
 
