@@ -3,16 +3,20 @@ import { useState, useCallback, useMemo } from 'react'
 import {
   TodaysTasks,
   MiniCalendar,
+  DayEventsModal,
   ExamsComingUp,
   ClassesToday,
   HomeworkComingUp,
   AIStudyCard,
+  transformEventToCalendarEvent,
   type Task,
   type Exam,
   type ClassSchedule,
   type Homework,
   type StudyNote,
   type StudyQuestion,
+  type MonthEvents,
+  type CalendarEvent,
 } from '~/components/dashboard'
 import { searchEvents, toggleEventComplete, type Event } from '~/utils/events'
 import { fetchClasses, formatClassTime, type Class } from '~/utils/classes'
@@ -31,9 +35,9 @@ export const Route = createFileRoute('/_authed/dashboard')({
     const examEndDate = new Date(today)
     examEndDate.setDate(examEndDate.getDate() + 30)
 
-    // Calculate date range for calendar events (current month)
+    // Calculate date range for calendar events (current month + buffer)
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
-    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0) // 2 months ahead
+    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59)
 
     const [examsResult, classesResult, todayTasksResult, assignmentsResult, notesResult, calendarEventsResult] = await Promise.all([
       searchEvents({
@@ -67,20 +71,15 @@ export const Route = createFileRoute('/_authed/dashboard')({
           limit: 5,
         },
       }),
-      // Fetch all events for calendar dots
+      // Fetch all events for current month calendar
       searchEvents({
         data: {
           startDate: monthStart.toISOString(),
           endDate: monthEnd.toISOString(),
-          limit: 100,
+          limit: 200,
         },
       }),
     ])
-
-    // Extract unique event dates for mini calendar
-    const eventDates = [...new Set(
-      (calendarEventsResult.events || []).map(e => e.start_time.split('T')[0])
-    )]
 
     return {
       examEvents: examsResult.events || [],
@@ -88,14 +87,15 @@ export const Route = createFileRoute('/_authed/dashboard')({
       todayEvents: todayTasksResult.events || [],
       assignments: assignmentsResult.assignments || [],
       notes: notesResult.notes || [],
-      eventDates,
+      initialCalendarEvents: calendarEventsResult.events || [],
+      initialMonth: { year: today.getFullYear(), month: today.getMonth() },
     }
   },
   component: DashboardPage,
 })
 
 // =============================================
-// Static Mock Data (to be replaced with real data later)
+// Helper Functions
 // =============================================
 
 // Transform database Event to dashboard Task interface
@@ -219,8 +219,6 @@ function getClassesForToday(classes: Class[]): ClassSchedule[] {
   }))
 }
 
-
-
 // Transform database Note to dashboard StudyNote interface
 function transformNoteToStudyNote(note: Note): StudyNote {
   const noteDate = new Date(note.created_at || Date.now())
@@ -242,6 +240,37 @@ function transformNoteToStudyNote(note: Note): StudyNote {
     date: noteDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     excerpt,
   }
+}
+
+// Group events by date for calendar display
+function groupEventsByDate(events: Event[]): MonthEvents {
+  const grouped: MonthEvents = {}
+
+  for (const event of events) {
+    const dateKey = event.start_time.split('T')[0]
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = []
+    }
+
+    const category = event.category || 'task'
+    const existing = grouped[dateKey].find(m => m.category === category)
+    if (existing) {
+      existing.count++
+    } else {
+      grouped[dateKey].push({ category, count: 1 })
+    }
+  }
+
+  return grouped
+}
+
+// Get events for a specific date
+function getEventsForDate(events: Event[], date: Date): CalendarEvent[] {
+  const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+  return events
+    .filter(e => e.start_time.startsWith(dateKey))
+    .map(transformEventToCalendarEvent)
 }
 
 // Placeholder questions - TODO: Replace with AI-generated questions based on notes
@@ -271,12 +300,22 @@ const PLACEHOLDER_QUESTIONS: StudyQuestion[] = [
 // =============================================
 
 function DashboardPage() {
-  const { examEvents, classes, todayEvents, assignments, notes, eventDates } = Route.useLoaderData()
+  const { examEvents, classes, todayEvents, assignments, notes, initialCalendarEvents, initialMonth } = Route.useLoaderData()
   const navigate = useNavigate()
+
+  // Calendar state
+  const [calendarEvents, setCalendarEvents] = useState<Event[]>(initialCalendarEvents)
+  const [calendarLoading, setCalendarLoading] = useState(false)
+  const [currentCalendarMonth, setCurrentCalendarMonth] = useState(initialMonth)
+
+  // Modal state
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Track local completion overrides for optimistic updates
   const [completionOverrides, setCompletionOverrides] = useState<Record<string, boolean>>({})
   const [assignmentOverrides, setAssignmentOverrides] = useState<Record<string, boolean>>({})
+  const [calendarEventOverrides, setCalendarEventOverrides] = useState<Record<string, boolean>>({})
 
   // Transform today's events to tasks, applying any local overrides
   const tasks = useMemo(() => {
@@ -307,7 +346,23 @@ function DashboardPage() {
     return notes.map(transformNoteToStudyNote)
   }, [notes])
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+  // Group calendar events by date for markers
+  const monthEvents = useMemo(() => {
+    return groupEventsByDate(calendarEvents)
+  }, [calendarEvents])
+
+  // Get events for selected date (for modal)
+  const selectedDateEvents = useMemo(() => {
+    if (!selectedDate) return []
+    return getEventsForDate(calendarEvents, selectedDate).map(event => {
+      // Apply local override if exists
+      if (calendarEventOverrides[event.id] !== undefined) {
+        return { ...event, completed: calendarEventOverrides[event.id] }
+      }
+      return event
+    })
+  }, [selectedDate, calendarEvents, calendarEventOverrides])
+
   const [studyQuestions, setStudyQuestions] = useState<StudyQuestion[]>(PLACEHOLDER_QUESTIONS)
 
   // Transform exam events to dashboard format
@@ -319,6 +374,47 @@ function DashboardPage() {
   const todaysClasses = useMemo(() => {
     return getClassesForToday(classes)
   }, [classes])
+
+  // Fetch events when month changes
+  const handleMonthChange = useCallback(async (year: number, month: number) => {
+    // Skip if same month
+    if (year === currentCalendarMonth.year && month === currentCalendarMonth.month) {
+      return
+    }
+
+    setCurrentCalendarMonth({ year, month })
+    setCalendarLoading(true)
+
+    try {
+      const monthStart = new Date(year, month, 1)
+      const monthEnd = new Date(year, month + 1, 0, 23, 59, 59)
+
+      const result = await searchEvents({
+        data: {
+          startDate: monthStart.toISOString(),
+          endDate: monthEnd.toISOString(),
+          limit: 200,
+        },
+      })
+
+      setCalendarEvents(result.events || [])
+    } catch (error) {
+      console.error('Failed to fetch calendar events:', error)
+    } finally {
+      setCalendarLoading(false)
+    }
+  }, [currentCalendarMonth])
+
+  // Handle day click - open modal
+  const handleDateSelect = useCallback((date: Date) => {
+    setSelectedDate(date)
+    setIsModalOpen(true)
+  }, [])
+
+  // Close modal
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false)
+  }, [])
 
   const handleExamClick = useCallback((examId: string) => {
     navigate({ to: '/exams', search: { id: examId } })
@@ -340,6 +436,30 @@ function DashboardPage() {
       setCompletionOverrides(prev => ({ ...prev, [taskId]: !newCompleted }))
     }
   }, [tasks])
+
+  // Handle toggle complete for calendar modal events
+  const handleToggleCalendarEvent = useCallback(async (eventId: string) => {
+    const event = selectedDateEvents.find(e => e.id === eventId)
+    if (!event) return
+
+    const newCompleted = !event.completed
+
+    // Optimistic update for modal
+    setCalendarEventOverrides(prev => ({ ...prev, [eventId]: newCompleted }))
+
+    // Also update in task list if applicable
+    if (completionOverrides[eventId] !== undefined || todayEvents.some(e => e.id === eventId)) {
+      setCompletionOverrides(prev => ({ ...prev, [eventId]: newCompleted }))
+    }
+
+    // Update in database
+    const result = await toggleEventComplete({ data: { id: eventId, completed: newCompleted } })
+    if (!result.success) {
+      // Revert on error
+      setCalendarEventOverrides(prev => ({ ...prev, [eventId]: !newCompleted }))
+      setCompletionOverrides(prev => ({ ...prev, [eventId]: !newCompleted }))
+    }
+  }, [selectedDateEvents, todayEvents, completionOverrides])
 
   const handleToggleHomework = useCallback(async (homeworkId: string) => {
     const hw = homework.find(h => h.id === homeworkId)
@@ -371,24 +491,6 @@ function DashboardPage() {
     setStudyQuestions((prev) => [...prev].sort(() => Math.random() - 0.5))
   }, [])
 
-  const handleDateSelect = useCallback((date: Date) => {
-    setSelectedDate(date)
-  }, [])
-
-  // Get greeting based on time of day
-  const getGreeting = () => {
-    const hour = new Date().getHours()
-    if (hour < 12) return 'Good morning'
-    if (hour < 17) return 'Good afternoon'
-    return 'Good evening'
-  }
-
-  // Calculate stats
-  const completedTasksToday = tasks.filter((t) => t.completed).length
-  const totalTasksToday = tasks.length
-  const upcomingExamsCount = exams.length
-  const pendingHomeworkCount = homework.filter((h) => !h.completed).length
-
   return (
     <div className="dashboard-v2">
       {/* Left Panel */}
@@ -396,7 +498,7 @@ function DashboardPage() {
         {/* My Classes Section */}
         <ClassesToday
           classes={todaysClasses}
-          onClassClick={(classId) => navigate({ to: '/timetable' })}
+          onClassClick={() => navigate({ to: '/timetable' })}
         />
 
         {/* Today Tasks Section */}
@@ -416,7 +518,7 @@ function DashboardPage() {
       {/* Right Panel */}
       <div className="dashboard-v2__right">
         {/* Search Header */}
-        <div className="dashboard-v2__header">
+        {/* <div className="dashboard-v2__header">
           <div className="dashboard-v2__search">
             <SearchIcon />
             <input type="text" placeholder="Search for anythings .." className="dashboard-v2__search-input" />
@@ -424,13 +526,15 @@ function DashboardPage() {
           <div className="dashboard-v2__avatar">
             <img src="https://i.pravatar.cc/40?img=5" alt="Profile" />
           </div>
-        </div>
+        </div> */}
 
         {/* Calendar Widget */}
         <MiniCalendar
           selectedDate={selectedDate}
           onDateSelect={handleDateSelect}
-          eventDates={eventDates}
+          onMonthChange={handleMonthChange}
+          monthEvents={monthEvents}
+          isLoading={calendarLoading}
         />
 
         {/* Upcoming Section - Exams */}
@@ -446,6 +550,15 @@ function DashboardPage() {
           onToggleComplete={handleToggleHomework}
         />
       </div>
+
+      {/* Day Events Modal */}
+      <DayEventsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        date={selectedDate}
+        events={selectedDateEvents}
+        onToggleComplete={handleToggleCalendarEvent}
+      />
     </div>
   )
 }

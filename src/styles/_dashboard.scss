@@ -1,0 +1,2473 @@
+// =============================================
+// Dashboard Styles
+// Based on AnnaDashboard.jpg design
+// =============================================
+
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Dashboard Colors (from design)
+$dash-primary: $primary;
+$dash-primary-dark: $primary-dark;
+$dash-primary-light: $primary-light;
+$dash-orange: #FF9800;
+$dash-orange-light: #FFF3E0;
+$dash-blue: #42a5f5;
+$dash-blue-light: #E3F2FD;
+$dash-red: #EF5350;
+$dash-red-light: #FFEBEE;
+
+// Base Dashboard
+.dashboard {
+  padding: 0;
+  max-width: 100%;
+  margin: 0;
+
+  @include mobile {
+    padding: 0;
+  }
+
+  &__header {
+    @include flex(row, space-between, flex-start);
+    margin-bottom: $spacing-6;
+
+    @include mobile {
+      flex-direction: column;
+      gap: $spacing-3;
+    }
+  }
+
+  &__greeting {
+    @include flex(column, flex-start, flex-start, $spacing-1);
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+
+    @include mobile {
+      font-size: $font-size-xl;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__date {
+    @include flex(column, flex-end, flex-end);
+    text-align: right;
+
+    @include mobile {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+
+  &__date-day {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__date-full {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-4;
+    margin-bottom: $spacing-6;
+
+    @include mobile {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-3;
+    }
+  }
+
+  &__stat {
+    @include flex(column, center, center, $spacing-1);
+    background-color: $bg-card;
+    padding: $spacing-5;
+    border-radius: $radius-2xl;
+    box-shadow: $shadow-card;
+  }
+
+  &__stat-value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $primary;
+  }
+
+  &__stat-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: $spacing-6;
+
+    @media (max-width: $breakpoint-xl) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-5;
+    }
+  }
+
+  &__column {
+    @include flex(column, flex-start, stretch, $spacing-6);
+
+    @include mobile {
+      gap: $spacing-5;
+    }
+  }
+}
+
+// Dashboard Card (updated to match design)
+.dashboard-card {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+
+  &__header {
+    @include flex(row, space-between, center);
+    padding: $spacing-5;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__title {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    svg {
+      color: $primary;
+    }
+  }
+
+  &__count {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    background-color: $gray-100;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+  }
+
+  &__content {
+    padding: $spacing-5;
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-2);
+    padding: $spacing-8;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    span {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// Tasks List
+.tasks-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-2);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3 0;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    @include flex-center;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+      color: $white;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    color: $gray-900;
+    @include text-truncate;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__time {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__category {
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+
+    &--task {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+
+    &--homework {
+      background-color: $warning-light;
+      color: $warning;
+    }
+
+    &--exam {
+      background-color: $error-light;
+      color: $error;
+    }
+  }
+}
+
+// Dashboard V2 Layout
+.dashboard-v2 {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: $spacing-8;
+  max-width: 100%;
+  min-height: calc(100vh - 80px);
+
+  @media (max-width: $breakpoint-xl) {
+    grid-template-columns: 1fr 340px;
+    gap: $spacing-6;
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-5;
+  }
+
+  &__left {
+    @include flex(column, flex-start, stretch, $spacing-6);
+
+    @include mobile {
+      gap: $spacing-5;
+    }
+  }
+
+  &__right {
+    @include flex(column, flex-start, stretch, $spacing-5);
+
+    @include mobile {
+      gap: $spacing-5;
+    }
+  }
+
+  &__header {
+    @include flex(row, space-between, center, $spacing-4);
+  }
+
+  &__search {
+    @include flex(row, flex-start, center, $spacing-3);
+    flex: 1;
+    background-color: $bg-card;
+    border-radius: $radius-2xl;
+    padding: $spacing-3 $spacing-5;
+    max-width: 320px;
+    box-shadow: $shadow-sm;
+
+    svg {
+      color: $gray-400;
+      flex-shrink: 0;
+    }
+  }
+
+  &__search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: $font-size-sm;
+    color: $gray-900;
+    width: 100%;
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    border: 2px solid $primary;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// Banner Card (from design - colorful promo card)
+.banner-card {
+  background: linear-gradient(135deg, $course-peach 0%, color.adjust($course-peach, $lightness: 5%) 100%);
+  border-radius: $radius-2xl;
+  padding: $spacing-6;
+  @include flex(row, space-between, center);
+  margin-bottom: $spacing-6;
+
+  &__content {
+    @include flex(column, flex-start, flex-start, $spacing-2);
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $course-peach-text;
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: color.adjust($course-peach-text, $lightness: 10%);
+  }
+
+  &__image {
+    width: 100px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+}
+
+// Course Cards (from design)
+.course-card {
+  border-radius: $radius-2xl;
+  padding: $spacing-4 $spacing-5;
+  @include flex(row, space-between, center);
+  transition: transform $transition-fast, box-shadow $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &__info {
+    @include flex(column, flex-start, flex-start, $spacing-1);
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__progress {
+    font-size: $font-size-xs;
+    opacity: 0.8;
+  }
+
+  &__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    background-color: rgba($white, 0.3);
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  // Color variants
+  &--peach {
+    background-color: $course-peach;
+    color: $course-peach-text;
+  }
+
+  &--lavender {
+    background-color: $course-lavender;
+    color: $course-lavender-text;
+  }
+
+  &--mint {
+    background-color: $course-mint;
+    color: $course-mint-text;
+  }
+}
+
+// Today Tasks (updated to match design)
+.today-tasks {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-5;
+  }
+
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__dot {
+    color: $primary;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: $spacing-4;
+  }
+
+  &__see-all {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__tabs {
+    @include flex(row, flex-start, center, $spacing-2);
+    margin-bottom: $spacing-5;
+  }
+
+  &__tab {
+    @include button-reset;
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gray-700;
+    }
+
+    &--active {
+      background-color: $sidebar-bg;
+      color: $white;
+    }
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-8;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-xl;
+    transition: all $transition-fast;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      background-color: $gray-100;
+      transform: translateX(2px);
+    }
+
+    &--completed {
+      opacity: 0.6;
+    }
+  }
+
+  &__indicator {
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 4px 0 0 4px;
+
+    &--task {
+      background-color: $dash-blue;
+    }
+
+    &--homework {
+      background-color: $dash-orange;
+    }
+
+    &--exam {
+      background-color: $dash-red;
+    }
+  }
+
+  &__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-lg;
+    @include flex-center;
+    flex-shrink: 0;
+
+    &--blue {
+      background-color: $dash-blue-light;
+      color: $dash-blue;
+    }
+
+    &--orange {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+
+    &--red {
+      background-color: $dash-red-light;
+      color: $dash-red;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    padding-left: $spacing-2;
+  }
+
+  &__name {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: 2px;
+    @include text-truncate;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__meta {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__category {
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--task {
+      background-color: $dash-blue-light;
+      color: $dash-blue;
+    }
+
+    &--homework {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+
+    &--exam {
+      background-color: $dash-red-light;
+      color: $dash-red;
+    }
+  }
+
+  &__more {
+    @include button-reset;
+    @include flex-center;
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-fast;
+    margin-left: $spacing-2;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-600;
+    }
+  }
+
+  &__action {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-1);
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &--pending {
+      background-color: $gray-200;
+      color: $gray-600;
+
+      &:hover {
+        background-color: $primary-light;
+        color: $primary;
+      }
+    }
+
+    &--done {
+      background-color: $success-light;
+      color: $success;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+    color: transparent;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $primary;
+      border-color: $primary;
+      color: $white;
+    }
+  }
+}
+
+// Dashboard Calendar (mini calendar in right sidebar)
+.dash-calendar {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+  transition: opacity $transition-fast;
+
+  &--loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__month {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__nav {
+    @include flex(row, flex-end, center, $spacing-1);
+  }
+
+  &__nav-btn {
+    @include button-reset;
+    @include flex-center;
+    width: 28px;
+    height: 28px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: $spacing-2;
+  }
+
+  &__weekday {
+    text-align: center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-400;
+    padding: $spacing-2;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+
+  &__day {
+    @include button-reset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+    position: relative;
+    padding: 4px;
+    background-color: transparent;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: $shadow-sm;
+    }
+
+    &--empty {
+      visibility: hidden;
+    }
+
+    &--today {
+      background-color: $sidebar-bg !important;
+      color: $white;
+      font-weight: $font-weight-bold;
+      box-shadow: $shadow-md;
+    }
+
+    &--selected {
+      outline: 2px solid $primary;
+      outline-offset: 1px;
+      font-weight: $font-weight-medium;
+    }
+
+    &--has-events {
+      font-weight: $font-weight-medium;
+      color: $gray-800;
+    }
+  }
+
+  &__day-number {
+    line-height: 1;
+    font-size: $font-size-sm;
+  }
+
+  &__event-count {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 9px;
+    font-weight: $font-weight-bold;
+    color: $gray-600;
+    opacity: 0.7;
+  }
+
+  &__dots {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  &__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
+// Profile Card (from design - right sidebar)
+.profile-card {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+  text-align: center;
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    margin: 0 auto $spacing-4;
+    border: 3px solid $primary-light;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__role {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    margin-bottom: $spacing-4;
+  }
+
+  &__actions {
+    @include flex(row, center, center, $spacing-3);
+    margin-bottom: $spacing-4;
+  }
+
+  &__action {
+    @include button-reset;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    background-color: $gray-100;
+    color: $gray-600;
+    @include flex-center;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-800;
+    }
+  }
+
+  &__connect {
+    @include button-reset;
+    width: 100%;
+    padding: $spacing-3 $spacing-4;
+    background-color: $primary;
+    color: $white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $primary-dark;
+    }
+  }
+}
+
+// Stats Card (Your Success - from design)
+.stats-card {
+  background-color: $sidebar-bg;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  color: $white;
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-5;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-md;
+    background-color: rgba($white, 0.1);
+    @include flex-center;
+  }
+
+  &__metric {
+    margin-bottom: $spacing-4;
+  }
+
+  &__number {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacing-1;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: rgba($white, 0.7);
+  }
+
+  &__chart {
+    height: 60px;
+    margin-bottom: $spacing-4;
+  }
+
+  &__time {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-4;
+    background-color: rgba($white, 0.1);
+    border-radius: $radius-lg;
+  }
+
+  &__time-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    background-color: $primary;
+    @include flex-center;
+  }
+
+  &__time-info {
+    flex: 1;
+  }
+
+  &__time-value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+
+  &__time-label {
+    font-size: $font-size-xs;
+    color: rgba($white, 0.7);
+  }
+}
+
+// Day Events Modal
+.day-events-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-4;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  &__content {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    background-color: $bg-card;
+    border-radius: $radius-2xl;
+    box-shadow: $shadow-xl;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modal-slide-up 0.2s ease-out;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-5;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__date-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+
+    svg {
+      color: $gray-500;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__close {
+    @include button-reset;
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-5;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-8 $spacing-4;
+    text-align: center;
+
+    svg {
+      color: $gray-300;
+      margin-bottom: $spacing-4;
+    }
+  }
+
+  &__empty-title {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-700;
+  }
+
+  &__empty-text {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__count {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    margin-bottom: $spacing-2;
+  }
+
+  &__event {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-3;
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--completed {
+      opacity: 0.6;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    @include flex-center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__event-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__event-title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__event-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    flex-wrap: wrap;
+  }
+
+  &__event-category {
+    display: inline-flex;
+    padding: 2px $spacing-2;
+    font-size: 11px;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+  }
+
+  &__event-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: $gray-500;
+
+    svg {
+      color: $gray-400;
+    }
+  }
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Upcoming Section
+.upcoming {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin-bottom: $spacing-4;
+  }
+
+  &__dot {
+    color: $primary;
+  }
+
+  &__content {
+    margin-bottom: $spacing-4;
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-6;
+    color: $gray-400;
+    text-align: center;
+  }
+
+  &__view-all {
+    @include button-reset;
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $primary;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $primary-dark;
+    }
+
+    svg {
+      transition: transform $transition-fast;
+    }
+
+    &:hover svg {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.upcoming-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-3);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-xl;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      transform: translateX(2px);
+    }
+
+    &--urgent {
+      background-color: rgba($error, 0.05);
+      border-left: 3px solid $error;
+    }
+
+    &--soon {
+      background-color: rgba($warning, 0.05);
+      border-left: 3px solid $warning;
+    }
+  }
+
+  &__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    &--orange { background-color: $dash-orange; }
+    &--blue { background-color: $dash-blue; }
+    &--red { background-color: $dash-red; }
+    &--green { background-color: $primary; }
+    &--purple { background-color: #9c27b0; }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: 2px;
+  }
+
+  &__desc {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    @include text-truncate;
+  }
+
+  &__icon {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__time {
+    @include flex(column, flex-start, flex-end);
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &__date {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__duration {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+}
+
+// AI Study Card Variant
+.dashboard-card--ai-study {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+
+  .dashboard-card__header {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    color: $white;
+    border-bottom: none;
+
+    .dashboard-card__title {
+      color: $white;
+
+      svg {
+        color: rgba($white, 0.8);
+      }
+    }
+  }
+}
+
+// AI Study Components
+.ai-study {
+  &__tabs {
+    @include flex(row, flex-start, center, $spacing-1);
+    background-color: $gray-100;
+    padding: $spacing-1;
+    border-radius: $radius-full;
+    margin-left: auto;
+  }
+
+  &__tab {
+    @include button-reset;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gray-700;
+    }
+
+    &--active {
+      background-color: $white;
+      color: $gray-900;
+      box-shadow: $shadow-sm;
+    }
+  }
+
+  &__content {
+    padding: $spacing-5;
+  }
+
+  &__intro {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+
+    p {
+      font-size: $font-size-sm;
+      color: $gray-600;
+      margin: 0;
+    }
+  }
+
+  &__refresh {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-1);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $primary;
+    padding: $spacing-2 $spacing-3;
+    background-color: $primary-light;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background-color: $primary;
+      color: $white;
+    }
+  }
+
+  &__questions {
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__question-list {
+    list-style: none;
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__question-item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-4;
+    background-color: $card-yellow;
+    border-radius: $radius-xl;
+    transition: all $transition-fast;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateX(2px);
+      box-shadow: $shadow-sm;
+    }
+
+    &:nth-child(2) {
+      background-color: $card-pink;
+    }
+
+    &:nth-child(3) {
+      background-color: $card-mint;
+    }
+  }
+
+  &__question-number {
+    @include flex-center;
+    width: 28px;
+    height: 28px;
+    background-color: $primary-light;
+    color: $primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+  }
+
+  &__question-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__question-text {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-2;
+  }
+
+  &__question-meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__question-category {
+    display: inline-flex;
+    padding: 2px $spacing-2;
+    background-color: $primary-light;
+    color: $primary;
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-sm;
+  }
+
+  &__question-difficulty {
+    font-size: $font-size-xs;
+    color: $gray-400;
+
+    &--easy {
+      color: $success;
+    }
+
+    &--medium {
+      color: $warning;
+    }
+
+    &--hard {
+      color: $error;
+    }
+  }
+
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-8;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  &__generate-btn {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    width: 100%;
+    padding: $spacing-4;
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    color: $white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: $shadow-md;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &__flashcards {
+    @include flex(column, flex-start, stretch, $spacing-4);
+  }
+
+  &__flashcard {
+    background-color: $white;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-5;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary;
+      box-shadow: $shadow-sm;
+    }
+
+    &--flipped {
+      background-color: $primary-light;
+      border-color: $primary;
+    }
+  }
+
+  &__flashcard-front,
+  &__flashcard-back {
+    font-size: $font-size-base;
+    color: $gray-900;
+    text-align: center;
+  }
+
+  &__flashcard-back {
+    color: $primary-dark;
+    font-weight: $font-weight-medium;
+  }
+
+  &__summary {
+    padding: $spacing-5;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+  }
+
+  &__summary-title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-3;
+  }
+
+  &__summary-text {
+    font-size: $font-size-sm;
+    color: $gray-700;
+    line-height: 1.6;
+  }
+}
+
+// Physio Schedule
+.physio-schedule {
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__date-range {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__tasks {
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__task-card {
+    @include flex(row, flex-start, center, $spacing-4);
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--completed {
+      opacity: 0.6;
+    }
+
+    &--urgent {
+      background-color: $error-light;
+      border-left: 3px solid $error;
+    }
+
+    &--warning {
+      background-color: $warning-light;
+      border-left: 3px solid $warning;
+    }
+  }
+
+  &__task-icon {
+    @include flex-center;
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+
+    &--blue {
+      background-color: $dash-blue-light;
+      color: $dash-blue;
+    }
+
+    &--green {
+      background-color: $success-light;
+      color: $success;
+    }
+
+    &--orange {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+
+    &--red {
+      background-color: $dash-red-light;
+      color: $dash-red;
+    }
+
+    &--purple {
+      background-color: #F3E5F5;
+      color: #9C27B0;
+    }
+  }
+
+  &__task-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__task-title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: 2px;
+    @include text-truncate;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__task-meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__task-time {
+    @include flex(row, flex-start, center, $spacing-1);
+  }
+
+  &__task-category {
+    display: inline-flex;
+    padding: 2px $spacing-2;
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-sm;
+
+    &--lecture {
+      background-color: $dash-blue-light;
+      color: $dash-blue;
+    }
+
+    &--clinical {
+      background-color: $success-light;
+      color: $success;
+    }
+
+    &--study {
+      background-color: #F3E5F5;
+      color: #9C27B0;
+    }
+
+    &--exam {
+      background-color: $error-light;
+      color: $error;
+    }
+
+    &--assignment {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+  }
+
+  &__task-checkbox {
+    @include button-reset;
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+    color: transparent;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $primary;
+      border-color: $primary;
+      color: $white;
+    }
+  }
+
+  &__task-actions {
+    @include flex(row, flex-end, center, $spacing-2);
+    flex-shrink: 0;
+  }
+
+  &__task-action {
+    @include button-reset;
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-600;
+    }
+  }
+}
+
+// Schedule Timeline
+.schedule-timeline {
+  @include flex(column, flex-start, stretch);
+
+  &__item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-2 0;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 28px;
+      bottom: -8px;
+      width: 2px;
+      background-color: $gray-200;
+    }
+
+    &:last-child::before {
+      display: none;
+    }
+  }
+
+  &__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    margin-top: 4px;
+    z-index: 1;
+
+    &--active {
+      background-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.2);
+    }
+
+    &--completed {
+      background-color: $success;
+    }
+
+    &--upcoming {
+      background-color: $gray-300;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: $spacing-4;
+  }
+
+  &__time {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    margin-bottom: $spacing-1;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__location {
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-xs;
+    color: $gray-400;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Study Progress Card
+.study-progress-card {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__period {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__chart {
+    height: 120px;
+    margin-bottom: $spacing-4;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-4;
+  }
+
+  &__stat {
+    text-align: center;
+  }
+
+  &__stat-value {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $primary;
+    margin-bottom: $spacing-1;
+  }
+
+  &__stat-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+}
+
+// Quick Actions
+.quick-actions {
+  @include flex(row, flex-start, center, $spacing-3);
+  flex-wrap: wrap;
+
+  &__btn {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-3 $spacing-4;
+    background-color: $gray-100;
+    color: $gray-700;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-900;
+    }
+
+    &--primary {
+      background-color: $primary;
+      color: $white;
+
+      &:hover {
+        background-color: $primary-dark;
+        color: $white;
+      }
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// =============================================
+// Additional Dashboard Component Styles
+// =============================================
+
+// AI Study Additional Styles
+.ai-study {
+  &__intro {
+    padding: $spacing-5;
+    text-align: center;
+  }
+
+  &__notes {
+    padding: $spacing-5;
+  }
+
+  &__notes-list {
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__note-item {
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--selected {
+      background-color: $primary-light;
+      border: 1px solid $primary;
+    }
+  }
+
+  &__note-header {
+    @include flex(row, space-between, flex-start);
+    margin-bottom: $spacing-2;
+  }
+
+  &__note-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin: 0;
+    @include text-truncate;
+  }
+
+  &__note-date {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    flex-shrink: 0;
+  }
+
+  &__note-subject {
+    display: inline-flex;
+    padding: $spacing-1 $spacing-2;
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    background-color: $primary-light;
+    color: $primary;
+    border-radius: $radius-sm;
+    margin-bottom: $spacing-2;
+  }
+
+  &__note-excerpt {
+    font-size: $font-size-sm;
+    color: $gray-600;
+    @include text-truncate;
+  }
+
+  &__footer {
+    padding: $spacing-4 $spacing-5;
+    border-top: 1px solid $gray-100;
+    @include flex(row, space-between, center);
+  }
+
+  &__powered {
+    font-size: $font-size-xs;
+    color: $gray-400;
+    @include flex(row, flex-start, center, $spacing-1);
+
+    svg {
+      color: $primary;
+    }
+  }
+
+  &__refresh {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-1);
+    font-size: $font-size-xs;
+    color: $primary;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $primary-dark;
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__question-topic {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    margin-top: $spacing-1;
+  }
+}
+
+// Classes Timeline Additional Styles
+.classes-timeline {
+  @include flex(column, flex-start, stretch);
+
+  &__item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-3;
+    border-radius: $radius-xl;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+
+    &--ongoing {
+      background-color: rgba($primary, 0.08);
+
+      .classes-timeline__dot {
+        background-color: $primary;
+        box-shadow: 0 0 0 4px rgba($primary, 0.2);
+      }
+    }
+
+    &--next {
+      background-color: rgba($warning, 0.08);
+
+      .classes-timeline__dot {
+        background-color: $warning;
+      }
+    }
+  }
+
+  &__time-block {
+    @include flex(column, flex-start, flex-end);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  &__start {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__end {
+    font-size: 10px;
+    color: $gray-400;
+  }
+
+  &__line {
+    @include flex(column, flex-start, center);
+    width: 20px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  &__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: $radius-full;
+    background-color: $gray-300;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  &__connector {
+    width: 2px;
+    flex: 1;
+    background-color: $gray-200;
+    min-height: 40px;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__subject {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__location {
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-xs;
+    color: $gray-500;
+    margin-bottom: $spacing-1;
+
+    svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__instructor {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__badge {
+    display: inline-flex;
+    padding: 2px $spacing-2;
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+    margin-top: $spacing-2;
+
+    &--ongoing {
+      background-color: $primary;
+      color: $white;
+    }
+
+    &--next {
+      background-color: $warning;
+      color: $white;
+    }
+  }
+}
+
+// Upcoming List Additional Styles
+.upcoming-list {
+  &__icon {
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+
+    &--blue {
+      background-color: $dash-blue-light;
+      color: $dash-blue;
+    }
+
+    &--orange {
+      background-color: $dash-orange-light;
+      color: $dash-orange;
+    }
+
+    &--red {
+      background-color: $dash-red-light;
+      color: $dash-red;
+    }
+
+    &--green {
+      background-color: $success-light;
+      color: $success;
+    }
+
+    &--purple {
+      background-color: #F3E5F5;
+      color: #9C27B0;
+    }
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: 2px;
+  }
+
+  &__desc {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__time {
+    @include flex(column, flex-start, flex-end);
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &__date {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__duration {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+}
+
+// Homework List Additional Styles
+.homework-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-3);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-xl;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--completed {
+      opacity: 0.6;
+
+      .homework-list__title {
+        text-decoration: line-through;
+        color: $gray-400;
+      }
+    }
+
+    &--urgent {
+      background-color: rgba($error, 0.05);
+      border-left: 3px solid $error;
+    }
+
+    &--soon {
+      background-color: rgba($warning, 0.05);
+      border-left: 3px solid $warning;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    @include flex-center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-md;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+
+      &::after {
+        content: '✓';
+        color: $white;
+        font-size: 12px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin-bottom: 2px;
+    @include text-truncate;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+  }
+
+  &__subject {
+    color: $gray-500;
+  }
+
+  &__due {
+    color: $gray-400;
+
+    &::before {
+      content: '•';
+      margin-right: $spacing-2;
+    }
+  }
+}
+
+// Today Tasks Additional Styles
+.today-tasks {
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+
+    &--blue { background-color: $dash-blue; }
+    &--orange { background-color: $dash-orange; }
+    &--red { background-color: $dash-red; }
+    &--green { background-color: $success; }
+    &--purple { background-color: #9C27B0; }
+  }
+
+  &__more {
+    font-size: $font-size-xs;
+    color: $primary;
+    cursor: pointer;
+    padding: $spacing-2;
+    text-align: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Stats Card Additional Styles (analytics)
+.stats-card {
+  &__content {
+    @include flex(column, flex-start, stretch, $spacing-3);
+  }
+
+  &__value {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $primary;
+  }
+}
+
+// Streak Display Styles
+.streak-display {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  padding: $spacing-5;
+  box-shadow: $shadow-card;
+  text-align: center;
+
+  &__content {
+    @include flex(column, center, center, $spacing-3);
+  }
+
+  &__flame {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  &__current {
+    @include flex(column, center, center, $spacing-1);
+  }
+
+  &__number {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $warning;
+    line-height: 1;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__best {
+    font-size: $font-size-sm;
+    color: $gray-400;
+  }
+
+  &__motivate {
+    font-size: $font-size-sm;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+// Animate Spin
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

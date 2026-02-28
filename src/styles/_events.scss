@@ -1,0 +1,526 @@
+// =============================================
+// Event Card Styles
+// =============================================
+
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Event Cards
+.event-card {
+  border-radius: $radius-md;
+  padding: $spacing-2 $spacing-3;
+  margin-bottom: $spacing-1;
+  cursor: pointer;
+  position: relative;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+  text-align: left;
+  width: 100%;
+  border: none;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+
+  // Compact view for month calendar
+  &--compact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: $spacing-2;
+    margin-bottom: $spacing-1;
+    border-radius: $radius-md;
+    border-left: none;
+
+    .event-card__title {
+      font-size: 11px;
+      font-weight: $font-weight-medium;
+      margin-bottom: 2px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .event-card__time {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      opacity: 0.8;
+
+      svg {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: inherit;
+    margin-bottom: $spacing-1;
+    @include text-truncate;
+  }
+
+  &__time {
+    font-size: $font-size-xs;
+    opacity: 0.8;
+  }
+
+  &__status {
+    @include flex(row, flex-start, center, $spacing-1);
+    margin-top: $spacing-2;
+    font-size: $font-size-xs;
+  }
+
+  &__status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+  }
+
+  &__menu-btn {
+    @include button-reset;
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    width: 20px;
+    height: 20px;
+    @include flex-center;
+    opacity: 0;
+    transition: opacity $transition-fast;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &:hover &__menu-btn {
+    opacity: 1;
+  }
+
+  // Category variants
+  &--math {
+    background-color: #E8EEFF;
+    color: $category-math;
+    border-left: 3px solid $category-math;
+  }
+
+  &--art {
+    background-color: $category-art;
+    color: $category-art-text;
+    border-left: 3px solid $category-art-text;
+  }
+
+  &--physics {
+    background-color: $category-physics;
+    color: $category-physics-text;
+    border-left: 3px solid $category-physics-text;
+  }
+
+  &--sport {
+    background-color: $category-sport;
+    color: $category-sport-text;
+    border-left: 3px solid $category-sport-text;
+  }
+
+  &--computer {
+    background-color: $category-computer;
+    color: $category-computer-text;
+    border-left: 3px solid $category-computer-text;
+  }
+
+  &--clinical {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    border-left: 3px solid #4CAF50;
+  }
+
+  &--lecture {
+    background-color: #E3F2FD;
+    color: #1565C0;
+    border-left: 3px solid #2196F3;
+  }
+
+  &--study {
+    background-color: #F3E5F5;
+    color: #7B1FA2;
+    border-left: 3px solid #9C27B0;
+  }
+
+  &--task {
+    background-color: #F5F5F5;
+    color: #616161;
+    border-left: 3px solid #9E9E9E;
+  }
+
+  &--homework {
+    background-color: #FFF8E1;
+    color: #E65100;
+    border-left: 3px solid #FF9800;
+  }
+
+  &--exam {
+    background-color: #FFEBEE;
+    color: #C62828;
+    border-left: 3px solid #F44336;
+  }
+
+  &--meeting {
+    background-color: #E0F7FA;
+    color: #00838F;
+    border-left: 3px solid #00BCD4;
+  }
+
+  &--personal {
+    background-color: #FCE4EC;
+    color: #AD1457;
+    border-left: 3px solid #E91E63;
+  }
+
+  &--deadline {
+    background-color: #FFCDD2;
+    color: #B71C1C;
+    border-left: 3px solid #E53935;
+  }
+
+  &--completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+}
+
+// Status Badge
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-1 $spacing-2;
+  background-color: rgba($white, 0.7);
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &--confirmed {
+    color: $success;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+  }
+}
+
+// Exams List
+.exams-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-3);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--urgent {
+      background-color: $error-light;
+
+      .exams-list__indicator {
+        background-color: $error;
+      }
+
+      .exams-list__countdown {
+        color: $error;
+        font-weight: $font-weight-semibold;
+      }
+    }
+
+    &--soon {
+      background-color: $warning-light;
+
+      .exams-list__indicator {
+        background-color: $warning;
+      }
+
+      .exams-list__countdown {
+        color: $warning;
+      }
+    }
+  }
+
+  &__indicator {
+    width: 4px;
+    height: 40px;
+    background-color: $primary-blue;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__subject {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__date {
+    color: $gray-600;
+  }
+
+  &__time {
+    &::before {
+      content: '•';
+      margin-right: $spacing-2;
+    }
+  }
+
+  &__countdown {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    flex-shrink: 0;
+  }
+}
+
+// Homework List
+.homework-list {
+  list-style: none;
+  @include flex(column, flex-start, stretch, $spacing-2);
+
+  &__item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &--completed {
+      opacity: 0.6;
+
+      .homework-list__title {
+        text-decoration: line-through;
+        color: $gray-400;
+      }
+    }
+
+    &--urgent {
+      background-color: $error-light;
+    }
+
+    &--soon {
+      background-color: $warning-light;
+    }
+  }
+
+  &__checkbox {
+    @include button-reset;
+    width: 18px;
+    height: 18px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary-blue;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+
+      &::after {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background-color: $white;
+        border-radius: $radius-full;
+        display: block;
+        margin: auto;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  &__title {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__meta {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+  }
+
+  &__subject {
+    color: $gray-500;
+  }
+
+  &__due {
+    color: $gray-400;
+
+    &::before {
+      content: '•';
+      margin-right: $spacing-2;
+    }
+  }
+}
+
+// Classes Timeline
+.classes-timeline {
+  @include flex(column, flex-start, stretch);
+
+  &__item {
+    @include flex(row, flex-start, flex-start, $spacing-3);
+    padding: $spacing-2 0;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      .classes-timeline__content {
+        background-color: $gray-100;
+      }
+    }
+
+    &--ongoing {
+      .classes-timeline__dot {
+        background-color: $success;
+        box-shadow: 0 0 0 3px rgba($success, 0.2);
+      }
+
+      .classes-timeline__subject {
+        color: $success;
+      }
+    }
+
+    &--next {
+      .classes-timeline__dot {
+        background-color: $primary-blue;
+      }
+    }
+  }
+
+  &__time-block {
+    @include flex(column, flex-start, flex-end);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  &__start {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+  }
+
+  &__end {
+    font-size: 10px;
+    color: $gray-400;
+  }
+
+  &__line {
+    @include flex(column, flex-start, center);
+    width: 20px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    background-color: $gray-300;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  &__connector {
+    width: 2px;
+    flex: 1;
+    background-color: $gray-200;
+    min-height: 40px;
+  }
+
+  &__content {
+    flex: 1;
+    padding: $spacing-2 $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-md;
+    transition: background-color $transition-fast;
+  }
+
+  &__subject {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__location {
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: $font-size-xs;
+    color: $gray-500;
+    margin-bottom: $spacing-1;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__instructor {
+    font-size: $font-size-xs;
+    color: $gray-400;
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    padding: 2px $spacing-2;
+    border-radius: $radius-sm;
+    margin-top: $spacing-1;
+
+    &--ongoing {
+      background-color: $success;
+      color: $white;
+    }
+
+    &--next {
+      background-color: $primary-blue;
+      color: $white;
+    }
+  }
+}

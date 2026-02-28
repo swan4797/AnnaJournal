@@ -229,9 +229,6 @@ function CalendarPage() {
             <button className="physio-schedule__icon-btn">
               <BellIcon />
             </button>
-            <div className="physio-schedule__topbar-avatar">
-              <img src="https://i.pravatar.cc/40?img=3" alt="Profile" />
-            </div>
           </div>
         </div>
       </div>
@@ -271,24 +268,47 @@ function CalendarPage() {
 
         {/* Right - Main Calendar */}
         <main className="physio-schedule__main">
-          {/* Week Navigator */}
-          <div className="physio-schedule__week-nav">
-            <h2 className="physio-schedule__date-title">{dateDisplay.full}</h2>
-            <div className="physio-schedule__week-nav-actions">
-              <button
-                className="physio-schedule__today-btn"
-                onClick={() => setSelectedDate(new Date())}
-              >
-                Today
+          {/* Main Calendar Header - Design Match */}
+          <div className="cal-main-header">
+            {/* Left: Current Day Display */}
+            <div className="cal-main-header__left">
+              <h2 className="cal-main-header__day-name">
+                {(selectedDate || new Date()).toLocaleDateString('en-US', { weekday: 'long' })}
+              </h2>
+              <span className="cal-main-header__day-date">
+                {(selectedDate || new Date()).getDate()}
+                {getOrdinalSuffix((selectedDate || new Date()).getDate())}
+              </span>
+            </div>
+
+            {/* Center: Month Navigation */}
+            <div className="cal-main-header__center">
+              <button className="cal-main-header__nav-btn" aria-label="Previous month">
+                <ChevronLeftIcon />
               </button>
-              <div className="physio-schedule__nav-arrows">
-                <button className="physio-schedule__arrow-btn">
-                  <ChevronLeftIcon />
-                </button>
-                <button className="physio-schedule__arrow-btn">
-                  <ChevronRightIcon />
-                </button>
-              </div>
+              <span className="cal-main-header__month">
+                {dateDisplay.month}, {dateDisplay.year}
+              </span>
+              <button className="cal-main-header__nav-btn" aria-label="Next month">
+                <ChevronRightIcon />
+              </button>
+            </div>
+
+            {/* Right: Actions */}
+            <div className="cal-main-header__right">
+              <button className="cal-main-header__icon-btn" title="Grid view">
+                <GridIcon />
+              </button>
+              <button className="cal-main-header__icon-btn" title="Filter">
+                <FilterIcon />
+              </button>
+              <button
+                className="cal-main-header__add-btn"
+                onClick={() => handleCreateEvent(selectedDate || new Date())}
+              >
+                <PlusIcon />
+                <span>Add new</span>
+              </button>
             </div>
           </div>
 
@@ -343,8 +363,46 @@ function CalendarPage() {
 }
 
 // =====================
+// Helper Functions
+// =====================
+
+function getOrdinalSuffix(day: number): string {
+  if (day > 3 && day < 21) return 'th'
+  switch (day % 10) {
+    case 1: return 'st'
+    case 2: return 'nd'
+    case 3: return 'rd'
+    default: return 'th'
+  }
+}
+
+// =====================
 // Icon Components
 // =====================
+
+function GridIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="5" cy="5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="19" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function FilterIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
+  )
+}
 
 function LogoIcon() {
   return (

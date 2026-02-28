@@ -1,0 +1,529 @@
+// =============================================
+// Layout Structure
+// Based on AnnaJournal.jpg design reference
+// =============================================
+
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// App Layout - Sidebar + Main Container
+.app-layout {
+  @include flex(row);
+  min-height: 100vh;
+  background-color: $bg-main;
+  padding: 24px;
+  padding-left: calc($sidebar-width + 48px); // Sidebar width + left padding + gap
+
+  @include mobile {
+    flex-direction: column;
+    padding: $spacing-4;
+    padding-left: $spacing-4;
+  }
+}
+
+// Main Content Container
+.main-content {
+  flex: 1;
+  @include flex(column);
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+
+  @include mobile {
+    width: 100%;
+    min-height: calc(100vh - 32px);
+    padding-top: 56px; // Space for mobile header
+  }
+}
+
+// Page Container
+.page-container {
+  flex: 1;
+  @include flex(column);
+  gap: $spacing-5;
+  max-width: 100%;
+  padding: $spacing-6;
+  overflow-y: auto;
+
+  @include mobile {
+    padding: $spacing-4;
+    gap: $spacing-4;
+  }
+}
+
+// Page Header
+.page-header {
+  @include flex(row, space-between, center);
+  margin-bottom: $spacing-2;
+
+  &__back {
+    @include button-reset;
+    @include flex(row, flex-start, center, $spacing-2);
+    color: $gray-600;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $gray-900;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__title {
+    @include flex(row, flex-start, center, $spacing-3);
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__actions {
+    @include flex(row, flex-end, center, $spacing-3);
+  }
+
+  &__badge {
+    padding: $spacing-2 $spacing-4;
+    background-color: $white;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    box-shadow: $shadow-sm;
+  }
+
+  &__date {
+    @include flex(row, flex-start, center, $spacing-2);
+    padding: $spacing-2 $spacing-4;
+    background-color: $white;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    box-shadow: $shadow-sm;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $gray-500;
+    }
+  }
+}
+
+// Top Header - Center tabs design
+.top-header {
+  @include flex(row, space-between, center);
+  padding: $spacing-5 $spacing-6;
+  background-color: transparent;
+  border-bottom: none;
+
+  @include mobile {
+    padding: $spacing-4;
+    padding-left: 56px; // Space for hamburger button
+    flex-wrap: wrap;
+    gap: $spacing-3;
+  }
+
+  &__left {
+    @include flex(row, flex-start, center, $spacing-3);
+  }
+
+  &__menu-btn {
+    @include button-reset;
+    width: 44px;
+    height: 44px;
+    @include flex-center;
+    border-radius: $radius-lg;
+    color: $gray-700;
+    background-color: transparent;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($black, 0.05);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__icon-btn {
+    @include button-reset;
+    width: 40px;
+    height: 40px;
+    @include flex-center;
+    border-radius: $radius-lg;
+    color: $gray-600;
+    background-color: transparent;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($black, 0.05);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // Center Navigation Tabs
+  &__nav {
+    @include flex(row, center, center, $spacing-1);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    @include mobile {
+      position: static;
+      transform: none;
+      width: 100%;
+      order: 3;
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding: $spacing-2 0;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  &__tab {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-3 $spacing-5;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    text-decoration: none;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+    white-space: nowrap;
+
+    &:hover {
+      color: $gray-900;
+      background-color: rgba($black, 0.05);
+    }
+
+    &--active {
+      background-color: $sidebar-bg;
+      color: $white;
+
+      &:hover {
+        background-color: $sidebar-bg;
+        color: $white;
+      }
+    }
+
+    @include mobile {
+      padding: $spacing-2 $spacing-4;
+    }
+  }
+
+  &__tab-icon {
+    @include flex-center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__tab-label {
+    font-size: $font-size-sm;
+  }
+
+  // Right Actions
+  &__actions {
+    @include flex(row, flex-end, center, $spacing-3);
+
+    @include mobile {
+      gap: $spacing-2;
+    }
+  }
+
+  &__action-btn {
+    @include button-reset;
+    width: 44px;
+    height: 44px;
+    @include flex-center;
+    border-radius: $radius-full;
+    color: $gray-600;
+    background-color: transparent;
+    transition: all $transition-fast;
+
+    @include mobile {
+      width: 40px;
+      height: 40px;
+    }
+
+    &:hover {
+      background-color: rgba($black, 0.05);
+      color: $gray-900;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    border: 2px solid $white;
+    box-shadow: $shadow-sm;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // Hidden breadcrumb (for accessibility)
+  &__breadcrumb {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-sm;
+    color: $gray-500;
+
+    a {
+      color: $gray-900;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+
+  &__separator {
+    color: $gray-400;
+  }
+
+  &__current {
+    @include flex(row, flex-start, center, $spacing-2);
+    color: $gray-900;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Search Bar
+.search-header {
+  @include flex(row, flex-start, center, $spacing-4);
+  padding: $spacing-3 $spacing-5;
+  background-color: $bg-card;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  max-width: 300px;
+
+  &__icon {
+    color: $gray-400;
+    flex-shrink: 0;
+  }
+
+  &__input {
+    @include input-reset;
+    flex: 1;
+    font-size: $font-size-sm;
+    color: $gray-900;
+
+    &::placeholder {
+      color: $gray-400;
+    }
+  }
+}
+
+// Right Sidebar
+.right-sidebar {
+  width: $right-sidebar-width;
+  flex-shrink: 0;
+  @include flex(column);
+  gap: $spacing-5;
+  padding: $spacing-6;
+  padding-left: 0;
+
+  @include tablet {
+    width: 280px;
+  }
+
+  @include mobile {
+    display: none;
+  }
+}
+
+// Content Grid - For dashboard layouts
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-5;
+
+  @include desktop {
+    grid-template-columns: 1fr $right-sidebar-width;
+  }
+}
+
+// Dashboard Grid Layout
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+  gap: $spacing-5;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Card Base Style - Updated for new design
+.card {
+  background-color: $bg-card;
+  border-radius: $radius-2xl;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+
+  &--yellow {
+    background-color: $card-yellow;
+  }
+
+  &--pink {
+    background-color: $card-pink;
+  }
+
+  &--mint {
+    background-color: $card-mint;
+  }
+
+  &--cream {
+    background-color: $card-cream;
+  }
+
+  &__header {
+    @include flex(row, space-between, center);
+    padding: $spacing-5;
+    border-bottom: 1px solid rgba($black, 0.05);
+  }
+
+  &__title {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $gray-500;
+    }
+  }
+
+  &__actions {
+    @include flex(row, flex-end, center, $spacing-2);
+  }
+
+  &__action-btn {
+    @include button-reset;
+    width: 36px;
+    height: 36px;
+    @include flex-center;
+    border-radius: $radius-lg;
+    color: $gray-500;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($black, 0.05);
+      color: $gray-700;
+    }
+  }
+
+  &__body {
+    padding: $spacing-5;
+  }
+
+  &__footer {
+    @include flex(row, flex-end, center, $spacing-3);
+    padding: $spacing-4 $spacing-5;
+    border-top: 1px solid rgba($black, 0.05);
+    background-color: rgba($black, 0.02);
+  }
+}
+
+// Section styling
+.section {
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__link {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// Utility classes
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@include mobile {
+  .hidden-mobile {
+    display: none !important;
+  }
+}
+
+@include desktop {
+  .hidden-desktop {
+    display: none !important;
+  }
+}

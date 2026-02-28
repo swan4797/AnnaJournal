@@ -1,0 +1,399 @@
+// =============================================
+// Sidebar Styles - Icon Rail Design
+// Based on AnnaJournal.jpg design reference
+// =============================================
+
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Icon Rail Sidebar
+.sidebar {
+  width: $sidebar-width;
+  background-color: $sidebar-bg;
+  @include flex(column, flex-start, center);
+  flex-shrink: 0;
+  height: calc(100vh - 48px);
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  border-radius: $radius-3xl;
+  padding: $spacing-6 0;
+  z-index: $z-sticky;
+
+  &__header {
+    padding: $spacing-2 0 $spacing-6;
+    @include flex(row, center, center);
+  }
+
+  &__logo {
+    width: 44px;
+    height: 44px;
+    @include flex-center;
+    background-color: transparent;
+    border-radius: $radius-lg;
+    color: $sidebar-text;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $sidebar-text-active;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__toggle {
+    display: none;
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    width: 100%;
+    @include flex(column, flex-start, center);
+    @include custom-scrollbar;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__section {
+    width: 100%;
+    @include flex(column, flex-start, center);
+    padding: $spacing-2 0;
+  }
+
+  &__section-title {
+    display: none;
+  }
+
+  &__nav {
+    @include flex(column, flex-start, center, $spacing-2);
+    width: 100%;
+  }
+
+  &__item {
+    @include button-reset;
+    width: 48px;
+    height: 48px;
+    @include flex-center;
+    border-radius: $radius-lg;
+    color: $sidebar-text;
+    text-decoration: none;
+    transition: all $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $sidebar-text-active;
+      background-color: $sidebar-bg-hover;
+    }
+
+    &--active {
+      background-color: rgba($white, 0.15);
+      color: $sidebar-text-active;
+
+      .sidebar__icon {
+        color: $sidebar-text-active;
+      }
+    }
+  }
+
+  &__icon {
+    width: 22px;
+    height: 22px;
+    color: inherit;
+    flex-shrink: 0;
+    transition: color $transition-fast;
+  }
+
+  &__label {
+    // Hidden in icon-rail mode, shown in tooltip
+    position: absolute;
+    left: calc(100% + 12px);
+    background-color: $gray-900;
+    color: $white;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-8px);
+    transition: all $transition-fast;
+    pointer-events: none;
+    z-index: $z-tooltip;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: $gray-900;
+    }
+  }
+
+  &__item:hover &__label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  &__badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 $spacing-1;
+    @include flex-center;
+    background-color: $error;
+    border-radius: $radius-full;
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    color: $white;
+  }
+
+  &__footer {
+    padding: $spacing-6 0 0;
+    margin-top: auto;
+    border-top: none;
+    @include flex(column, flex-start, center, $spacing-2);
+  }
+
+  &__account {
+    @include flex-center;
+  }
+
+  &__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: $radius-full;
+    background: linear-gradient(135deg, $sidebar-accent 0%, #A855F7 100%);
+    color: $white;
+    @include flex-center;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: $radius-full;
+    }
+  }
+
+  &__user-info {
+    display: none;
+  }
+
+  &__user-name,
+  &__user-role {
+    display: none;
+  }
+
+  &__signout {
+    @include button-reset;
+    width: 48px;
+    height: 48px;
+    @include flex-center;
+    border-radius: $radius-lg;
+    color: $sidebar-text;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: rgba($error, 0.15);
+      color: #F87171;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__divider {
+    width: 32px;
+    height: 1px;
+    background-color: rgba($white, 0.1);
+    margin: $spacing-4 0;
+  }
+
+  // Mobile sidebar styles - Full width with labels
+  @include mobile {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: $sidebar-width-expanded;
+    height: 100vh;
+    border-radius: 0 $radius-2xl $radius-2xl 0;
+    padding: $spacing-6 $spacing-4;
+    z-index: $z-sidebar-overlay;
+    transform: translateX(-100%);
+    transition: transform $transition-normal ease-out;
+    box-shadow: $shadow-xl;
+    align-items: flex-start;
+
+    &--open {
+      transform: translateX(0);
+    }
+
+    .sidebar__content {
+      align-items: flex-start;
+    }
+
+    .sidebar__section {
+      align-items: flex-start;
+    }
+
+    .sidebar__nav {
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .sidebar__item {
+      width: 100%;
+      height: auto;
+      @include flex(row, flex-start, center, $spacing-3);
+      padding: $spacing-3 $spacing-4;
+      border-radius: $radius-lg;
+    }
+
+    .sidebar__label {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-size: $font-size-sm;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .sidebar__badge {
+      position: static;
+      margin-left: auto;
+    }
+
+    .sidebar__footer {
+      width: 100%;
+      align-items: flex-start;
+    }
+
+    .sidebar__account {
+      width: 100%;
+      @include flex(row, flex-start, center, $spacing-3);
+      padding: $spacing-2;
+    }
+
+    .sidebar__user-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .sidebar__user-name {
+      display: block;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $white;
+      @include text-truncate;
+    }
+
+    .sidebar__user-role {
+      display: block;
+      font-size: $font-size-xs;
+      color: rgba($white, 0.6);
+    }
+
+    .sidebar__signout {
+      width: 100%;
+      height: auto;
+      @include flex(row, flex-start, center, $spacing-3);
+      padding: $spacing-3 $spacing-4;
+    }
+  }
+
+  &__header {
+    @include mobile {
+      padding: calc($spacing-6 + env(safe-area-inset-top, 0px)) 0 $spacing-6;
+      justify-content: flex-start;
+      width: 100%;
+    }
+  }
+}
+
+// Mobile hamburger menu button
+.sidebar-toggle-mobile {
+  display: none;
+
+  @include mobile {
+    display: flex;
+    @include button-reset;
+    @include touch-target;
+    @include flex-center;
+    position: fixed;
+    top: $spacing-4;
+    left: $spacing-4;
+    z-index: $z-sidebar-overlay + 1;
+    background-color: $sidebar-bg;
+    border-radius: $radius-full;
+    box-shadow: $shadow-md;
+    color: $sidebar-text-active;
+
+    &__icon {
+      @include hamburger-icon;
+    }
+
+    &--open &__icon {
+      background-color: transparent;
+
+      &::before {
+        transform: rotate(45deg) translate(4px, 4px);
+      }
+      &::after {
+        transform: rotate(-45deg) translate(4px, -4px);
+      }
+    }
+  }
+}
+
+// Mobile sidebar backdrop
+.sidebar-backdrop {
+  display: none;
+
+  @include mobile {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba($black, 0.5);
+    z-index: $z-sidebar-overlay - 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transition-normal, visibility $transition-normal;
+    backdrop-filter: blur(4px);
+
+    &--visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}

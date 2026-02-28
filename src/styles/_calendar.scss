@@ -1,0 +1,1988 @@
+// =============================================
+// Calendar Styles
+// =============================================
+
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Physio Schedule Variables
+$ps-bg: #B8B4E5;
+$ps-sidebar-bg: #C5C1EC;
+$ps-card-bg: #E8E6F5;
+$ps-nav-bg: #D4D0F0;
+$ps-primary: #7C7AEA;
+$ps-primary-dark: #6563C5;
+$ps-event-green: #D4E157;
+$ps-event-green-dark: #C4D147;
+$ps-event-purple: #9B8FB9;
+
+// Calendar Header
+.calendar-header {
+  padding: $spacing-5 $spacing-6;
+  background-color: $white;
+
+  &__row {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-4;
+  }
+
+  &__date {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+  }
+
+  &__filters {
+    @include flex(row, flex-start, center, $spacing-3);
+  }
+
+  &__filter-pills {
+    @include flex(row, flex-start, center, $spacing-2);
+  }
+
+  &__pill {
+    @include button-reset;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    background-color: $gray-100;
+    color: $gray-600;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+
+    &--active {
+      background-color: $primary-blue;
+      color: $white;
+
+      &:hover {
+        background-color: $primary-blue-dark;
+      }
+    }
+
+    &--math {
+      background-color: #E8EEFF;
+      color: $category-math;
+    }
+
+    &--art {
+      background-color: $category-art;
+      color: $category-art-text;
+    }
+
+    &--physics {
+      background-color: $category-physics;
+      color: $category-physics-text;
+    }
+
+    &--sport {
+      background-color: $category-sport;
+      color: $category-sport-text;
+    }
+  }
+
+  &__controls {
+    @include flex(row, flex-end, center, $spacing-3);
+  }
+
+  &__dropdown {
+    @include flex(row, flex-start, center, $spacing-2);
+    padding: $spacing-2 $spacing-3;
+    background-color: $white;
+    border: 1px solid $gray-300;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    cursor: pointer;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $gray-500;
+    }
+
+    &:hover {
+      border-color: $gray-400;
+    }
+  }
+
+  &__filter-btn {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-2 $spacing-3;
+    border: 1px solid $gray-300;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    color: $gray-700;
+    position: relative;
+
+    &:hover {
+      border-color: $gray-400;
+    }
+  }
+
+  &__filter-badge {
+    @include badge($primary-blue, $white);
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 10px;
+    min-width: 16px;
+    height: 16px;
+  }
+
+  &__add-btn {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-2 $spacing-4;
+    background-color: $primary-blue;
+    color: $white;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $primary-blue-dark;
+    }
+  }
+}
+
+// View Switcher
+.view-switcher {
+  display: inline-flex;
+  padding: $spacing-1;
+  background-color: $gray-100;
+  border-radius: $radius-lg;
+  border: 1px solid $gray-200;
+
+  &__btn {
+    @include button-reset;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-md;
+    color: $gray-600;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gray-900;
+    }
+
+    &--active {
+      background-color: $white;
+      color: $gray-900;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
+// Calendar Component
+.calendar {
+  height: 100%;
+  @include flex(column);
+  background-color: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $gray-200;
+  overflow: hidden;
+
+  &__header {
+    @include flex(row, space-between, center);
+    padding: $spacing-3 $spacing-4;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  &__header-left {
+    @include flex(row, flex-start, center, $spacing-4);
+  }
+
+  &__header-right {
+    @include flex(row, flex-end, center, $spacing-4);
+  }
+
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__today-btn {
+    @include button-reset;
+    padding: $spacing-1 $spacing-3;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    background-color: $gray-100;
+    border-radius: $radius-md;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-200;
+    }
+  }
+
+  &__nav {
+    @include flex(row, flex-end, center, $spacing-1);
+  }
+
+  &__nav-btn {
+    @include button-reset;
+    padding: $spacing-2;
+    color: $gray-600;
+    border-radius: $radius-md;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+// Month View
+.month-view {
+  height: 100%;
+  @include flex(column);
+  background-color: $white;
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: $white;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  &__weekday {
+    padding: $spacing-3 $spacing-2;
+    text-align: center;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    border-radius: $radius-lg;
+    margin: $spacing-1;
+    transition: all $transition-fast;
+
+    @include mobile {
+      padding: $spacing-2 $spacing-1;
+      font-size: 10px;
+      margin: 2px;
+    }
+
+    &--current {
+      background-color: #FF7B54;
+      color: $white;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: minmax(100px, 1fr);
+    border-left: 1px solid $gray-100;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__cell {
+    min-height: 100px;
+    padding: $spacing-2;
+    border-bottom: 1px solid $gray-100;
+    border-right: 1px solid $gray-100;
+    cursor: pointer;
+    background-color: $white;
+    transition: background-color $transition-fast;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    @include mobile {
+      min-height: 60px;
+      padding: $spacing-1;
+    }
+
+    &:hover {
+      background-color: rgba($gray-100, 0.5);
+    }
+
+    &--other-month {
+      background-color: $gray-50;
+
+      .month-view__date-number {
+        color: $gray-300;
+      }
+    }
+
+    &--selected {
+      background-color: rgba($primary-blue, 0.04);
+    }
+
+    &--has-exam {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 8px;
+        height: 8px;
+        border-radius: $radius-full;
+        background-color: $error;
+
+        @include mobile {
+          width: 6px;
+          height: 6px;
+        }
+      }
+    }
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    margin-bottom: $spacing-2;
+
+    @include mobile {
+      margin-bottom: $spacing-1;
+    }
+  }
+
+  &__date-number {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+
+    @include mobile {
+      font-size: $font-size-xs;
+    }
+
+    &--today {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #FF7B54;
+      color: $white;
+      font-weight: $font-weight-semibold;
+      border-radius: $radius-full;
+
+      @include mobile {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  &__events {
+    @include flex(column, flex-start, stretch, $spacing-1);
+    overflow: hidden;
+    flex: 1;
+
+    @include mobile {
+      gap: 2px;
+    }
+  }
+
+  &__event-dots {
+    display: none;
+
+    @include mobile {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      margin-top: 2px;
+    }
+  }
+
+  &__event-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: $radius-full;
+    background-color: $primary-blue;
+  }
+
+  &__more {
+    font-size: 11px;
+    color: $gray-500;
+    padding: $spacing-1;
+    margin-top: auto;
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__exam-badge {
+    font-size: 10px;
+    font-weight: $font-weight-bold;
+    padding: 2px 6px;
+    margin-left: $spacing-2;
+    border-radius: $radius-full;
+    background-color: $error;
+    color: $white;
+
+    @include mobile {
+      font-size: 8px;
+      padding: 1px 4px;
+    }
+  }
+}
+
+// Week View
+.week-view {
+  height: 100%;
+  @include flex(column);
+
+  @include mobile {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__header {
+    display: flex;
+    border-bottom: 1px solid $gray-200;
+
+    @include mobile {
+      min-width: max-content;
+    }
+  }
+
+  &__gutter {
+    width: 64px;
+    flex-shrink: 0;
+
+    @include mobile {
+      width: 48px;
+      position: sticky;
+      left: 0;
+      background-color: $white;
+      z-index: 10;
+    }
+  }
+
+  &__day-header {
+    flex: 1;
+    text-align: center;
+    padding: $spacing-2;
+    border-left: 1px solid $gray-200;
+
+    @include mobile {
+      min-width: 80px;
+      flex: 0 0 auto;
+      padding: $spacing-1;
+    }
+  }
+
+  &__weekday {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    text-transform: uppercase;
+  }
+
+  &__date-btn {
+    @include button-reset;
+    width: 32px;
+    height: 32px;
+    margin: $spacing-1 auto 0;
+    @include flex-center;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-full;
+    color: $gray-900;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--today {
+      background-color: $primary-blue;
+      color: $white;
+
+      &:hover {
+        background-color: $primary-blue-dark;
+      }
+    }
+
+    &--selected {
+      background-color: $primary-blue-light;
+      color: $primary-blue;
+    }
+  }
+
+  &__allday {
+    display: flex;
+    min-height: 40px;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  &__allday-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    text-align: right;
+    padding: $spacing-1 $spacing-2;
+  }
+
+  &__allday-cell {
+    flex: 1;
+    border-left: 1px solid $gray-200;
+    padding: $spacing-1;
+    @include flex(column, flex-start, stretch, $spacing-1);
+  }
+
+  &__allday-event {
+    @include button-reset;
+    width: 100%;
+    text-align: left;
+    padding: 2px $spacing-2;
+    font-size: $font-size-xs;
+    border-radius: $radius-sm;
+    @include text-truncate;
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    @include custom-scrollbar;
+  }
+
+  &__grid {
+    display: flex;
+    position: relative;
+
+    @include mobile {
+      min-width: max-content;
+    }
+  }
+
+  &__time-column {
+    width: 64px;
+    flex-shrink: 0;
+    position: relative;
+
+    @include mobile {
+      width: 48px;
+      position: sticky;
+      left: 0;
+      background-color: $white;
+      z-index: 10;
+    }
+  }
+
+  &__time-label {
+    position: absolute;
+    width: 100%;
+    text-align: right;
+    padding-right: $spacing-2;
+    font-size: $font-size-xs;
+    color: $gray-500;
+
+    @include mobile {
+      font-size: 10px;
+      padding-right: $spacing-1;
+    }
+  }
+
+  &__day-column {
+    flex: 1;
+    position: relative;
+    border-left: 1px solid $gray-200;
+
+    @include mobile {
+      min-width: 80px;
+      flex: 0 0 auto;
+    }
+
+    &--selected {
+      background-color: rgba($primary-blue, 0.05);
+    }
+  }
+
+  &__hour-slot {
+    position: absolute;
+    width: 100%;
+    border-top: 1px solid $gray-100;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+  }
+
+  &__event {
+    @include button-reset;
+    position: absolute;
+    left: $spacing-1;
+    right: $spacing-1;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+    font-size: $font-size-xs;
+    text-align: left;
+    overflow: hidden;
+    transition: box-shadow $transition-fast;
+
+    @include mobile {
+      padding: 2px 4px;
+    }
+
+    &:hover {
+      box-shadow: $shadow-md;
+    }
+
+    &--exam-linked {
+      border-left: 3px solid;
+    }
+
+    &--exam-0 { border-color: $error; }
+    &--exam-1 { border-color: $primary-blue; }
+    &--exam-2 { border-color: $success; }
+    &--exam-3 { border-color: #8B5CF6; }
+    &--exam-4 { border-color: #F59E0B; }
+  }
+
+  &__event-title {
+    font-weight: $font-weight-medium;
+    @include text-truncate;
+    @include flex(row, flex-start, center, $spacing-1);
+
+    @include mobile {
+      font-size: 10px;
+    }
+  }
+
+  &__exam-badges {
+    @include flex(row, center, center, $spacing-1);
+    margin-top: $spacing-1;
+  }
+
+  &__exam-badge {
+    @include button-reset;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    padding: 2px $spacing-1;
+    border-radius: $radius-sm;
+    color: $white;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--0 { background-color: $error; }
+    &--1 { background-color: $primary-blue; }
+    &--2 { background-color: $success; }
+    &--3 { background-color: #8B5CF6; }
+    &--4 { background-color: #F59E0B; }
+  }
+
+  &__event-exam-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+    flex-shrink: 0;
+  }
+}
+
+// Day View
+.day-view {
+  height: 100%;
+  @include flex(column);
+
+  &__header {
+    padding: $spacing-3 $spacing-4;
+    border-bottom: 1px solid $gray-200;
+
+    @include mobile {
+      padding: $spacing-2 $spacing-3;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    @include mobile {
+      font-size: $font-size-base;
+    }
+  }
+
+  &__today-badge {
+    font-size: $font-size-sm;
+    color: $primary-blue;
+  }
+
+  &__allday {
+    padding: $spacing-2 $spacing-4;
+    border-bottom: 1px solid $gray-200;
+    background-color: $gray-50;
+  }
+
+  &__allday-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    margin-bottom: $spacing-2;
+  }
+
+  &__allday-events {
+    @include flex(column, flex-start, stretch, $spacing-1);
+  }
+
+  &__allday-event {
+    @include button-reset;
+    width: 100%;
+    text-align: left;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-lg;
+    border-left: 4px solid;
+    @include flex(row, flex-start, center, $spacing-2);
+    transition: box-shadow $transition-fast;
+
+    &:hover {
+      box-shadow: $shadow-md;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    @include custom-scrollbar;
+  }
+
+  &__grid {
+    display: flex;
+    position: relative;
+  }
+
+  &__time-column {
+    width: 80px;
+    flex-shrink: 0;
+    position: relative;
+    background-color: $gray-50;
+
+    @include mobile {
+      width: 48px;
+    }
+  }
+
+  &__time-label {
+    position: absolute;
+    width: 100%;
+    text-align: right;
+    padding-right: $spacing-3;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+
+    @include mobile {
+      font-size: 10px;
+      padding-right: $spacing-2;
+    }
+  }
+
+  &__events-column {
+    flex: 1;
+    position: relative;
+    border-left: 1px solid $gray-200;
+  }
+
+  &__hour-slot {
+    position: absolute;
+    width: 100%;
+    border-top: 1px solid $gray-200;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: rgba($primary-blue, 0.05);
+    }
+  }
+
+  &__half-hour {
+    position: absolute;
+    width: 100%;
+    border-top: 1px solid $gray-100;
+  }
+
+  &__current-time {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    pointer-events: none;
+    @include flex(row, flex-start, center);
+  }
+
+  &__current-time-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: $radius-full;
+    background-color: $error;
+    margin-left: -6px;
+  }
+
+  &__current-time-line {
+    flex: 1;
+    height: 2px;
+    background-color: $error;
+  }
+
+  &__event {
+    @include button-reset;
+    position: absolute;
+    left: $spacing-2;
+    right: $spacing-4;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $radius-lg;
+    border-left: 4px solid;
+    text-align: left;
+    overflow: hidden;
+    z-index: 10;
+    @include flex(row, flex-start, flex-start, $spacing-2);
+    transition: box-shadow $transition-fast;
+
+    @include mobile {
+      left: $spacing-1;
+      right: $spacing-1;
+      padding: $spacing-1 $spacing-2;
+    }
+
+    &:hover {
+      box-shadow: $shadow-lg;
+    }
+
+    &--exam-linked {
+      border-left-width: 5px;
+    }
+
+    &--exam-0 { border-color: $error !important; }
+    &--exam-1 { border-color: $primary-blue !important; }
+    &--exam-2 { border-color: $success !important; }
+    &--exam-3 { border-color: #8B5CF6 !important; }
+    &--exam-4 { border-color: #F59E0B !important; }
+  }
+
+  &__event-icon {
+    font-size: $font-size-lg;
+
+    @include mobile {
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__event-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__event-title {
+    font-weight: $font-weight-medium;
+    @include text-truncate;
+
+    @include mobile {
+      font-size: $font-size-xs;
+    }
+  }
+
+  &__event-desc {
+    font-size: $font-size-sm;
+    opacity: 0.75;
+    @include text-truncate;
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__exam-badges {
+    @include flex(row, flex-start, center, $spacing-2);
+    margin-top: $spacing-2;
+  }
+
+  &__exam-badge {
+    @include button-reset;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-full;
+    color: $white;
+    cursor: pointer;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--0 { background-color: $error; }
+    &--1 { background-color: $primary-blue; }
+    &--2 { background-color: $success; }
+    &--3 { background-color: #8B5CF6; }
+    &--4 { background-color: #F59E0B; }
+  }
+
+  &__event-exam-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+    flex-shrink: 0;
+    margin-right: $spacing-1;
+  }
+
+  &__event-exam-link {
+    font-size: $font-size-xs;
+    opacity: 0.75;
+    @include text-truncate;
+  }
+}
+
+// Current time indicator
+.current-time-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: $error;
+  z-index: 10;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background-color: $error;
+    border-radius: $radius-full;
+  }
+
+  &__time {
+    position: absolute;
+    left: -50px;
+    top: -8px;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $error;
+    background-color: $white;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $radius-sm;
+  }
+}
+
+// Physio Schedule Layout
+.physio-schedule {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: $spacing-5 $spacing-6;
+  gap: $spacing-5;
+
+  @include mobile {
+    padding: $spacing-3;
+    padding-top: 60px;
+    gap: $spacing-3;
+  }
+
+  &__top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-6;
+
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $spacing-3;
+    }
+  }
+
+  &__calendars-row {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-5;
+    flex: 1;
+    min-height: 0;
+
+    @include mobile {
+      flex-direction: column;
+      gap: $spacing-3;
+    }
+  }
+
+  &__sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+
+    @include mobile {
+      width: 100%;
+      gap: $spacing-3;
+    }
+  }
+
+  &__mini-calendar-card {
+    background-color: $white;
+    border-radius: $radius-xl;
+    padding: $spacing-4;
+    box-shadow: 0 2px 12px rgba($black, 0.06);
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__task-card {
+    background-color: $white;
+    border-radius: $radius-xl;
+    padding: $spacing-4;
+    box-shadow: 0 2px 12px rgba($black, 0.06);
+  }
+
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: $spacing-4;
+
+    @include mobile {
+      gap: $spacing-3;
+    }
+  }
+
+  &__view-toggle {
+    display: flex;
+    background-color: $white;
+    border-radius: $radius-full;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba($black, 0.08);
+
+    @include mobile {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  &__view-btn {
+    @include button-reset;
+    padding: $spacing-2 $spacing-5;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
+
+    @include mobile {
+      flex: 1;
+      padding: $spacing-2 $spacing-3;
+      font-size: $font-size-xs;
+      text-align: center;
+    }
+
+    &:hover {
+      color: $gray-700;
+    }
+
+    &--active {
+      background-color: $ps-primary;
+      color: $white;
+    }
+  }
+
+  &__calendar-container {
+    flex: 1;
+    background-color: $white;
+    border-radius: $radius-xl;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba($black, 0.08);
+    max-height: calc(100vh - 280px);
+    display: flex;
+    flex-direction: column;
+
+    @include mobile {
+      max-height: calc(100vh - 200px);
+    }
+  }
+
+  &__details-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 360px;
+    background-color: $white;
+    box-shadow: -4px 0 20px rgba($black, 0.1);
+    z-index: 100;
+    overflow-y: auto;
+
+    @include mobile {
+      top: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-height: 80vh;
+      border-radius: $radius-xl $radius-xl 0 0;
+      box-shadow: 0 -4px 20px rgba($black, 0.15);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: $spacing-2;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 4px;
+        background-color: $gray-300;
+        border-radius: $radius-full;
+      }
+    }
+  }
+}
+
+// Calendar Main Header
+.cal-main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-5;
+  background-color: $white;
+  border-radius: $radius-xl $radius-xl 0 0;
+  border-bottom: 1px solid $gray-100;
+
+  @include mobile {
+    flex-direction: column;
+    gap: $spacing-3;
+    padding: $spacing-3;
+    border-radius: $radius-xl;
+  }
+
+  &__left {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-2;
+
+    @include mobile {
+      justify-content: center;
+    }
+  }
+
+  &__day-name {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+    margin: 0;
+
+    @include mobile {
+      font-size: $font-size-lg;
+    }
+  }
+
+  &__day-date {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-normal;
+    color: $gray-500;
+
+    @include mobile {
+      font-size: $font-size-lg;
+    }
+  }
+
+  &__center {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+  }
+
+  &__month {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $gray-700;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  &__nav-btn {
+    @include button-reset;
+    width: 32px;
+    height: 32px;
+    @include flex-center;
+    border-radius: $radius-md;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-700;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+
+    @include mobile {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  &__icon-btn {
+    @include button-reset;
+    width: 36px;
+    height: 36px;
+    @include flex-center;
+    border-radius: $radius-md;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__add-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-4;
+    background-color: $gray-900;
+    color: $white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-800;
+    }
+
+    @include mobile {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+}
+
+// Mini Calendar
+.mini-cal {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-3;
+  }
+
+  &__month {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__nav {
+    display: flex;
+    gap: $spacing-1;
+  }
+
+  &__nav-btn {
+    @include button-reset;
+    width: 28px;
+    height: 28px;
+    @include flex-center;
+    border-radius: $radius-md;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $ps-bg;
+      color: $ps-primary;
+    }
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: $spacing-2;
+  }
+
+  &__weekday {
+    text-align: center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-400;
+    padding: $spacing-1;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  &__day {
+    @include button-reset;
+    width: 100%;
+    aspect-ratio: 1;
+    @include flex-center;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+    position: relative;
+
+    &:hover {
+      background-color: $ps-bg;
+    }
+
+    &--empty {
+      visibility: hidden;
+    }
+
+    &--today {
+      background-color: $ps-primary;
+      color: $white;
+      font-weight: $font-weight-semibold;
+    }
+
+    &--selected {
+      background-color: $ps-event-green;
+      color: $gray-900;
+      font-weight: $font-weight-semibold;
+    }
+
+    &--has-events::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: $radius-full;
+      background-color: $ps-primary;
+    }
+
+    &--has-exam {
+      border: 2px solid $error;
+      position: relative;
+    }
+  }
+
+  &__exam-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: $error;
+  }
+}
+
+// Event Details Panel
+.event-panel {
+  padding: $spacing-5;
+
+  @include mobile {
+    padding: $spacing-4;
+    padding-top: calc($spacing-4 + 20px);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-5;
+
+    @include mobile {
+      margin-bottom: $spacing-3;
+    }
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__close {
+    @include button-reset;
+    width: 36px;
+    height: 36px;
+    @include flex-center;
+    border-radius: $radius-full;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__card {
+    padding: $spacing-4;
+    border-radius: $radius-lg;
+    margin-bottom: $spacing-5;
+
+    @include mobile {
+      padding: $spacing-3;
+      margin-bottom: $spacing-3;
+    }
+
+    &--clinical { background-color: rgba($ps-event-green, 0.3); }
+    &--lecture { background-color: rgba($ps-event-purple, 0.3); }
+    &--study { background-color: rgba($ps-primary, 0.15); }
+    &--task { background-color: $gray-100; }
+    &--homework { background-color: rgba(#FF9800, 0.15); }
+    &--exam { background-color: rgba(#F44336, 0.15); }
+    &--meeting { background-color: rgba(#2196F3, 0.15); }
+    &--personal { background-color: rgba(#9C27B0, 0.15); }
+    &--deadline { background-color: rgba(#E91E63, 0.15); }
+  }
+
+  &__category {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin-bottom: $spacing-2;
+  }
+
+  &__category-icon {
+    font-size: $font-size-base;
+  }
+
+  &__category-label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__badge {
+    padding: 2px $spacing-2;
+    background-color: $error;
+    color: $white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-sm;
+    margin-left: auto;
+  }
+
+  &__event-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-500;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+
+  &__section {
+    &-title {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      color: $gray-500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: $spacing-1;
+    }
+
+    &-content {
+      font-size: $font-size-sm;
+      color: $gray-700;
+      line-height: $line-height-relaxed;
+    }
+  }
+
+  &__complete-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-2;
+    width: 100%;
+    padding: $spacing-3;
+    background-color: $gray-100;
+    color: $gray-700;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $ps-primary;
+      color: $white;
+    }
+
+    &--completed {
+      background-color: $ps-event-green;
+      color: $gray-900;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    margin-top: $spacing-5;
+    padding-top: $spacing-5;
+    border-top: 1px solid $gray-200;
+
+    @include mobile {
+      flex-direction: row;
+      gap: $spacing-2;
+      padding-bottom: env(safe-area-inset-bottom, $spacing-3);
+    }
+  }
+
+  &__action-btn {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3;
+    border-radius: $radius-lg;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+
+    @include mobile {
+      flex: 1;
+    }
+
+    &--secondary {
+      background-color: $ps-primary;
+      color: $white;
+
+      &:hover {
+        background-color: $ps-primary-dark;
+      }
+    }
+
+    &--ghost {
+      background-color: transparent;
+      color: $gray-600;
+
+      &:hover {
+        background-color: $gray-100;
+      }
+    }
+
+    &--danger {
+      background-color: $error;
+      color: $white;
+
+      &:hover {
+        background-color: color.adjust($error, $lightness: -10%);
+      }
+    }
+  }
+}
+
+// =============================================
+// Physio Schedule Additional Styles
+// =============================================
+
+.physio-schedule {
+  &__page-header {
+    @include flex(column, flex-start, flex-start, $spacing-1);
+    margin-bottom: $spacing-5;
+  }
+
+  &__page-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gray-900;
+    margin: 0;
+  }
+
+  &__page-subtitle {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__topbar {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-5;
+  }
+
+  &__topbar-right {
+    @include flex(row, flex-end, center, $spacing-3);
+  }
+
+  &__topbar-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    overflow: hidden;
+    border: 2px solid $primary;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__stats-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-4;
+    margin-bottom: $spacing-6;
+
+    @include mobile {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__stat-card {
+    background-color: $bg-card;
+    border-radius: $radius-xl;
+    padding: $spacing-5;
+    box-shadow: $shadow-card;
+    text-align: center;
+  }
+
+  &__stat-value {
+    @include flex(row, center, baseline, $spacing-1);
+    margin-bottom: $spacing-1;
+  }
+
+  &__stat-number {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $primary;
+  }
+
+  &__stat-unit {
+    font-size: $font-size-sm;
+    color: $gray-500;
+  }
+
+  &__stat-label {
+    font-size: $font-size-xs;
+    color: $gray-500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__icon-btn {
+    @include button-reset;
+    @include flex-center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-lg;
+    color: $gray-400;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+      color: $gray-600;
+    }
+  }
+
+  &__add-task-btn-main {
+    @include button-reset;
+    @include flex(row, center, center, $spacing-2);
+    width: 100%;
+    padding: $spacing-4;
+    background-color: $primary;
+    color: $white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-lg;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $primary-dark;
+    }
+  }
+
+  &__checklist {
+    @include flex(column, flex-start, stretch, $spacing-2);
+  }
+
+  &__checklist-item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &__checklist-empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-6;
+    color: $gray-400;
+    text-align: center;
+  }
+
+  &__task-header {
+    @include flex(row, space-between, center);
+    margin-bottom: $spacing-3;
+  }
+
+  &__task-label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  &__task-check-btn {
+    @include button-reset;
+    @include flex-center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-sm;
+    color: transparent;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $primary;
+      border-color: $primary;
+      color: $white;
+    }
+  }
+
+  &__other-list {
+    @include flex(column, flex-start, stretch, $spacing-2);
+  }
+
+  &__other-item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+  }
+
+  &__other-check {
+    @include button-reset;
+    @include flex-center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $gray-300;
+    border-radius: $radius-full;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $primary;
+    }
+
+    &--checked {
+      background-color: $success;
+      border-color: $success;
+    }
+  }
+
+  &__other-text {
+    flex: 1;
+    font-size: $font-size-sm;
+    color: $gray-700;
+
+    &--completed {
+      text-decoration: line-through;
+      color: $gray-400;
+    }
+  }
+
+  &__other-empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-6;
+    color: $gray-400;
+    text-align: center;
+  }
+}
+
+// Event Panel Additional Styles
+.event-panel {
+  &__section-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gray-700;
+    margin-bottom: $spacing-3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__section-content {
+    font-size: $font-size-sm;
+    color: $gray-600;
+    line-height: 1.6;
+  }
+
+  &__confirm-delete {
+    @include flex(column, flex-start, stretch, $spacing-3);
+    padding: $spacing-4;
+    background-color: $error-light;
+    border-radius: $radius-lg;
+    border: 1px solid rgba($error, 0.2);
+
+    p {
+      font-size: $font-size-sm;
+      color: $error;
+      margin: 0;
+    }
+  }
+}
+
+// Month View Additional Styles
+.month-view {
+  &__date {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-900;
+    margin-bottom: $spacing-1;
+  }
+
+  &__events {
+    @include flex(column, flex-start, stretch, 2px);
+    overflow: hidden;
+  }
+
+  &__more {
+    font-size: 10px;
+    color: $gray-500;
+    padding: 2px $spacing-1;
+    cursor: pointer;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__exam-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px $spacing-2;
+    background-color: $error-light;
+    color: $error;
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    border-radius: $radius-sm;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Search Bar Styles
+.search-bar {
+  &__container {
+    position: relative;
+    width: 100%;
+  }
+
+  &__input-wrapper {
+    @include flex(row, flex-start, center, $spacing-2);
+    background-color: $bg-card;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    padding: $spacing-2 $spacing-3;
+    transition: all $transition-fast;
+
+    &:focus-within {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+
+    svg {
+      color: $gray-400;
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: $font-size-sm;
+      color: $gray-900;
+
+      &::placeholder {
+        color: $gray-400;
+      }
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + $spacing-2);
+    left: 0;
+    right: 0;
+    background-color: $bg-card;
+    border: 1px solid $gray-200;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: $z-dropdown;
+  }
+
+  &__result-item {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-3;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-50;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $gray-100;
+    }
+  }
+}
+
+// Day Agenda
+.day-agenda {
+  &__empty {
+    @include flex(column, center, center, $spacing-3);
+    padding: $spacing-8;
+    color: $gray-400;
+    text-align: center;
+
+    svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}

@@ -3,7 +3,15 @@ import { getMonthDays, formatDateKey } from '~/utils/calendar'
 import { EventBlock } from '~/components/events/EventBlock'
 import type { Event } from '~/utils/events'
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEKDAYS = [
+  { short: 'Mon', index: 1 },
+  { short: 'Tue', index: 2 },
+  { short: 'Wed', index: 3 },
+  { short: 'Thu', index: 4 },
+  { short: 'Fri', index: 5 },
+  { short: 'Sat', index: 6 },
+  { short: 'Sun', index: 0 },
+]
 
 interface MonthViewProps {
   events: Event[]
@@ -62,15 +70,24 @@ export function MonthView({
     return map
   }, [events])
 
+  const today = new Date()
+  const currentDayOfWeek = today.getDay()
+
   return (
     <div className="month-view">
       {/* Weekday headers */}
       <div className="month-view__weekdays">
-        {WEEKDAYS.map((day) => (
-          <div key={day} className="month-view__weekday">
-            {day}
-          </div>
-        ))}
+        {WEEKDAYS.map((day) => {
+          const isCurrentDay = day.index === currentDayOfWeek
+          return (
+            <div
+              key={day.short}
+              className={`month-view__weekday ${isCurrentDay ? 'month-view__weekday--current' : ''}`}
+            >
+              {day.short}
+            </div>
+          )
+        })}
       </div>
 
       {/* Calendar grid */}

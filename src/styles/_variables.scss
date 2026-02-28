@@ -1,23 +1,59 @@
 // =============================================
 // Design System Variables
-// Based on CalendarUI.jpg design
+// Based on AnnaJournal.jpg design reference
 // =============================================
 
-// Colors - Primary
-$primary-blue: #4F7DF3;
-$primary-blue-light: #E8EEFF;
-$primary-blue-dark: #3D66D9;
+// Colors - Primary (Teal accent)
+$primary: #14B8A6;
+$primary-light: #CCFBF1;
+$primary-dark: #0D9488;
 
-// Colors - Category (from design)
-$category-math: #4F7DF3;        // Blue
-$category-art: #E8D5F2;         // Light purple/lavender
+// Legacy aliases for compatibility
+$primary-blue: $primary;
+$primary-blue-light: $primary-light;
+$primary-blue-dark: $primary-dark;
+
+// Colors - Sidebar (Dark charcoal icon rail)
+$sidebar-bg: #2D3436;
+$sidebar-bg-hover: #3D4446;
+$sidebar-text: #9CA3AF;
+$sidebar-text-active: #FFFFFF;
+$sidebar-accent: #E879F9;
+
+// Colors - Background (Soft mint green from design)
+$bg-main: #D8E8D8;
+$bg-card: #FFFFFF;
+$bg-secondary: #E8F0E8;
+$bg-container: #F0F4F0;
+
+// Colors - Card Accents (from design)
+$card-yellow: #FEF3C7;
+$card-yellow-dark: #FDE68A;
+$card-pink: #FFE4E6;
+$card-pink-dark: #FECACA;
+$card-mint: #D1FAE5;
+$card-mint-dark: #A7F3D0;
+$card-cream: #FEF9E7;
+
+// Colors - Category (Pastel tones from design)
+$category-math: #4F7DF3;
+$category-math-bg: #E8EEFF;
+$category-art: #E8D5F2;
 $category-art-text: #8B5FB3;
-$category-physics: #FFF3E0;     // Light orange
+$category-physics: #FFF3E0;
 $category-physics-text: #E67E22;
-$category-sport: #F3E5F5;       // Light violet
+$category-sport: #F3E5F5;
 $category-sport-text: #9C27B0;
-$category-computer: #E0F7FA;    // Light cyan
+$category-computer: #E0F7FA;
 $category-computer-text: #00ACC1;
+
+// Course card colors (from design)
+$course-peach: #F5D5C8;
+$course-peach-text: #8B5A4A;
+$course-lavender: #E8E0F0;
+$course-lavender-text: #6B5B7A;
+$course-mint: #D4E8E0;
+$course-mint-text: #4A6B5A;
 
 // Category map for events
 $categories: (
@@ -65,6 +101,7 @@ $font-size-lg: 1.125rem;     // 18px
 $font-size-xl: 1.25rem;      // 20px
 $font-size-2xl: 1.5rem;      // 24px
 $font-size-3xl: 1.875rem;    // 30px
+$font-size-4xl: 2.25rem;     // 36px
 
 $font-weight-normal: 400;
 $font-weight-medium: 500;
@@ -87,23 +124,30 @@ $spacing-8: 2rem;      // 32px
 $spacing-10: 2.5rem;   // 40px
 $spacing-12: 3rem;     // 48px
 
-// Layout
-$sidebar-width: 240px;
-$header-height: 64px;
+// Layout - Updated for icon rail sidebar
+$sidebar-width: 80px;
+$sidebar-width-expanded: 220px;
+$right-sidebar-width: 320px;
+$header-height: 72px;
 $content-max-width: 1400px;
+$container-padding: 24px;
 
-// Border Radius
-$radius-sm: 4px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
+// Border Radius - Larger for modern design
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-2xl: 32px;
+$radius-3xl: 40px;
 $radius-full: 9999px;
 
-// Shadows
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+// Shadows (softer, modern)
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+$shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.12);
+$shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+$shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.08);
 
 // Transitions
 $transition-fast: 150ms ease;
@@ -116,6 +160,7 @@ $z-sticky: 200;
 $z-sidebar-overlay: 250;
 $z-modal: 300;
 $z-toast: 400;
+$z-tooltip: 500;
 
 // Mobile-specific layout
 $header-height-mobile: 56px;
