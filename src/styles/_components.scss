@@ -212,7 +212,7 @@
   inset: 0;
   z-index: $z-modal;
   @include flex(row, center, center);
-  padding: $spacing-4;
+  padding: $spacing-6;
 
   @include mobile {
     padding: 0;
@@ -222,36 +222,55 @@
   &__backdrop {
     position: absolute;
     inset: 0;
-    background-color: rgba($black, 0.5);
-    backdrop-filter: blur(2px);
+    background-color: rgba($black, 0.4);
+    backdrop-filter: blur(4px);
   }
 
   &__content {
     position: relative;
     width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
+    max-width: 480px;
+    max-height: 85vh;
     background-color: $white;
-    border-radius: $radius-xl;
+    border-radius: $radius-2xl;
     overflow: hidden;
-    box-shadow: $shadow-xl;
+    box-shadow: 0 25px 50px -12px rgba($black, 0.25);
     @include flex(column);
+    animation: modalSlideIn 0.2s ease-out;
 
     @include mobile {
-      max-height: 85vh;
-      border-radius: $radius-xl $radius-xl 0 0;
+      max-height: 90vh;
+      border-radius: $radius-2xl $radius-2xl 0 0;
     }
+  }
+
+  // Size variants
+  &--sm .modal__content {
+    max-width: 380px;
+  }
+
+  &--md .modal__content {
+    max-width: 480px;
+  }
+
+  &--lg .modal__content {
+    max-width: 560px;
+  }
+
+  &--xl .modal__content {
+    max-width: 720px;
   }
 
   &__header {
     @include flex(row, space-between, center);
-    padding: $spacing-5;
+    padding: $spacing-5 $spacing-6;
     border-bottom: 1px solid $gray-100;
     flex-shrink: 0;
+    background-color: $gray-50;
   }
 
   &__title {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-semibold;
     color: $gray-900;
   }
@@ -266,27 +285,39 @@
     transition: all $transition-fast;
 
     &:hover {
-      background-color: $gray-100;
-      color: $gray-600;
+      background-color: $gray-200;
+      color: $gray-700;
     }
   }
 
   &__body {
     flex: 1;
     overflow-y: auto;
-    padding: $spacing-5;
+    padding: $spacing-6;
     @include custom-scrollbar;
   }
 
   &__footer {
     @include flex(row, flex-end, center, $spacing-3);
-    padding: $spacing-4 $spacing-5;
+    padding: $spacing-4 $spacing-6;
     border-top: 1px solid $gray-100;
     flex-shrink: 0;
+    background-color: $gray-50;
 
     @include mobile {
       padding-bottom: calc($spacing-4 + env(safe-area-inset-bottom, 0px));
     }
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -902,33 +933,160 @@
   }
 
   &__categories {
-    @include flex(row, flex-start, center, $spacing-2);
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: $spacing-2;
+
+    @include mobile {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__cat-btn {
+    @include button-reset;
+    @include flex(column, center, center, $spacing-1);
+    padding: $spacing-3 $spacing-2;
+    border-radius: $radius-xl;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $gray-600;
+    background-color: $gray-50;
+    border: 2px solid transparent;
+    transition: all $transition-fast;
+
+    span:first-child {
+      font-size: $font-size-lg;
+    }
+
+    &:hover {
+      background-color: $gray-100;
+    }
+
+    &--active {
+      border-color: currentColor;
+      background-color: $white;
+    }
+
+    // Category colors
+    &--exam {
+      &.event-form__cat-btn--active {
+        color: #DC2626;
+        background-color: #FEF2F2;
+        border-color: #FECACA;
+      }
+    }
+
+    &--homework {
+      &.event-form__cat-btn--active {
+        color: #D97706;
+        background-color: #FFFBEB;
+        border-color: #FDE68A;
+      }
+    }
+
+    &--deadline {
+      &.event-form__cat-btn--active {
+        color: #EA580C;
+        background-color: #FFF7ED;
+        border-color: #FED7AA;
+      }
+    }
+
+    &--task {
+      &.event-form__cat-btn--active {
+        color: $gray-700;
+        background-color: $gray-50;
+        border-color: $gray-300;
+      }
+    }
+
+    &--lecture {
+      &.event-form__cat-btn--active {
+        color: #7C3AED;
+        background-color: #F5F3FF;
+        border-color: #DDD6FE;
+      }
+    }
+
+    &--meeting {
+      &.event-form__cat-btn--active {
+        color: #0891B2;
+        background-color: #ECFEFF;
+        border-color: #A5F3FC;
+      }
+    }
+
+    &--clinical {
+      &.event-form__cat-btn--active {
+        color: #059669;
+        background-color: #ECFDF5;
+        border-color: #A7F3D0;
+      }
+    }
+
+    &--study {
+      &.event-form__cat-btn--active {
+        color: #9333EA;
+        background-color: #FAF5FF;
+        border-color: #E9D5FF;
+      }
+    }
+
+    &--personal {
+      &.event-form__cat-btn--active {
+        color: #DB2777;
+        background-color: #FDF2F8;
+        border-color: #FBCFE8;
+      }
+    }
+
+    &--reminder {
+      &.event-form__cat-btn--active {
+        color: #10B981;
+        background-color: #ECFDF5;
+        border-color: #D1FAE5;
+      }
+    }
   }
 
   &__checkbox {
-    @include flex(row, flex-start, center, $spacing-2);
+    @include flex(row, flex-start, center, $spacing-3);
     cursor: pointer;
+    padding: $spacing-3 $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-100;
+    }
 
     input {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       accent-color: $primary;
+      cursor: pointer;
     }
 
     span {
       font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
       color: $gray-700;
     }
   }
 
   &__files {
     @include flex(column, flex-start, stretch, $spacing-3);
+    padding: $spacing-4;
+    background-color: $gray-50;
+    border-radius: $radius-lg;
+    border: 1px dashed $gray-200;
   }
 
   &__actions {
     @include flex(row, flex-end, center, $spacing-3);
     padding-top: $spacing-5;
+    margin-top: $spacing-2;
     border-top: 1px solid $gray-100;
   }
 }

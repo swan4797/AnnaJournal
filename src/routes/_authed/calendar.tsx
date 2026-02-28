@@ -202,34 +202,26 @@ function CalendarPage() {
           </button>
         </div>
 
-        {/* Top Bar Controls */}
-        <div className="physio-schedule__topbar">
-          <div className="physio-schedule__view-toggle">
-            <button
-              className={`physio-schedule__view-btn ${currentView === 'day' ? 'physio-schedule__view-btn--active' : ''}`}
-              onClick={() => setCurrentView('day')}
-            >
-              Daily
-            </button>
-            <button
-              className={`physio-schedule__view-btn ${currentView === 'week' ? 'physio-schedule__view-btn--active' : ''}`}
-              onClick={() => setCurrentView('week')}
-            >
-              Weekly
-            </button>
-            <button
-              className={`physio-schedule__view-btn ${currentView === 'month' ? 'physio-schedule__view-btn--active' : ''}`}
-              onClick={() => setCurrentView('month')}
-            >
-              Monthly
-            </button>
-          </div>
-
-          <div className="physio-schedule__topbar-right">
-            <button className="physio-schedule__icon-btn">
-              <BellIcon />
-            </button>
-          </div>
+        {/* View Toggle */}
+        <div className="physio-schedule__view-toggle">
+          <button
+            className={`physio-schedule__view-btn ${currentView === 'day' ? 'physio-schedule__view-btn--active' : ''}`}
+            onClick={() => setCurrentView('day')}
+          >
+            Daily
+          </button>
+          <button
+            className={`physio-schedule__view-btn ${currentView === 'week' ? 'physio-schedule__view-btn--active' : ''}`}
+            onClick={() => setCurrentView('week')}
+          >
+            Weekly
+          </button>
+          <button
+            className={`physio-schedule__view-btn ${currentView === 'month' ? 'physio-schedule__view-btn--active' : ''}`}
+            onClick={() => setCurrentView('month')}
+          >
+            Monthly
+          </button>
         </div>
       </div>
 
