@@ -186,59 +186,56 @@ $ps-event-purple: #9B8FB9;
   height: 100%;
   @include flex(column);
   background-color: $white;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-sm;
-  border: 1px solid $gray-200;
+  border-radius: $radius-xl;
   overflow: hidden;
 
   &__header {
     @include flex(row, space-between, center);
-    padding: $spacing-3 $spacing-4;
-    border-bottom: 1px solid $gray-200;
+    padding: $spacing-4 $spacing-5;
+    background-color: $white;
   }
 
   &__header-left {
-    @include flex(row, flex-start, center, $spacing-4);
+    @include flex(row, flex-start, center, $spacing-3);
   }
 
   &__header-right {
-    @include flex(row, flex-end, center, $spacing-4);
+    @include flex(row, flex-end, center, $spacing-3);
   }
 
   &__title {
     font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
+    font-weight: $font-weight-bold;
     color: $gray-900;
   }
 
   &__today-btn {
     @include button-reset;
-    padding: $spacing-1 $spacing-3;
+    padding: $spacing-2 $spacing-4;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
     color: $gray-600;
     background-color: $gray-100;
-    border-radius: $radius-md;
-    transition: background-color $transition-fast;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
 
     &:hover {
       background-color: $gray-200;
     }
   }
 
-  &__nav {
-    @include flex(row, flex-end, center, $spacing-1);
-  }
-
   &__nav-btn {
     @include button-reset;
-    padding: $spacing-2;
-    color: $gray-600;
-    border-radius: $radius-md;
-    transition: background-color $transition-fast;
+    width: 32px;
+    height: 32px;
+    @include flex-center;
+    color: $gray-500;
+    border-radius: $radius-full;
+    transition: all $transition-fast;
 
     &:hover {
       background-color: $gray-100;
+      color: $gray-700;
     }
   }
 
@@ -449,7 +446,8 @@ $ps-event-purple: #9B8FB9;
 
   &__header {
     display: flex;
-    border-bottom: 1px solid $gray-200;
+    background-color: $white;
+    border-bottom: 1px solid $gray-100;
 
     @include mobile {
       min-width: max-content;
@@ -457,8 +455,9 @@ $ps-event-purple: #9B8FB9;
   }
 
   &__gutter {
-    width: 64px;
+    width: 60px;
     flex-shrink: 0;
+    background-color: $white;
 
     @include mobile {
       width: 48px;
@@ -470,53 +469,54 @@ $ps-event-purple: #9B8FB9;
   }
 
   &__day-header {
+    @include button-reset;
     flex: 1;
-    text-align: center;
-    padding: $spacing-2;
-    border-left: 1px solid $gray-200;
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-3 $spacing-2;
+    border-left: 1px solid $gray-100;
+    font-size: $font-size-sm;
+    color: $gray-600;
+    background-color: $white;
+    cursor: pointer;
+    transition: all $transition-fast;
 
     @include mobile {
       min-width: 80px;
       flex: 0 0 auto;
-      padding: $spacing-1;
+      padding: $spacing-2;
+      font-size: $font-size-xs;
     }
-  }
-
-  &__weekday {
-    font-size: $font-size-xs;
-    color: $gray-500;
-    text-transform: uppercase;
-  }
-
-  &__date-btn {
-    @include button-reset;
-    width: 32px;
-    height: 32px;
-    margin: $spacing-1 auto 0;
-    @include flex-center;
-    font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
-    border-radius: $radius-full;
-    color: $gray-900;
-    transition: background-color $transition-fast;
 
     &:hover {
-      background-color: $gray-100;
+      background-color: $gray-50;
     }
 
     &--today {
-      background-color: $primary-blue;
-      color: $white;
-
-      &:hover {
-        background-color: $primary-blue-dark;
-      }
+      background-color: #E8E3FF;
+      color: #5B4EBF;
+      font-weight: $font-weight-semibold;
     }
 
     &--selected {
-      background-color: $primary-blue-light;
-      color: $primary-blue;
+      background-color: rgba($primary-blue, 0.08);
     }
+  }
+
+  &__day-number {
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+
+    .week-view__day-header--today & {
+      color: #5B4EBF;
+    }
+  }
+
+  &__day-separator {
+    color: $gray-400;
+  }
+
+  &__weekday {
+    font-weight: $font-weight-medium;
   }
 
   &__allday {
@@ -595,7 +595,8 @@ $ps-event-purple: #9B8FB9;
   &__day-column {
     flex: 1;
     position: relative;
-    border-left: 1px solid $gray-200;
+    border-left: 1px solid $gray-100;
+    background-color: $white;
 
     @include mobile {
       min-width: 80px;
@@ -603,40 +604,78 @@ $ps-event-purple: #9B8FB9;
     }
 
     &--selected {
-      background-color: rgba($primary-blue, 0.05);
+      background-color: rgba($primary-blue, 0.03);
     }
   }
 
   &__hour-slot {
     position: absolute;
     width: 100%;
-    border-top: 1px solid $gray-100;
+    border-top: 1px solid $gray-50;
     cursor: pointer;
     transition: background-color $transition-fast;
 
     &:hover {
-      background-color: $gray-50;
+      background-color: rgba($primary-blue, 0.03);
+    }
+  }
+
+  // Current time indicator
+  &__current-time {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  &__current-time-label {
+    position: absolute;
+    left: -50px;
+    top: -8px;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    color: #E74C3C;
+    background-color: $white;
+    padding: 2px $spacing-2;
+    border-radius: $radius-sm;
+  }
+
+  &__current-time-line {
+    height: 2px;
+    background-color: #E74C3C;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -4px;
+      width: 10px;
+      height: 10px;
+      background-color: #E74C3C;
+      border-radius: $radius-full;
     }
   }
 
   &__event {
-    @include button-reset;
     position: absolute;
     left: $spacing-1;
     right: $spacing-1;
-    padding: $spacing-1 $spacing-2;
-    border-radius: $radius-sm;
+    border-radius: $radius-lg;
     font-size: $font-size-xs;
-    text-align: left;
     overflow: hidden;
-    transition: box-shadow $transition-fast;
+    transition: all $transition-fast;
+    @include flex(column);
 
     @include mobile {
-      padding: 2px 4px;
+      left: 2px;
+      right: 2px;
     }
 
     &:hover {
-      box-shadow: $shadow-md;
+      box-shadow: 0 4px 12px rgba($black, 0.15);
+      transform: translateY(-1px);
     }
 
     &--exam-linked {
@@ -650,13 +689,69 @@ $ps-event-purple: #9B8FB9;
     &--exam-4 { border-color: #F59E0B; }
   }
 
+  &__event-content {
+    @include button-reset;
+    flex: 1;
+    padding: $spacing-2 $spacing-3;
+    text-align: left;
+    @include flex(column, flex-start, flex-start, 2px);
+    cursor: pointer;
+  }
+
   &__event-title {
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-sm;
+    color: inherit;
     @include text-truncate;
     @include flex(row, flex-start, center, $spacing-1);
 
     @include mobile {
-      font-size: 10px;
+      font-size: $font-size-xs;
+    }
+  }
+
+  &__event-time {
+    font-size: 11px;
+    opacity: 0.85;
+    font-weight: $font-weight-medium;
+  }
+
+  &__event-footer {
+    @include flex(row, space-between, center);
+    padding: $spacing-1 $spacing-3 $spacing-2;
+    margin-top: auto;
+  }
+
+  &__event-status {
+    @include flex(row, flex-start, center, $spacing-1);
+    font-size: 10px;
+    font-weight: $font-weight-medium;
+    color: inherit;
+    opacity: 0.9;
+    background-color: rgba($white, 0.4);
+    padding: 2px $spacing-2;
+    border-radius: $radius-full;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  &__event-more {
+    @include button-reset;
+    width: 20px;
+    height: 20px;
+    @include flex-center;
+    color: inherit;
+    opacity: 0.6;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+    margin-left: auto;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba($white, 0.3);
     }
   }
 

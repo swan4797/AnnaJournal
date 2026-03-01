@@ -33,57 +33,70 @@ export function ExamsComingUp({ exams, onExamClick }: ExamsComingUpProps) {
     return ''
   }
 
-  const formatDate = (date: string, daysUntil: number) => {
-    if (daysUntil <= 7) {
-      // Extract just the day for nearby dates
-      const parts = date.split(' ')
-      return parts[0] + ' ' + parts[1]
-    }
-    return date
+  const formatDaysLeft = (daysUntil: number) => {
+    if (daysUntil === 0) return 'Today'
+    if (daysUntil === 1) return '1 Day Left'
+    return `${daysUntil} Days Left`
   }
 
   return (
-    <div className="upcoming">
-      <h2 className="upcoming__title">Upcoming<span className="upcoming__dot">.</span></h2>
+    <div className="dashboard-card dashboard-card--exams">
+      <div className="dashboard-card__header">
+        <h3 className="dashboard-card__title">
+          <CalendarIcon />
+          Upcoming Exams
+        </h3>
+        <div className="dashboard-card__actions">
+          <span className="dashboard-card__count">{exams.length}</span>
+          <button type="button" className="dashboard-card__action-btn">
+            <MoreIcon />
+          </button>
+        </div>
+      </div>
 
-      <div className="upcoming__content">
+      <div className="dashboard-card__content">
         {exams.length === 0 ? (
-          <div className="upcoming__empty">
+          <div className="dashboard-card__empty">
             <CalendarIcon />
             <span>No upcoming exams</span>
           </div>
         ) : (
           <ul className="upcoming-list">
             {exams.map((exam, index) => (
-              <li
-                key={exam.id}
-                className={`upcoming-list__item ${getUrgencyClass(exam.daysUntil)}`}
-                onClick={() => onExamClick?.(exam.id)}
-              >
-                <div className={`upcoming-list__indicator upcoming-list__indicator--${getColorClass(index)}`} />
-                <div className="upcoming-list__content">
-                  <span className="upcoming-list__title">{exam.subject}</span>
-                  <span className="upcoming-list__desc">
-                    {exam.location || 'Carry out writing exams in school'}
-                  </span>
-                </div>
-                <div className="upcoming-list__icon">
-                  <DocumentIcon />
-                </div>
-                <div className="upcoming-list__time">
-                  <span className="upcoming-list__date">{formatDate(exam.date, exam.daysUntil)}</span>
-                  <span className="upcoming-list__duration">{formatDuration(index)}</span>
-                </div>
+              <li key={exam.id}>
+                <button
+                  type="button"
+                  className={`upcoming-list__item ${getUrgencyClass(exam.daysUntil)}`}
+                  onClick={() => onExamClick?.(exam.id)}
+                >
+                  <div className={`upcoming-list__indicator upcoming-list__indicator--${getColorClass(index)}`} />
+                  <div className="upcoming-list__content">
+                    <span className="upcoming-list__title">{exam.subject}</span>
+                    <span className="upcoming-list__desc">
+                      {exam.location || 'Exam scheduled'}
+                    </span>
+                  </div>
+                  <div className="upcoming-list__meta">
+                    <span className="upcoming-list__date">{exam.date}</span>
+                    <span className="upcoming-list__countdown">{formatDaysLeft(exam.daysUntil)}</span>
+                  </div>
+                </button>
               </li>
             ))}
           </ul>
         )}
       </div>
-
-      <button className="upcoming__view-all">
-        View all upcoming <ChevronRightSmallIcon />
-      </button>
     </div>
+  )
+}
+
+function MoreIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="6" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="12" cy="18" r="2" />
+    </svg>
   )
 }
 

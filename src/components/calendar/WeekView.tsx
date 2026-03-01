@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   getWeekDays,
   formatDateKey,
@@ -21,6 +21,7 @@ interface WeekViewProps {
 }
 
 const HOUR_HEIGHT = 60 // pixels per hour
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']
 
 export function WeekView({
   events,
@@ -35,6 +36,35 @@ export function WeekView({
   const hours = getHoursOfDay()
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  // Current time tracking for the indicator line
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+    return () => clearInterval(interval)
+  }, [])
+
+  // Calculate current time position
+  const getCurrentTimePosition = () => {
+    const hours = currentTime.getHours()
+    const minutes = currentTime.getMinutes()
+    return ((hours * 60 + minutes) / (24 * 60)) * 100 // Position as percentage of 24 hours
+  }
+
+  // Format current time for display
+  const formatCurrentTime = () => {
+    const hours = currentTime.getHours()
+    const minutes = currentTime.getMinutes()
+    return `${hours}:${String(minutes).padStart(2, '0')}`
+  }
+
+  // Check if current time line should show for this day
+  const isCurrentTimeDay = (day: Date) => {
+    return isSameDay(day, new Date())
+  }
 
   // Create exam lookup map by ID for color coding linked sessions
   const examById = useMemo(() => {
@@ -107,38 +137,15 @@ export function WeekView({
           const dayExams = getExamsForDay(day)
 
           return (
-            <div key={index} className="week-view__day-header">
-              <div className="week-view__weekday">
-                {day.toLocaleDateString('en-US', { weekday: 'short' })}
-              </div>
-              <button
-                onClick={() => onDateSelect(day)}
-                className={`week-view__date-btn ${isToday ? 'week-view__date-btn--today' : ''} ${isSelected ? 'week-view__date-btn--selected' : ''}`}
-              >
-                {day.getDate()}
-              </button>
-              {/* Exam countdown badges */}
-              {dayExams.length > 0 && (
-                <div className="week-view__exam-badges">
-                  {dayExams.slice(0, 2).map((exam, i) => {
-                    const daysUntil = getDaysUntilExam(new Date(exam.start_time))
-                    return (
-                      <button
-                        key={exam.id}
-                        className={`week-view__exam-badge week-view__exam-badge--${getExamColorIndex(exam.id)}`}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEventClick(exam)
-                        }}
-                        title={exam.title}
-                      >
-                        {daysUntil === 0 ? 'Today' : daysUntil === 1 ? '1d' : `${daysUntil}d`}
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
+            <button
+              key={index}
+              onClick={() => onDateSelect(day)}
+              className={`week-view__day-header ${isToday ? 'week-view__day-header--today' : ''} ${isSelected ? 'week-view__day-header--selected' : ''}`}
+            >
+              <span className="week-view__day-number">{day.getDate()}</span>
+              <span className="week-view__day-separator">-</span>
+              <span className="week-view__weekday">{DAY_NAMES[day.getDay()]}</span>
+            </button>
           )
         })}
       </div>
@@ -189,6 +196,7 @@ export function WeekView({
             const dateKey = formatDateKey(day)
             const dayTimedEvents = timedEvents.get(dateKey) || []
             const isSelected = selectedDate && isSameDay(day, selectedDate)
+            const showCurrentTime = isCurrentTimeDay(day)
 
             return (
               <div
@@ -205,31 +213,79 @@ export function WeekView({
                   />
                 ))}
 
+                {/* Current time indicator */}
+                {showCurrentTime && (
+                  <div
+                    className="week-view__current-time"
+                    style={{ top: `${getCurrentTimePosition()}%` }}
+                  >
+                    <span className="week-view__current-time-label">{formatCurrentTime()}</span>
+                    <div className="week-view__current-time-line" />
+                  </div>
+                )}
+
                 {/* Events */}
                 {dayTimedEvents.map((event) => {
                   const { top, height } = getEventPosition(event.start_time, event.end_time)
                   const linkedExam = event.linked_exam_id ? examById.get(event.linked_exam_id) : null
                   const examColorClass = linkedExam ? `week-view__event--exam-linked week-view__event--exam-${getExamColorIndex(event.linked_exam_id!)}` : ''
+                  const category = getCategoryConfig(event.category)
+
+                  // Format event time
+                  const startTime = new Date(event.start_time)
+                  const endTime = event.end_time ? new Date(event.end_time) : null
+                  const timeStr = `${startTime.getHours()}:${String(startTime.getMinutes()).padStart(2, '0')}${startTime.getHours() >= 12 ? 'pm' : 'am'}${endTime ? ` - ${endTime.getHours()}:${String(endTime.getMinutes()).padStart(2, '0')}${endTime.getHours() >= 12 ? 'pm' : 'am'}` : ''}`
 
                   return (
-                    <button
+                    <div
                       key={event.id}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onEventClick(event)
-                      }}
                       className={`week-view__event event-card--${event.category} ${event.completed ? 'event-card--completed' : ''} ${examColorClass}`}
                       style={{
                         top: `${top}%`,
                         height: `${height}%`,
-                        minHeight: '24px',
+                        minHeight: '60px',
                       }}
                     >
-                      <div className="week-view__event-title">
-                        {linkedExam && <span className="week-view__event-exam-dot" />}
-                        {event.title}
+                      <button
+                        className="week-view__event-content"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEventClick(event)
+                        }}
+                      >
+                        <span className="week-view__event-title">
+                          {linkedExam && <span className="week-view__event-exam-dot" />}
+                          {event.title}
+                        </span>
+                        <span className="week-view__event-time">{timeStr}</span>
+                      </button>
+
+                      {/* Status badge and more button */}
+                      <div className="week-view__event-footer">
+                        {event.completed && (
+                          <span className="week-view__event-status">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="20,6 9,17 4,12" />
+                            </svg>
+                            Confirmed
+                          </span>
+                        )}
+                        <button
+                          className="week-view__event-more"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onEventClick(event)
+                          }}
+                          aria-label="More options"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="6" r="2" />
+                            <circle cx="12" cy="12" r="2" />
+                            <circle cx="12" cy="18" r="2" />
+                          </svg>
+                        </button>
                       </div>
-                    </button>
+                    </div>
                   )
                 })}
               </div>

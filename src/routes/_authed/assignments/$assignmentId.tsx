@@ -207,14 +207,12 @@ function AssignmentDetailPage() {
           <span>Back to Assignments</span>
         </Link>
         <div className="assignment-detail-page__actions">
-          <Button variant="ghost" onClick={handleDelete} className="assignment-detail-page__delete-btn">
+          <button type="button" onClick={handleDelete} className="assignment-detail-page__action-btn assignment-detail-page__action-btn--delete">
             <TrashIcon />
-            Delete
-          </Button>
-          <Button onClick={handleEdit}>
+          </button>
+          <button type="button" onClick={handleEdit} className="assignment-detail-page__action-btn assignment-detail-page__action-btn--edit">
             <EditIcon />
-            Edit
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -222,161 +220,195 @@ function AssignmentDetailPage() {
       <div className="assignment-detail-page__content">
         {/* Main Info */}
         <div className="assignment-detail-page__main">
-          {/* Title & Status */}
-          <div className="assignment-detail-page__title-section">
-            <div className="assignment-detail-page__title-row">
-              <h1 className="assignment-detail-page__title">{assignment.title}</h1>
-              <span
-                className="assignment-detail-page__status-badge"
-                style={{ backgroundColor: getStatusColor(assignment.status) }}
-              >
-                {getStatusLabel(assignment.status)}
-              </span>
+          {/* Hero Card */}
+          <div className={`assignment-detail-page__hero ${overdue ? 'assignment-detail-page__hero--overdue' : ''}`}>
+            <div className="assignment-detail-page__hero-icon">
+              <AssignmentIcon />
             </div>
-            {assignment.description && (
-              <p className="assignment-detail-page__description">{assignment.description}</p>
-            )}
-          </div>
-
-          {/* Info Grid */}
-          <div className="assignment-detail-page__info-grid">
-            {/* Due Date */}
-            <div className={`assignment-detail-page__card ${overdue ? 'assignment-detail-page__card--overdue' : ''}`}>
-              <h3 className="assignment-detail-page__card-title">
-                <CalendarIcon />
-                Due Date
-              </h3>
-              <p className="assignment-detail-page__card-value">
-                {new Date(assignment.due_date).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </p>
-              <p className="assignment-detail-page__card-sub">
-                {new Date(assignment.due_date).toLocaleTimeString('en-US', {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-              </p>
-              <p className={`assignment-detail-page__due-label ${overdue ? 'assignment-detail-page__due-label--overdue' : ''}`}>
-                {formatDueDate(assignment.due_date)}
-              </p>
-            </div>
-
-            {/* Class */}
-            {linkedClass && (
-              <div className="assignment-detail-page__card">
-                <h3 className="assignment-detail-page__card-title">
-                  <ClassIcon />
-                  Class
-                </h3>
-                <Link
-                  to="/classes/$classId"
-                  params={{ classId: linkedClass.id }}
-                  className="assignment-detail-page__card-link"
+            <div className="assignment-detail-page__hero-content">
+              <div className="assignment-detail-page__hero-top">
+                <h1 className="assignment-detail-page__title">{assignment.title}</h1>
+                <span
+                  className="assignment-detail-page__status-pill"
+                  style={{
+                    backgroundColor: `${getStatusColor(assignment.status)}20`,
+                    color: getStatusColor(assignment.status)
+                  }}
                 >
-                  {linkedClass.module_name || linkedClass.title}
-                </Link>
+                  {getStatusLabel(assignment.status)}
+                </span>
               </div>
-            )}
-
-            {/* Priority */}
-            <div className="assignment-detail-page__card">
-              <h3 className="assignment-detail-page__card-title">
-                <FlagIcon />
-                Priority
-              </h3>
-              <span
-                className="assignment-detail-page__priority"
-                style={{ backgroundColor: getPriorityColor(assignment.priority) }}
-              >
-                {getPriorityLabel(assignment.priority)}
-              </span>
-            </div>
-
-            {/* Grade */}
-            <div className="assignment-detail-page__card">
-              <h3 className="assignment-detail-page__card-title">
-                <GradeIcon />
-                Grade
-              </h3>
-              {assignment.grade !== null ? (
-                <p className="assignment-detail-page__grade">
-                  {assignment.grade} / {assignment.max_grade || 100}
-                  {assignment.weight && (
-                    <span className="assignment-detail-page__weight">
-                      ({assignment.weight}% weight)
-                    </span>
-                  )}
-                </p>
-              ) : (
-                <p className="assignment-detail-page__card-value--muted">Not graded</p>
+              {assignment.description && (
+                <p className="assignment-detail-page__subtitle">{assignment.description}</p>
               )}
-              <button
-                className="assignment-detail-page__grade-btn"
-                onClick={handleOpenGradeModal}
-              >
-                {assignment.grade !== null ? 'Update Grade' : 'Add Grade'}
-              </button>
             </div>
           </div>
 
-          {/* Status Actions */}
-          <div className="assignment-detail-page__status-section">
-            <h2 className="assignment-detail-page__section-title">Status</h2>
-            <div className="assignment-detail-page__status-buttons">
+          {/* Detailed Information Card */}
+          <div className="assignment-detail-page__info-card">
+            <h2 className="assignment-detail-page__info-card-title">Detailed Information</h2>
+            <div className="assignment-detail-page__info-rows">
+              {/* Due Date Row */}
+              <div className={`assignment-detail-page__info-row ${overdue ? 'assignment-detail-page__info-row--overdue' : ''}`}>
+                <div className="assignment-detail-page__info-icon">
+                  <CalendarIcon />
+                </div>
+                <div className="assignment-detail-page__info-content">
+                  <span className="assignment-detail-page__info-label">Due Date</span>
+                  <div className="assignment-detail-page__info-value">
+                    <span className="assignment-detail-page__due-date">
+                      {new Date(assignment.due_date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                    <span className="assignment-detail-page__due-time">
+                      {new Date(assignment.due_date).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                    <span className={`assignment-detail-page__due-countdown ${overdue ? 'assignment-detail-page__due-countdown--overdue' : ''}`}>
+                      {formatDueDate(assignment.due_date)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Class Row */}
+              {linkedClass && (
+                <div className="assignment-detail-page__info-row">
+                  <div className="assignment-detail-page__info-icon">
+                    <ClassIcon />
+                  </div>
+                  <div className="assignment-detail-page__info-content">
+                    <span className="assignment-detail-page__info-label">Class</span>
+                    <Link
+                      to="/classes/$classId"
+                      params={{ classId: linkedClass.id }}
+                      className="assignment-detail-page__info-link"
+                    >
+                      {linkedClass.module_name || linkedClass.title}
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Priority Row */}
+              <div className="assignment-detail-page__info-row">
+                <div className="assignment-detail-page__info-icon">
+                  <FlagIcon />
+                </div>
+                <div className="assignment-detail-page__info-content">
+                  <span className="assignment-detail-page__info-label">Priority</span>
+                  <span
+                    className="assignment-detail-page__priority-pill"
+                    style={{
+                      backgroundColor: `${getPriorityColor(assignment.priority)}20`,
+                      color: getPriorityColor(assignment.priority)
+                    }}
+                  >
+                    {getPriorityLabel(assignment.priority)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Grade Row */}
+              <div className="assignment-detail-page__info-row">
+                <div className="assignment-detail-page__info-icon">
+                  <GradeIcon />
+                </div>
+                <div className="assignment-detail-page__info-content">
+                  <span className="assignment-detail-page__info-label">Grade</span>
+                  <div className="assignment-detail-page__grade-content">
+                    {assignment.grade !== null ? (
+                      <div className="assignment-detail-page__grade-display">
+                        <span className="assignment-detail-page__grade-value">
+                          {assignment.grade} / {assignment.max_grade || 100}
+                        </span>
+                        {assignment.weight && (
+                          <span className="assignment-detail-page__grade-weight">
+                            {assignment.weight}% weight
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="assignment-detail-page__grade-empty">Not graded</span>
+                    )}
+                    <button
+                      type="button"
+                      className="assignment-detail-page__grade-btn"
+                      onClick={handleOpenGradeModal}
+                    >
+                      {assignment.grade !== null ? 'Update' : 'Add Grade'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Status Card */}
+          <div className="assignment-detail-page__status-card">
+            <h2 className="assignment-detail-page__card-title">Status</h2>
+            <div className="assignment-detail-page__status-grid">
               {ASSIGNMENT_STATUSES.map((status) => (
                 <button
                   key={status.value}
-                  className={`assignment-detail-page__status-btn ${assignment.status === status.value ? 'assignment-detail-page__status-btn--active' : ''}`}
+                  type="button"
+                  className={`assignment-detail-page__status-option ${assignment.status === status.value ? 'assignment-detail-page__status-option--active' : ''}`}
                   style={{
-                    borderColor: assignment.status === status.value ? status.color : undefined,
-                    backgroundColor: assignment.status === status.value ? `${status.color}15` : undefined,
-                  }}
+                    '--status-color': status.color,
+                  } as React.CSSProperties}
                   onClick={() => handleStatusChange(status.value)}
                 >
-                  <span
-                    className="assignment-detail-page__status-dot"
-                    style={{ backgroundColor: status.color }}
-                  />
-                  {status.label}
+                  <span className="assignment-detail-page__status-indicator" />
+                  <span className="assignment-detail-page__status-label">{status.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Instructions */}
+          {/* Instructions Card */}
           {assignment.instructions && (
-            <div className="assignment-detail-page__section">
-              <h2 className="assignment-detail-page__section-title">Instructions</h2>
+            <div className="assignment-detail-page__instructions-card">
+              <h2 className="assignment-detail-page__card-title">Instructions</h2>
               <div
-                className="assignment-detail-page__instructions"
+                className="assignment-detail-page__instructions-content"
                 dangerouslySetInnerHTML={{ __html: assignment.instructions }}
               />
             </div>
           )}
 
-          {/* Feedback */}
+          {/* Feedback Card */}
           {assignment.feedback && (
-            <div className="assignment-detail-page__section">
-              <h2 className="assignment-detail-page__section-title">Feedback</h2>
-              <div className="assignment-detail-page__feedback">
+            <div className="assignment-detail-page__feedback-card">
+              <h2 className="assignment-detail-page__card-title">Feedback</h2>
+              <div className="assignment-detail-page__feedback-content">
                 {assignment.feedback}
               </div>
             </div>
           )}
 
           {/* Timestamps */}
-          <div className="assignment-detail-page__timestamps">
-            {assignment.submitted_at && (
-              <p>Submitted: {new Date(assignment.submitted_at).toLocaleString()}</p>
-            )}
-            {assignment.graded_at && (
-              <p>Graded: {new Date(assignment.graded_at).toLocaleString()}</p>
-            )}
-          </div>
+          {(assignment.submitted_at || assignment.graded_at) && (
+            <div className="assignment-detail-page__timestamps">
+              {assignment.submitted_at && (
+                <div className="assignment-detail-page__timestamp">
+                  <CheckIcon />
+                  <span>Submitted {new Date(assignment.submitted_at).toLocaleString()}</span>
+                </div>
+              )}
+              {assignment.graded_at && (
+                <div className="assignment-detail-page__timestamp">
+                  <GradeIcon />
+                  <span>Graded {new Date(assignment.graded_at).toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -499,6 +531,25 @@ function GradeIcon() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="10" />
       <path d="M12 6v6l4 2" />
+    </svg>
+  )
+}
+
+function AssignmentIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+      <rect x="9" y="3" width="6" height="4" rx="1" />
+      <line x1="9" y1="12" x2="15" y2="12" />
+      <line x1="9" y1="16" x2="15" y2="16" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="20,6 9,17 4,12" />
     </svg>
   )
 }

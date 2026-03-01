@@ -15,6 +15,20 @@ const START_HOUR = 7
 const END_HOUR = 21
 const HOURS = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => START_HOUR + i)
 
+// Get current week dates for display
+function getWeekDates(): Date[] {
+  const today = new Date()
+  const currentDay = today.getDay() // 0 = Sunday
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1))
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(monday)
+    date.setDate(monday.getDate() + i)
+    return date
+  })
+}
+
 // Parse time string (HH:MM or HH:MM:SS) to minutes from midnight
 function parseTimeToMinutes(timeStr: string): number {
   const parts = timeStr.split(':').map(Number)
@@ -71,16 +85,38 @@ export function TimetableGrid({
     return grouped
   }, [classes])
 
+  // Get week dates for header display
+  const weekDates = useMemo(() => getWeekDates(), [])
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return date1.getDate() === date2.getDate() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getFullYear() === date2.getFullYear()
+  }
+
   return (
     <div className="timetable-grid">
-      {/* Header row with day names */}
+      {/* Header row with day names and dates */}
       <div className="timetable-grid__header">
-        <div className="timetable-grid__time-header" />
-        {DAYS_OF_WEEK.map(day => (
-          <div key={day.value} className="timetable-grid__day-header">
-            <span className="timetable-grid__day-label">{day.short}</span>
-          </div>
-        ))}
+        <div className="timetable-grid__time-header">
+          <span className="timetable-grid__timezone">All day</span>
+        </div>
+        {DAYS_OF_WEEK.map((day, index) => {
+          const date = weekDates[index]
+          const isToday = isSameDay(date, today)
+
+          return (
+            <div
+              key={day.value}
+              className={`timetable-grid__day-header ${isToday ? 'timetable-grid__day-header--today' : ''}`}
+            >
+              <span className="timetable-grid__day-date">{date.getDate()}</span>
+              <span className="timetable-grid__day-label">{day.short.toUpperCase()}</span>
+            </div>
+          )
+        })}
       </div>
 
       {/* Grid body */}

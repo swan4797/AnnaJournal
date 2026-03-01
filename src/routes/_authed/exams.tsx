@@ -123,84 +123,119 @@ function ExamsPage() {
     <div className="exams-page">
       {/* Header */}
       <div className="exams-page__header">
-        <div className="exams-page__title-section">
-          <h1 className="exams-page__title">Exams</h1>
-          <p className="exams-page__subtitle">
-            {upcomingExams.length} upcoming exam{upcomingExams.length !== 1 ? 's' : ''}
-          </p>
+        <div className="exams-page__header-left">
+          <div className="exams-page__icon">
+            <ExamIcon />
+          </div>
+          <div className="exams-page__title-section">
+            <h1 className="exams-page__title">Exams</h1>
+            <p className="exams-page__subtitle">
+              {upcomingExams.length} upcoming exam{upcomingExams.length !== 1 ? 's' : ''}
+            </p>
+          </div>
         </div>
-        <button
-          className="exams-page__add-btn"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <PlusIcon />
-          Add Exam
-        </button>
+        <div className="exams-page__header-actions">
+          <button
+            type="button"
+            className="exams-page__add-btn"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <PlusIcon />
+            <span>Add Exam</span>
+          </button>
+        </div>
       </div>
 
-      {/* Toggle between upcoming and past */}
-      <div className="exams-page__tabs">
-        <button
-          className={`exams-page__tab ${!showPastExams ? 'exams-page__tab--active' : ''}`}
-          onClick={() => setShowPastExams(false)}
-        >
-          Upcoming ({upcomingExams.length})
-        </button>
-        <button
-          className={`exams-page__tab ${showPastExams ? 'exams-page__tab--active' : ''}`}
-          onClick={() => setShowPastExams(true)}
-        >
-          Past ({pastExams.length})
-        </button>
-      </div>
+      {/* Exams Card Section */}
+      <div className="exams-page__section">
+        <div className="exams-page__section-header">
+          <div className="exams-page__tabs-wrapper">
+            <button
+              type="button"
+              className={`exams-page__tab ${!showPastExams ? 'exams-page__tab--active' : ''}`}
+              onClick={() => setShowPastExams(false)}
+            >
+              Upcoming
+              <span className="exams-page__tab-count">{upcomingExams.length}</span>
+            </button>
+            <button
+              type="button"
+              className={`exams-page__tab ${showPastExams ? 'exams-page__tab--active' : ''}`}
+              onClick={() => setShowPastExams(true)}
+            >
+              Past
+              <span className="exams-page__tab-count">{pastExams.length}</span>
+            </button>
+          </div>
+          <div className="exams-page__section-actions">
+            <button type="button" className="exams-page__filter-btn">
+              <FilterIcon />
+            </button>
+            <button type="button" className="exams-page__sort-btn">
+              <SortIcon />
+            </button>
+          </div>
+        </div>
 
-      {/* Main content */}
-      <div className="exams-page__content">
-        {/* Exam list */}
-        <div className="exams-page__list">
-          {displayedExams.length === 0 ? (
-            <div className="exams-page__empty">
-              <EmptyIcon />
-              <p>{showPastExams ? 'No past exams' : 'No upcoming exams'}</p>
-              {!showPastExams && (
-                <button
-                  className="exams-page__empty-btn"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  Add your first exam
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="exams-page__cards">
-              {displayedExams.map((exam) => (
-                <ExamCard
-                  key={exam.id}
-                  exam={exam}
-                  isSelected={selectedExam?.id === exam.id}
-                  onClick={() => handleExamClick(exam)}
-                />
-              ))}
+        {/* Main content */}
+        <div className="exams-page__content">
+          {/* Exam list */}
+          <div className="exams-page__list">
+            {displayedExams.length === 0 ? (
+              <div className="exams-page__empty">
+                <div className="exams-page__empty-icon">
+                  <EmptyIcon />
+                </div>
+                <h3 className="exams-page__empty-title">
+                  {showPastExams ? 'No past exams' : 'No upcoming exams'}
+                </h3>
+                <p className="exams-page__empty-text">
+                  {showPastExams
+                    ? 'Past exams will appear here'
+                    : 'Schedule your first exam to start tracking'}
+                </p>
+                {!showPastExams && (
+                  <button
+                    type="button"
+                    className="exams-page__empty-btn"
+                    onClick={() => setIsCreateModalOpen(true)}
+                  >
+                    <PlusIcon />
+                    Add your first exam
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="exams-page__cards">
+                {displayedExams.map((exam, index) => (
+                  <ExamCard
+                    key={exam.id}
+                    exam={exam}
+                    isSelected={selectedExam?.id === exam.id}
+                    onClick={() => handleExamClick(exam)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Detail panel */}
+          {selectedExam && (
+            <div className="exams-page__detail">
+              <ExamDetail
+                exam={selectedExam}
+                topics={selectedExamTopics}
+                onTopicsChange={setSelectedExamTopics}
+                studySessions={selectedExamSessions}
+                onStudySessionsChange={setSelectedExamSessions}
+                onStartStudySession={() => setIsStudySessionModalOpen(true)}
+                onEdit={() => setIsEditModalOpen(true)}
+                onDelete={handleDeleteExam}
+                onClose={handleCloseDetail}
+              />
             </div>
           )}
         </div>
-
-        {/* Detail panel */}
-        {selectedExam && (
-          <div className="exams-page__detail">
-            <ExamDetail
-              exam={selectedExam}
-              topics={selectedExamTopics}
-              onTopicsChange={setSelectedExamTopics}
-              studySessions={selectedExamSessions}
-              onStudySessionsChange={setSelectedExamSessions}
-              onStartStudySession={() => setIsStudySessionModalOpen(true)}
-              onEdit={() => setIsEditModalOpen(true)}
-              onDelete={handleDeleteExam}
-              onClose={handleCloseDetail}
-            />
-          </div>
-        )}
       </div>
 
       {/* Modals */}
@@ -235,9 +270,39 @@ function ExamsPage() {
 // Icon Components
 function PlusIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  )
+}
+
+function ExamIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <polyline points="14,2 14,8 20,8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <line x1="10" y1="9" x2="8" y2="9" />
+    </svg>
+  )
+}
+
+function FilterIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
+  )
+}
+
+function SortIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="4" y1="6" x2="16" y2="6" />
+      <line x1="4" y1="12" x2="12" y2="12" />
+      <line x1="4" y1="18" x2="8" y2="18" />
     </svg>
   )
 }

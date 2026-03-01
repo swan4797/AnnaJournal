@@ -148,40 +148,59 @@ export function Calendar({
     })
   }
 
+  // Get week date range for header display
+  const getWeekDateRange = () => {
+    const weekStart = new Date(currentDate)
+    const dayOfWeek = weekStart.getDay()
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek // Start from Monday
+    weekStart.setDate(weekStart.getDate() + diff)
+
+    const weekEnd = new Date(weekStart)
+    weekEnd.setDate(weekStart.getDate() + 6)
+
+    const startDay = String(weekStart.getDate()).padStart(2, '0')
+    const endDay = String(weekEnd.getDate()).padStart(2, '0')
+    const monthName = weekStart.toLocaleDateString('en-US', { month: 'long' })
+    const year = weekStart.getFullYear()
+
+    return `${startDay}-${endDay} ${monthName} ${year}`
+  }
+
   return (
     <div className="calendar">
-      {/* Header */}
+      {/* Header - Design Match */}
       <div className="calendar__header">
+        {/* Left: Date Range + Nav */}
         <div className="calendar__header-left">
-          <h2 className="calendar__title">{getTitle()}</h2>
-          <button onClick={handleToday} className="calendar__today-btn">
-            Today
+          <button
+            onClick={handlePrev}
+            className="calendar__nav-btn"
+            aria-label="Previous"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2 className="calendar__title">
+            {currentView === 'week' ? getWeekDateRange() : getTitle()}
+          </h2>
+          <button
+            onClick={handleNext}
+            className="calendar__nav-btn"
+            aria-label="Next"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
 
+        {/* Right: Actions */}
         <div className="calendar__header-right">
+          <button onClick={handleToday} className="calendar__today-btn">
+            Today
+          </button>
           <ViewSwitcher currentView={currentView} onViewChange={onViewChange} />
-
-          <div className="calendar__nav">
-            <button
-              onClick={handlePrev}
-              className="calendar__nav-btn"
-              aria-label="Previous"
-            >
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              onClick={handleNext}
-              className="calendar__nav-btn"
-              aria-label="Next"
-            >
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 

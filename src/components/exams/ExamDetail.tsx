@@ -117,66 +117,105 @@ export function ExamDetail({
 
   return (
     <div className="exam-detail">
+      {/* Header */}
       <div className="exam-detail__header">
-        <button className="exam-detail__close" onClick={onClose}>
+        <button type="button" className="exam-detail__close" onClick={onClose}>
           <CloseIcon />
         </button>
         <div className="exam-detail__actions">
-          <button className="exam-detail__action" onClick={onEdit}>
+          <button type="button" className="exam-detail__action exam-detail__action--edit" onClick={onEdit}>
             <EditIcon />
-            Edit
           </button>
-          <button className="exam-detail__action exam-detail__action--danger" onClick={onDelete}>
+          <button type="button" className="exam-detail__action exam-detail__action--danger" onClick={onDelete}>
             <DeleteIcon />
-            Delete
           </button>
         </div>
       </div>
 
       <div className="exam-detail__content">
-        <div className="exam-detail__category">
-          <span className="exam-detail__category-icon">{category.icon}</span>
-          <span className="exam-detail__category-label">{category.label}</span>
-        </div>
-
-        <h2 className="exam-detail__title">{exam.title}</h2>
-
-        <div className={`exam-detail__countdown ${getCountdownClass()}`}>
-          {getCountdownText()}
-        </div>
-
-        <div className="exam-detail__info">
-          <div className="exam-detail__info-row">
-            <CalendarIcon />
-            <span>{formatFullDate()}</span>
+        {/* Hero Section */}
+        <div className="exam-detail__hero">
+          <div className="exam-detail__hero-icon">
+            <span>{category.icon}</span>
           </div>
-          <div className="exam-detail__info-row">
-            <ClockIcon />
-            <span>{formatTime()}</span>
+          <div className="exam-detail__hero-content">
+            <span className="exam-detail__category-badge">{category.label}</span>
+            <h2 className="exam-detail__title">{exam.title}</h2>
+            <div className={`exam-detail__countdown-badge ${getCountdownClass()}`}>
+              <CountdownIcon />
+              <span>{getCountdownText()}</span>
+            </div>
           </div>
-          {formatDuration() && (
-            <div className="exam-detail__info-row">
-              <DurationIcon />
-              <span>Duration: {formatDuration()}</span>
-            </div>
-          )}
-          {exam.description && (
-            <div className="exam-detail__info-row">
-              <LocationIcon />
-              <span>{exam.description}</span>
-            </div>
-          )}
-          {exam.priority && (
-            <div className="exam-detail__info-row">
-              <PriorityIcon />
-              <span>Priority: {exam.priority.charAt(0).toUpperCase() + exam.priority.slice(1)}</span>
-            </div>
-          )}
         </div>
 
+        {/* Detailed Information Card */}
+        <div className="exam-detail__info-card">
+          <h3 className="exam-detail__card-title">Detailed Information</h3>
+          <div className="exam-detail__info-rows">
+            <div className="exam-detail__info-row">
+              <div className="exam-detail__info-icon">
+                <CalendarIcon />
+              </div>
+              <div className="exam-detail__info-content">
+                <span className="exam-detail__info-label">Date</span>
+                <span className="exam-detail__info-value">{formatFullDate()}</span>
+              </div>
+            </div>
+
+            <div className="exam-detail__info-row">
+              <div className="exam-detail__info-icon">
+                <ClockIcon />
+              </div>
+              <div className="exam-detail__info-content">
+                <span className="exam-detail__info-label">Time</span>
+                <span className="exam-detail__info-value">{formatTime()}</span>
+              </div>
+            </div>
+
+            {formatDuration() && (
+              <div className="exam-detail__info-row">
+                <div className="exam-detail__info-icon">
+                  <DurationIcon />
+                </div>
+                <div className="exam-detail__info-content">
+                  <span className="exam-detail__info-label">Duration</span>
+                  <span className="exam-detail__info-value">{formatDuration()}</span>
+                </div>
+              </div>
+            )}
+
+            {exam.description && (
+              <div className="exam-detail__info-row">
+                <div className="exam-detail__info-icon">
+                  <LocationIcon />
+                </div>
+                <div className="exam-detail__info-content">
+                  <span className="exam-detail__info-label">Location</span>
+                  <span className="exam-detail__info-value">{exam.description}</span>
+                </div>
+              </div>
+            )}
+
+            {exam.priority && (
+              <div className="exam-detail__info-row">
+                <div className="exam-detail__info-icon">
+                  <PriorityIcon />
+                </div>
+                <div className="exam-detail__info-content">
+                  <span className="exam-detail__info-label">Priority</span>
+                  <span className={`exam-detail__priority-badge exam-detail__priority-badge--${exam.priority}`}>
+                    {exam.priority.charAt(0).toUpperCase() + exam.priority.slice(1)}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Notes Card */}
         {exam.notes && (
-          <div className="exam-detail__notes">
-            <h4 className="exam-detail__section-title">Notes</h4>
+          <div className="exam-detail__notes-card">
+            <h3 className="exam-detail__card-title">Notes</h3>
             <div
               className="exam-detail__notes-content"
               dangerouslySetInnerHTML={{ __html: exam.notes }}
@@ -184,30 +223,34 @@ export function ExamDetail({
           </div>
         )}
 
+        {/* Files Card */}
         {files.length > 0 && (
-          <div className="exam-detail__files">
-            <h4 className="exam-detail__section-title">Attached Files</h4>
-            <ul className="exam-detail__file-list">
+          <div className="exam-detail__files-card">
+            <h3 className="exam-detail__card-title">
+              Attached Files
+              <span className="exam-detail__files-count">{files.length}</span>
+            </h3>
+            <div className="exam-detail__files-list">
               {files.map((file) => (
-                <li key={file.id} className="exam-detail__file">
+                <a
+                  key={file.id}
+                  href={fileUrls[file.id]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="exam-detail__file-item"
+                >
                   <FileIcon />
-                  <a
-                    href={fileUrls[file.id]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="exam-detail__file-link"
-                  >
-                    {file.file_name}
-                  </a>
-                </li>
+                  <span className="exam-detail__file-name">{file.file_name}</span>
+                  <DownloadIcon />
+                </a>
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
-        {/* Study Topics Section */}
-        <div className="exam-detail__topics">
-          <h4 className="exam-detail__section-title">Study Topics</h4>
+        {/* Study Topics Card */}
+        <div className="exam-detail__topics-card">
+          <h3 className="exam-detail__card-title">Study Topics</h3>
           <TopicList
             examId={exam.id}
             topics={topics}
@@ -215,9 +258,9 @@ export function ExamDetail({
           />
         </div>
 
-        {/* Study Sessions Section */}
-        <div className="exam-detail__sessions">
-          <h4 className="exam-detail__section-title">Study Sessions</h4>
+        {/* Study Sessions Card */}
+        <div className="exam-detail__sessions-card">
+          <h3 className="exam-detail__card-title">Study Sessions</h3>
           <StudySessionList
             examId={exam.id}
             sessions={studySessions}
@@ -311,6 +354,25 @@ function FileIcon() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
       <polyline points="14,2 14,8 20,8" />
+    </svg>
+  )
+}
+
+function CountdownIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12,6 12,12 16,14" />
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="7,10 12,15 17,10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
   )
 }

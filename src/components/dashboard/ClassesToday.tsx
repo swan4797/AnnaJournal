@@ -24,19 +24,25 @@ export function ClassesToday({ classes, onClassClick }: ClassesTodayProps) {
           <ClockIcon />
           Classes Today
         </h3>
-        <span className="dashboard-card__count">{classes.length} classes</span>
+        <div className="dashboard-card__actions">
+          <span className="dashboard-card__count">{classes.length}</span>
+          <button type="button" className="dashboard-card__action-btn">
+            <MoreIcon />
+          </button>
+        </div>
       </div>
       <div className="dashboard-card__content">
         {classes.length === 0 ? (
           <div className="dashboard-card__empty">
             <ClockIcon />
-            <span>No classes today</span>
+            <span>No classes scheduled for today</span>
           </div>
         ) : (
           <div className="classes-timeline">
             {classes.map((classItem, index) => (
-              <div
+              <button
                 key={classItem.id}
+                type="button"
                 className={`classes-timeline__item ${classItem.isOngoing ? 'classes-timeline__item--ongoing' : ''} ${classItem.isNext ? 'classes-timeline__item--next' : ''}`}
                 onClick={() => onClassClick?.(classItem.id)}
               >
@@ -63,14 +69,24 @@ export function ClassesToday({ classes, onClassClick }: ClassesTodayProps) {
                     <span className="classes-timeline__badge classes-timeline__badge--ongoing">Now</span>
                   )}
                   {classItem.isNext && (
-                    <span className="classes-timeline__badge classes-timeline__badge--next">Next</span>
+                    <span className="classes-timeline__badge classes-timeline__badge--next">Up Next</span>
                   )}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+function MoreIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="6" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="12" cy="18" r="2" />
+    </svg>
   )
 }
