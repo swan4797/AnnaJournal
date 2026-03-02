@@ -384,6 +384,55 @@
   }
 }
 
+// Page Loader (for route transitions)
+.page-loader {
+  @include flex(column, center, center);
+  min-height: calc(100vh - 80px);
+  width: 100%;
+
+  &__content {
+    @include flex(column, center, center, $spacing-4);
+    padding: $spacing-8;
+    background-color: $bg-card;
+    border-radius: $radius-2xl;
+    box-shadow: $shadow-lg;
+    animation: page-loader-fade-in 0.2s ease-out;
+  }
+
+  &__spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid $gray-200;
+    border-top-color: $primary;
+    border-radius: 50%;
+    animation: page-loader-spin 0.8s linear infinite;
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $gray-500;
+    margin: 0;
+  }
+}
+
+@keyframes page-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes page-loader-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 // Alert
 .alert {
   @include flex(row, flex-start, flex-start, $spacing-3);
